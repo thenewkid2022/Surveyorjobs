@@ -15,58 +15,50 @@ export default function DownloadButton({ fileUrl, variant = 'download' }: Downlo
   const [error, setError] = useState<string | null>(null);
 
   const handleDownload = async () => {
-    setIsLoading(true);
-    setError(null);
-    
     try {
-      console.log('Download gestartet für URL:', fileUrl);
+      setIsLoading(true);
+      setError(null);
       
-      // Extrahiere den Key aus der S3-URL
-      const key = fileUrl.split('.com/')[1];
-      if (!key) throw new Error('Ungültiger Dateipfad');
-      console.log('Extrahierter S3-Key:', key);
+      // Extrahiere den S3-Key aus der URL
+      const key = fileUrl.split('/').slice(-1)[0];
+      console.log('Starte Download-Prozess für Key:', key);
+      
+      // Prüfe ob es sich um Safari handelt
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      console.log('Browser erkannt:', navigator.userAgent);
+      console.log('Ist Safari:', isSafari);
       
       // Hole die pre-signed URL vom Backend
       console.log('Fordere pre-signed URL an...');
-      const res = await fetch(`${getApiUrl()}/api/upload/download-url?key=${encodeURIComponent(key)}`);
-      if (!res.ok) {
-        console.error('Fehler beim Anfordern der Download-URL:', res.status, res.statusText);
-        throw new Error('Fehler beim Anfordern der Download-URL');
+      const response = await fetch(`${getApiUrl()}/api/upload/download-url?key=${encodeURIComponent(key)}`);
+      
+      if (!response.ok) {
+        throw new Error(`Fehler beim Abrufen der Download-URL: ${response.statusText}`);
       }
       
-      const { url } = await res.json();
-      if (!url) {
-        console.error('Keine Download-URL in der Antwort erhalten');
-        throw new Error('Keine Download-URL erhalten');
-      }
+      const { url } = await response.json();
       console.log('Pre-signed URL erhalten:', url);
-
-      // Versuche den Download auf verschiedene Arten
-      try {
-        console.log('Versuche Download mit window.open()...');
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
-        
-        // Überprüfe, ob das Fenster erfolgreich geöffnet wurde
-        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-          console.log('window.open() fehlgeschlagen, versuche alternative Methode...');
-          
-          // Alternative Methode: Direkter Download-Link
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', key.split('/').pop() || 'lebenslauf.pdf');
-          link.setAttribute('target', '_blank');
-          link.setAttribute('rel', 'noopener noreferrer');
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-      } catch (openError) {
-        console.error('Fehler beim Öffnen der URL:', openError);
-        throw new Error('Fehler beim Öffnen der Datei');
+      
+      if (isSafari) {
+        // Safari-spezifische Download-Methode
+        console.log('Verwende Safari-spezifische Download-Methode');
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', key); // Setze den Dateinamen
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener,noreferrer');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        // Standard-Methode für andere Browser
+        console.log('Verwende Standard-Download-Methode');
+        window.open(url, '_blank', 'noopener,noreferrer');
       }
       
-    } catch (error) {
-      console.error('Fehler beim Download:', error);
+      console.log('Download-Prozess abgeschlossen');
+    } catch (err) {
+      console.error('Fehler beim Download:', err);
       setError('Fehler beim Herunterladen der Datei. Bitte versuchen Sie es später erneut.');
     } finally {
       setIsLoading(false);
