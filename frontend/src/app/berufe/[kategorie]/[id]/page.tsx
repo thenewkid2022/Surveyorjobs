@@ -146,12 +146,6 @@ export default async function Page({
                   )}
                 </small>
               </div>
-              {/* Lebenslauf Download */}
-              {entry.data.lebenslauf && (
-                <div className="mt-3">
-                  <DownloadButton fileUrl={entry.data.lebenslauf} variant="download" />
-                </div>
-              )}
             </>
           ) : (
             // Stellengesuch anzeigen
@@ -222,6 +216,13 @@ export default async function Page({
                   )}
                 </div>
               </div>
+
+              {/* Lebenslauf Download - nur für Stellengesuche */}
+              {entry.data.lebenslauf && (
+                <div className="mt-3">
+                  <DownloadButton fileUrl={entry.data.lebenslauf} variant="view" />
+                </div>
+              )}
             </>
           )}
         </div>
