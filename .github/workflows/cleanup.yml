@@ -1,0 +1,26 @@
+name: Remove Expired Entries
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # täglich um 2 Uhr UTC
+  workflow_dispatch:     # erlaubt manuelles Ausführen
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run cleanup script
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: node scripts/removeExpiredEntries.js 

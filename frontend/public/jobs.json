@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "titel": "Vermessungsingenieur (m/w/d)",
+    "standort": "Berlin",
+    "beschreibung": "Durchführung von Vermessungen im Außendienst und Auswertung der Daten im Büro."
+  },
+  {
+    "id": 2,
+    "titel": "Geomatiker (m/w/d)",
+    "standort": "München",
+    "beschreibung": "Erstellung und Pflege von Geodaten, Mitarbeit an spannenden Infrastrukturprojekten."
+  },
+  {
+    "id": 3,
+    "titel": "Technischer Zeichner (m/w/d)",
+    "standort": "Hamburg",
+    "beschreibung": "Anfertigung von Plänen und Zeichnungen für Bau- und Vermessungsprojekte."
+  }
+] 
