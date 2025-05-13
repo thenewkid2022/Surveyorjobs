@@ -1,34 +1,34 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import Job from "../models/Job";
 import { authenticateJWT } from "../middleware/auth";
 
 const router = express.Router();
 
 // Alle Jobs abrufen
-router.get("/", async (req, res) => {
+router.get("/", async (_req: Request, res: Response) => {
   try {
     const jobs = await Job.find().sort({ erstelltAm: -1 });
-    res.json(jobs);
+    return res.json(jobs);
   } catch (error) {
-    res.status(500).json({ message: "Fehler beim Abrufen der Jobs", error });
+    return res.status(500).json({ message: "Fehler beim Abrufen der Jobs", error });
   }
 });
 
 // Einzelnen Job abrufen
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const job = await Job.findById(req.params.id);
     if (!job) {
       return res.status(404).json({ message: "Job nicht gefunden" });
     }
-    res.json(job);
+    return res.json(job);
   } catch (error) {
-    res.status(500).json({ message: "Fehler beim Abrufen des Jobs", error });
+    return res.status(500).json({ message: "Fehler beim Abrufen des Jobs", error });
   }
 });
 
 // Neuen Job anlegen (authentifiziert)
-router.post("/", authenticateJWT, async (req, res) => {
+router.post("/", authenticateJWT, async (req: Request, res: Response) => {
   try {
     const { 
       titel, 
@@ -59,36 +59,36 @@ router.post("/", authenticateJWT, async (req, res) => {
     });
 
     await job.save();
-    res.status(201).json(job);
+    return res.status(201).json(job);
   } catch (error) {
     console.error("Fehler beim Anlegen des Jobs:", error);
-    res.status(500).json({ message: "Fehler beim Anlegen des Jobs", error });
+    return res.status(500).json({ message: "Fehler beim Anlegen des Jobs", error });
   }
 });
 
 // Job aktualisieren (authentifiziert)
-router.put("/:id", authenticateJWT, async (req, res) => {
+router.put("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
     const job = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!job) {
       return res.status(404).json({ message: "Job nicht gefunden" });
     }
-    res.json(job);
+    return res.json(job);
   } catch (error) {
-    res.status(400).json({ message: "Fehler beim Aktualisieren des Jobs", error });
+    return res.status(400).json({ message: "Fehler beim Aktualisieren des Jobs", error });
   }
 });
 
 // Job löschen (authentifiziert)
-router.delete("/:id", authenticateJWT, async (req, res) => {
+router.delete("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
     const job = await Job.findByIdAndDelete(req.params.id);
     if (!job) {
       return res.status(404).json({ message: "Job nicht gefunden" });
     }
-    res.json({ message: "Job erfolgreich gelöscht" });
+    return res.json({ message: "Job erfolgreich gelöscht" });
   } catch (error) {
-    res.status(500).json({ message: "Fehler beim Löschen des Jobs", error });
+    return res.status(500).json({ message: "Fehler beim Löschen des Jobs", error });
   }
 });
 
