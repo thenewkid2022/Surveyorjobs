@@ -46,10 +46,12 @@ export default function DownloadButton({ fileUrl, variant = 'download' }: Downlo
         const link = document.createElement('a');
         // Füge Content-Disposition Header über URL-Parameter hinzu
         const urlWithDisposition = `${url}&response-content-disposition=attachment; filename="${encodeURIComponent(key)}"`;
+        console.log('Finale Download-URL mit Content-Disposition:', urlWithDisposition);
         link.href = urlWithDisposition;
         link.setAttribute('target', '_blank');
         link.setAttribute('rel', 'noopener,noreferrer');
         document.body.appendChild(link);
+        console.log('Starte Download mit modifizierter URL...');
         link.click();
         document.body.removeChild(link);
       } else {
