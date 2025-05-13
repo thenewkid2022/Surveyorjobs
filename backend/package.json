@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --max-old-space-size=512 ./dist/backend/index.js",
+    "start": "node --max-old-space-size=512 dist/backend/index.js",
     "dev": "nodemon -r tsconfig-paths/register src/index.ts",
     "build": "tsc && cp -r src/uploads dist/backend/ || true",
     "postbuild": "echo '=== Build Verification ===' && ls -la dist/backend/ && echo '=== End Build Verification ==='",
