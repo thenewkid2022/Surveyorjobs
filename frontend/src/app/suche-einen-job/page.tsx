@@ -6,6 +6,7 @@ import { useStripe, useElements, PaymentElement, Elements } from "@stripe/react-
 import { loadStripe } from "@stripe/stripe-js";
 import { berufe } from "@shared/lib/berufe";
 import { getApiUrl } from '@/utils/api';
+import LocationInput from "@/app/components/LocationInput";
 
 // Stripe Promise initialisieren
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -245,14 +246,10 @@ function JobSucheFormular({ setShowForm, clientSecret }: { setShowForm: (show: b
 
       <div className="mb-3">
         <label htmlFor="standort" className="form-label">Gewünschter Arbeitsort *</label>
-        <input 
-          type="text" 
-          className="form-control" 
-          id="standort" 
-          name="standort" 
-          value={formData.standort} 
-          onChange={handleChange} 
-          required 
+        <LocationInput
+          value={formData.standort}
+          onChange={(value) => setFormData(prev => ({ ...prev, standort: value }))}
+          required
         />
       </div>
 
