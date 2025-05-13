@@ -79,53 +79,53 @@ export default async function Page({
         Zurück zur Übersicht
       </Link>
 
-      <div className="card shadow-sm border-success">
+      <div className="card shadow-sm border-primary">
         <div className="card-body">
-          <h1 className="card-title h2 mb-4 text-success">{sucheEinenJob.beruf}</h1>
+          <h1 className="card-title h2 mb-4 text-primary">{sucheEinenJob.beruf}</h1>
           
           {/* Beruf und Ausbildung */}
           <div className="mb-3">
-            <FaBriefcase {...{ size: 20, style: { marginRight: '0.5rem', color: '#198754' } } as IconBaseProps} />
-            <span className="text-success"><strong>Beruf:</strong> {sucheEinenJob.beruf}</span>
+            <FaBriefcase className="me-2 text-primary" size={20} />
+            <span className="text-primary"><strong>Beruf:</strong> {sucheEinenJob.beruf}</span>
           </div>
           <div className="mb-3">
-            <FaGraduationCap {...{ size: 20, style: { marginRight: '0.5rem', color: '#198754' } } as IconBaseProps} />
-            <span className="text-success"><strong>Ausbildung:</strong> {sucheEinenJob.ausbildung}</span>
+            <FaGraduationCap className="me-2 text-primary" size={20} />
+            <span className="text-primary"><strong>Ausbildung:</strong> {sucheEinenJob.ausbildung}</span>
           </div>
 
           {/* Standort und Mobilität */}
           <div className="mb-3">
-            <FaMapMarkerAlt {...{ size: 20, style: { marginRight: '0.5rem', color: '#198754' } } as IconBaseProps} />
-            <span className="text-success"><strong>Standort:</strong> {sucheEinenJob.standort}</span>
+            <FaMapMarkerAlt className="me-2 text-primary" size={20} />
+            <span className="text-primary"><strong>Standort:</strong> {sucheEinenJob.standort}</span>
           </div>
           <div className="mb-3">
-            <FaCar {...{ size: 20, style: { marginRight: '0.5rem', color: '#198754' } } as IconBaseProps} />
-            <span className="text-success"><strong>Mobilität:</strong> {sucheEinenJob.mobilitaet}</span>
+            <FaCar className="me-2 text-primary" size={20} />
+            <span className="text-primary"><strong>Mobilität:</strong> {sucheEinenJob.mobilitaet}</span>
           </div>
 
           {/* Anstellungsart und Erfahrung */}
           <div className="mb-3">
-            <FaBriefcase {...{ size: 20, style: { marginRight: '0.5rem', color: '#198754' } } as IconBaseProps} />
-            <span className="text-success"><strong>Anstellungsart:</strong> {sucheEinenJob.artDerStelle}</span>
+            <FaBriefcase className="me-2 text-primary" size={20} />
+            <span className="text-primary"><strong>Anstellungsart:</strong> {sucheEinenJob.artDerStelle}</span>
           </div>
           <div className="mb-3">
-            <FaCalendarAlt {...{ size: 20, style: { marginRight: '0.5rem', color: '#198754' } } as IconBaseProps} />
-            <span className="text-success"><strong>Erfahrung:</strong> {sucheEinenJob.erfahrung}</span>
+            <FaCalendarAlt className="me-2 text-primary" size={20} />
+            <span className="text-primary"><strong>Erfahrung:</strong> {sucheEinenJob.erfahrung}</span>
           </div>
 
           {/* Verfügbarkeit */}
           <div className="mb-3">
-            <FaClock {...{ size: 20, style: { marginRight: '0.5rem', color: '#198754' } } as IconBaseProps} />
-            <span className="text-success"><strong>Verfügbar ab:</strong> {new Date(sucheEinenJob.verfuegbarAb).toLocaleDateString("de-DE")}</span>
+            <FaClock className="me-2 text-primary" size={20} />
+            <span className="text-primary"><strong>Verfügbar ab:</strong> {new Date(sucheEinenJob.verfuegbarAb).toLocaleDateString("de-DE")}</span>
           </div>
 
           {/* Fähigkeiten und Sprachen */}
           {sucheEinenJob.faehigkeiten.length > 0 && (
             <div className="mb-3">
-              <h3 className="h5 mb-2 text-success">Fähigkeiten</h3>
+              <h3 className="h5 mb-2 text-primary">Fähigkeiten</h3>
               <div className="d-flex flex-wrap gap-2">
                 {sucheEinenJob.faehigkeiten.map((faehigkeit, index) => (
-                  <span key={index} className="badge bg-success">{faehigkeit}</span>
+                  <span key={index} className="badge bg-primary">{faehigkeit}</span>
                 ))}
               </div>
             </div>
@@ -133,10 +133,10 @@ export default async function Page({
           
           {sucheEinenJob.sprachen.length > 0 && (
             <div className="mb-3">
-              <h3 className="h5 mb-2 text-success">Sprachen</h3>
+              <h3 className="h5 mb-2 text-primary">Sprachen</h3>
               <div className="d-flex flex-wrap gap-2">
                 {sucheEinenJob.sprachen.map((sprache, index) => (
-                  <span key={index} className="badge bg-info">{sprache}</span>
+                  <span key={index} className="badge bg-secondary">{sprache}</span>
                 ))}
               </div>
             </div>
@@ -144,36 +144,36 @@ export default async function Page({
 
           {/* Beschreibung */}
           <div className="mb-4">
-            <h2 className="h4 mb-3 text-success">Beschreibung</h2>
+            <h2 className="h4 mb-3 text-primary">Beschreibung</h2>
             <p className="text-secondary">{sucheEinenJob.beschreibung}</p>
           </div>
 
           {/* Anschreiben */}
           {sucheEinenJob.anschreiben && (
             <div className="mb-4">
-              <h2 className="h4 mb-3 text-success">Anschreiben</h2>
+              <h2 className="h4 mb-3 text-primary">Anschreiben</h2>
               <p className="text-secondary">{sucheEinenJob.anschreiben}</p>
             </div>
           )}
 
           {/* Dokumente */}
           <div className="mb-4">
-            <h2 className="h4 mb-3 text-success">Dokumente</h2>
+            <h2 className="h4 mb-3 text-primary">Dokumente</h2>
             <div className="d-flex gap-3">
               <DownloadButton fileUrl={sucheEinenJob.lebenslauf} variant="view" />
             </div>
           </div>
 
           {/* Kontakt */}
-          <div className="card bg-light border-success">
+          <div className="card bg-light border-primary">
             <div className="card-body">
-              <h2 className="h4 mb-3 text-success">Kontakt</h2>
+              <h2 className="h4 mb-3 text-primary">Kontakt</h2>
               {sucheEinenJob.kontaktEmail && (
                 <div className="mb-2">
-                  <FaEnvelope {...{ size: 20, style: { marginRight: '0.5rem', color: '#198754' } } as IconBaseProps} />
-                  <span className="text-success">
+                  <FaEnvelope className="me-2 text-primary" size={20} />
+                  <span className="text-primary">
                     <strong>E-Mail:</strong>{" "}
-                    <a href={`mailto:${sucheEinenJob.kontaktEmail}`} className="text-success">
+                    <a href={`mailto:${sucheEinenJob.kontaktEmail}`} className="text-primary">
                       {sucheEinenJob.kontaktEmail}
                     </a>
                   </span>
@@ -181,10 +181,10 @@ export default async function Page({
               )}
               {sucheEinenJob.kontaktTelefon && (
                 <div className="mb-0">
-                  <FaPhone {...{ size: 20, style: { marginRight: '0.5rem', color: '#198754' } } as IconBaseProps} />
-                  <span className="text-success">
+                  <FaPhone className="me-2 text-primary" size={20} />
+                  <span className="text-primary">
                     <strong>Telefon:</strong>{" "}
-                    <a href={`tel:${sucheEinenJob.kontaktTelefon}`} className="text-success">
+                    <a href={`tel:${sucheEinenJob.kontaktTelefon}`} className="text-primary">
                       {sucheEinenJob.kontaktTelefon}
                     </a>
                   </span>
@@ -195,7 +195,7 @@ export default async function Page({
 
           {/* Status und Datum */}
           <div className="mt-3">
-            <small className="text-muted">
+            <small className="text-secondary">
               Eingestellt am: {new Date(sucheEinenJob.erstelltAm).toLocaleDateString("de-DE")}
               {sucheEinenJob.status !== 'aktiv' && (
                 <span className="ms-2 badge bg-secondary">{sucheEinenJob.status}</span>

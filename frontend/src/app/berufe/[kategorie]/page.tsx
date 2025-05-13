@@ -5,17 +5,8 @@ import { IconBaseProps } from "react-icons";
 import Link from "next/link";
 import { getApiUrl } from "@/utils/api";
 import { kantone, kantonNamen } from "@shared/lib/kantone";
-
-interface Job {
-  _id: string;
-  titel: string;
-  standort: string;
-  beschreibung: string;
-  erstelltAm: string;
-  unternehmen?: string;
-  artDerStelle?: string;
-  kategorie?: string;
-}
+import JobCard from "../../components/JobCard";
+import { Job } from "@/types/job";
 
 interface Stellengesuch {
   _id: string;
@@ -133,20 +124,17 @@ export default function BerufskategoriePage({
           <div className="row g-4">
             {jobs.map((job) => (
               <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={job._id}>
-                <div className="card h-100">
-                  <div className="card-body">
-                    <h5 className="card-title">{job.titel}</h5>
-                    <p className="card-text">
-                      <i className="bi bi-geo-alt"></i> {job.standort}<br />
-                      {job.unternehmen && <><i className="bi bi-building"></i> {job.unternehmen}<br /></>}
-                      {job.artDerStelle && <><i className="bi bi-briefcase"></i> {job.artDerStelle}<br /></>}
-                      <i className="bi bi-calendar"></i> Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString('de-DE')}
-                    </p>
-                    <Link href={`/berufe/${params.kategorie}/${job._id}`} className="btn btn-primary">
-                      Details anzeigen
-                    </Link>
-                  </div>
-                </div>
+                <JobCard
+                  id={job._id}
+                  titel={job.titel}
+                  standort={job.standort}
+                  unternehmen={job.unternehmen}
+                  artDerStelle={job.artDerStelle}
+                  erstelltAm={job.erstelltAm}
+                  kategorie={params.kategorie}
+                  linkPrefix="berufe"
+                  type="job"
+                />
               </div>
             ))}
           </div>
@@ -175,21 +163,17 @@ export default function BerufskategoriePage({
           <div className="row g-4">
             {stellengesuche.map((gesuch) => (
               <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={gesuch._id}>
-                <div className="card h-100">
-                  <div className="card-body">
-                    <h5 className="card-title">{gesuch.berufswunsch || gesuch.position}</h5>
-                    <p className="card-text">
-                      <i className="bi bi-geo-alt"></i> {gesuch.standort}<br />
-                      {gesuch.artDerStelle && <><i className="bi bi-briefcase"></i> {gesuch.artDerStelle}<br /></>}
-                      {gesuch.erfahrung && <><i className="bi bi-clock-history"></i> {gesuch.erfahrung}</>}
-                      <br />
-                      <span className="text-secondary">{gesuch.beschreibung}</span>
-                    </p>
-                    <Link href={`/berufe/${params.kategorie}/${gesuch._id}`} className="btn btn-primary">
-                      Details anzeigen
-                    </Link>
-                  </div>
-                </div>
+                <JobCard
+                  id={gesuch._id}
+                  berufswunsch={gesuch.berufswunsch}
+                  position={gesuch.position}
+                  standort={gesuch.standort || ""}
+                  artDerStelle={gesuch.artDerStelle}
+                  erstelltAm={gesuch.erstelltAm}
+                  kategorie={params.kategorie}
+                  linkPrefix="berufe"
+                  type="search"
+                />
               </div>
             ))}
           </div>

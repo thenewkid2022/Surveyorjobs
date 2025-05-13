@@ -2,24 +2,7 @@ import { FaMapMarkerAlt, FaBuilding, FaCalendarAlt, FaArrowLeft, FaUser, FaEnvel
 import { IconBaseProps } from "react-icons";
 import Link from "next/link";
 import { getApiUrl } from "@/utils/api";
-
-interface Job {
-  _id: string;
-  titel: string;
-  beschreibung: string;
-  standort: string;
-  kategorie: string;
-  erstelltAm: string;
-  expiresAt: string;
-  kontaktName: string;
-  kontaktEmail: string;
-  kontaktTelefon?: string;
-  status: string;
-  unternehmen?: string;
-  artDerStelle?: string;
-  erfahrung?: string;
-  lebenslauf?: string;
-}
+import { Job } from "@/types/job";
 
 async function getEntry(id: string) {
   try {

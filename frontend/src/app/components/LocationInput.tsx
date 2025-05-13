@@ -74,13 +74,13 @@ export default function LocationInput({
       />
       {showSuggestions && suggestions.length > 0 && (
         <ul 
-          className="list-group position-absolute w-100 mt-1 shadow-sm" 
-          style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}
+          className="list-group position-absolute w-100 mt-1 shadow-sm border-primary" 
+          style={{ zIndex: 1000 }}
         >
           {suggestions.map((suggestion) => (
             <li
               key={suggestion}
-              className="list-group-item list-group-item-action py-2"
+              className="list-group-item list-group-item-action py-2 hover-bg-light"
               onClick={() => handleSuggestionClick(suggestion)}
             >
               {suggestion}

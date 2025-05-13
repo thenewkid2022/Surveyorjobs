@@ -5,16 +5,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { kategorien } from "@shared/lib/berufe";
 import { getApiUrl } from "@/utils/api";
+import JobCard from "./components/JobCard";
+import { Job } from "@/types/job";
 
-interface SucheEinenJob {
+interface Stellengesuch {
   _id: string;
-  beruf: string;
-  unternehmen: string;
-  standort: string;
-  artDerStelle: string;
-  erfahrung: string;
-  berufId: string;
-  kategorie: string;
+  name?: string;
+  berufswunsch?: string;
+  position?: string;
+  standort?: string;
+  beschreibung?: string;
+  erstelltAm: string;
+  artDerStelle?: string;
+  erfahrung?: string;
+  kategorie?: string;
 }
 
 interface Stellenanzeige {
@@ -30,38 +34,45 @@ interface Stellenanzeige {
 }
 
 export default function Home() {
-  const [jobs, setJobs] = useState<SucheEinenJob[]>([]);
-  const [stellenanzeigen, setStellenanzeigen] = useState<Stellenanzeige[]>([]);
+  const [stellenanzeigen, setStellenanzeigen] = useState<Job[]>([]);
+  const [stellengesuche, setStellengesuche] = useState<Stellengesuch[]>([]);
   const [loading, setLoading] = useState(true);
-  const [jobsPage, setJobsPage] = useState(1);
-  const [hasMoreJobs, setHasMoreJobs] = useState(true);
-  const [loadingMoreJobs, setLoadingMoreJobs] = useState(false);
+  const [stellenanzeigenPage, setStellenanzeigenPage] = useState(1);
+  const [stellengesuchePage, setStellengesuchePage] = useState(1);
+  const [hasMoreStellenanzeigen, setHasMoreStellenanzeigen] = useState(true);
+  const [hasMoreStellengesuche, setHasMoreStellengesuche] = useState(true);
+  const [loadingMoreStellenanzeigen, setLoadingMoreStellenanzeigen] = useState(false);
+  const [loadingMoreStellengesuche, setLoadingMoreStellengesuche] = useState(false);
 
-  const fetchJobs = async (pageNum: number, append: boolean = false) => {
+  const fetchStellenanzeigen = async (pageNum: number, append: boolean = false) => {
     try {
-      const jobsRes = await fetch(`${getApiUrl()}/api/suche-einen-job?page=${pageNum}&limit=6`);
-      if (jobsRes.ok) {
-        const jobsData = await jobsRes.json();
-        const newJobs = jobsData.jobs || [];
-        setJobs(prevJobs => append ? [...prevJobs, ...newJobs] : newJobs);
-        setHasMoreJobs(pageNum < jobsData.pagination.pages);
-      }
-    } catch (error) {
-      console.error("Fehler beim Laden der Jobs:", error);
-    } finally {
-      setLoadingMoreJobs(false);
-    }
-  };
-
-  const fetchStellenanzeigen = async () => {
-    try {
-      const stellenanzeigenRes = await fetch(`${getApiUrl()}/api/stellenanzeigen-aufgeben?limit=6`);
+      const stellenanzeigenRes = await fetch(`${getApiUrl()}/api/stellenanzeigen-aufgeben?page=${pageNum}&limit=6`);
       if (stellenanzeigenRes.ok) {
         const stellenanzeigenData = await stellenanzeigenRes.json();
-        setStellenanzeigen(stellenanzeigenData.stellenanzeigen || []);
+        const newStellenanzeigen = stellenanzeigenData.stellenanzeigen || [];
+        setStellenanzeigen(prevJobs => append ? [...prevJobs, ...newStellenanzeigen] : newStellenanzeigen);
+        setHasMoreStellenanzeigen(pageNum < stellenanzeigenData.pagination.pages);
       }
     } catch (error) {
       console.error("Fehler beim Laden der Stellenanzeigen:", error);
+    } finally {
+      setLoadingMoreStellenanzeigen(false);
+    }
+  };
+
+  const fetchStellengesuche = async (pageNum: number, append: boolean = false) => {
+    try {
+      const stellengesucheRes = await fetch(`${getApiUrl()}/api/suche-einen-job?page=${pageNum}&limit=6`);
+      if (stellengesucheRes.ok) {
+        const stellengesucheData = await stellengesucheRes.json();
+        const newStellengesuche = stellengesucheData.jobs || [];
+        setStellengesuche(prevJobs => append ? [...prevJobs, ...newStellengesuche] : newStellengesuche);
+        setHasMoreStellengesuche(pageNum < stellengesucheData.pagination.pages);
+      }
+    } catch (error) {
+      console.error("Fehler beim Laden der Stellengesuche:", error);
+    } finally {
+      setLoadingMoreStellengesuche(false);
     }
   };
 
@@ -70,8 +81,8 @@ export default function Home() {
       setLoading(true);
       try {
         await Promise.all([
-          fetchJobs(1),
-          fetchStellenanzeigen()
+          fetchStellenanzeigen(1),
+          fetchStellengesuche(1)
         ]);
       } finally {
         setLoading(false);
@@ -80,11 +91,18 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const handleLoadMoreJobs = () => {
-    const nextPage = jobsPage + 1;
-    setJobsPage(nextPage);
-    setLoadingMoreJobs(true);
-    fetchJobs(nextPage, true);
+  const handleLoadMoreStellenanzeigen = () => {
+    const nextPage = stellenanzeigenPage + 1;
+    setStellenanzeigenPage(nextPage);
+    setLoadingMoreStellenanzeigen(true);
+    fetchStellenanzeigen(nextPage, true);
+  };
+
+  const handleLoadMoreStellengesuche = () => {
+    const nextPage = stellengesuchePage + 1;
+    setStellengesuchePage(nextPage);
+    setLoadingMoreStellengesuche(true);
+    fetchStellengesuche(nextPage, true);
   };
 
   if (loading) {
@@ -101,120 +119,100 @@ export default function Home() {
 
   return (
     <main className="bg-white min-vh-100 font-sans">
-      {/* Optimierter Header mit Bild und Overlay */}
+      {/* Header mit Bild und Overlay */}
       <header className="position-relative w-100 mb-4" style={{height: 340, overflow: 'hidden'}}>
         <Image
           src="/header-image.jpg"
           alt="Bauarbeiter bei der Arbeit"
           fill
-          style={{objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.7)'}}
+          className="object-fit-cover object-position-center brightness-70"
           priority
         />
         <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center" style={{zIndex: 2}}>
-          <h1 className="display-3 fw-bold text-white mb-3" style={{textShadow: '0 2px 8px rgba(0,0,0,0.4)'}}>Baujobs finden</h1>
-          <p className="lead text-white mb-4" style={{maxWidth: 600, textShadow: '0 2px 8px rgba(0,0,0,0.4)'}}>
+          <h1 className="display-3 fw-bold text-white mb-3 shadow-text">Baujobs finden</h1>
+          <p className="lead text-white mb-4 shadow-text" style={{maxWidth: 600}}>
             Das moderne Jobboard für die Baubranche. Finde gezielt deinen nächsten Job als Bauarbeiter, Polier, Bauingenieur oder in anderen Bauberufen – einfach, schnell und ohne Umwege.
           </p>
         </div>
       </header>
 
-      {/* Suche einen Job Section */}
-      <section className="container py-5" id="suche-einen-job">
-        <h2 className="h3 fw-bold text-primary mb-4 text-center">Suche einen Job</h2>
-        <div className="row mb-4">
-          <div className="col-12">
-            <div className="card shadow">
-              <div className="card-body">
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                  <h2 className="card-title mb-0">Aktuelle Gesuche</h2>
-                </div>
-                <div className="row g-4">
-                  {jobs.length === 0 ? (
-                    <div className="col-12 text-center text-muted">Keine Gesuche gefunden.</div>
-                  ) : (
-                    <>
-                      {jobs.map((job) => (
-                        <div key={job._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
-                          <div className="card h-100">
-                            <div className="card-body">
-                              <h5 className="card-title">{job.beruf}</h5>
-                              <h6 className="card-subtitle mb-2 text-muted">{job.unternehmen}</h6>
-                              <p className="card-text">
-                                <i className="bi bi-geo-alt"></i> {job.standort}<br />
-                                <i className="bi bi-briefcase"></i> {job.artDerStelle}<br />
-                                <i className="bi bi-clock-history"></i> {job.erfahrung}
-                              </p>
-                              <Link href={`/suche-einen-job/${job._id}`} className="btn btn-primary">
-                                Details anzeigen
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      {hasMoreJobs && (
-                        <div className="col-12 text-center mt-4">
-                          <button 
-                            className="btn btn-outline-primary"
-                            onClick={handleLoadMoreJobs}
-                            disabled={loadingMoreJobs}
-                          >
-                            {loadingMoreJobs ? (
-                              <>
-                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                Lade...
-                              </>
-                            ) : (
-                              'Mehr laden'
-                            )}
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
+      {/* Stellenanzeigen Section */}
+      <section className="container py-5">
+        <h2 className="h3 mb-4 text-primary">Aktuelle Stellenangebote</h2>
+        <div className="row g-4">
+          {stellenanzeigen.map((job: Job) => (
+            <div className="col-12 col-md-6 col-lg-4" key={job._id}>
+              <JobCard
+                id={job._id}
+                titel={job.titel}
+                standort={job.standort}
+                unternehmen={job.unternehmen}
+                artDerStelle={job.artDerStelle}
+                erstelltAm={job.erstelltAm}
+                kategorie={job.kategorie}
+                linkPrefix="berufe"
+                type="job"
+              />
             </div>
-          </div>
+          ))}
         </div>
+        {hasMoreStellenanzeigen && (
+          <div className="text-center mt-4">
+            <button 
+              className="btn btn-outline-primary"
+              onClick={handleLoadMoreStellenanzeigen}
+              disabled={loadingMoreStellenanzeigen}
+            >
+              {loadingMoreStellenanzeigen ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Lade...
+                </>
+              ) : (
+                'Mehr Stellenanzeigen laden'
+              )}
+            </button>
+          </div>
+        )}
       </section>
 
-      {/* Stellenanzeigen aufgeben Section */}
-      <section className="container py-5" id="stellenanzeigen-aufgeben">
-        <h2 className="h3 fw-bold text-success mb-4 text-center">Aktuelle Stelleninserate</h2>
-        <div className="row mb-4">
-          <div className="col-12">
-            <div className="card shadow">
-              <div className="card-body">
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                  <h2 className="card-title mb-0">Aktuelle Inserate</h2>
-                </div>
-                <div className="row g-4">
-                  {stellenanzeigen.length === 0 ? (
-                    <div className="col-12 text-center text-muted">Keine Stellenanzeigen gefunden.</div>
-                  ) : (
-                    stellenanzeigen.map((stellenanzeige) => (
-                      <div key={stellenanzeige._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
-                        <div className="card h-100">
-                          <div className="card-body">
-                            <h5 className="card-title">{stellenanzeige.titel}</h5>
-                            <p className="card-text">
-                              <i className="bi bi-geo-alt"></i> {stellenanzeige.standort}<br />
-                              <i className="bi bi-building"></i> {stellenanzeige.kategorie}<br />
-                              <i className="bi bi-calendar"></i> Eingestellt am: {new Date(stellenanzeige.erstelltAm).toLocaleDateString('de-DE')}
-                            </p>
-                            <Link href={`/stellenanzeigen-aufgeben/${stellenanzeige._id}`} className="btn btn-success">
-                              Details anzeigen
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
+      {/* Stellengesuche Section */}
+      <section className="container py-5">
+        <h2 className="h3 mb-4 text-primary">Aktuelle Stellengesuche</h2>
+        <div className="row g-4">
+          {stellengesuche.map((gesuch: Stellengesuch) => (
+            <div className="col-12 col-md-6 col-lg-4" key={gesuch._id}>
+              <JobCard
+                id={gesuch._id}
+                berufswunsch={gesuch.berufswunsch}
+                position={gesuch.position}
+                standort={gesuch.standort || ""}
+                artDerStelle={gesuch.artDerStelle}
+                erstelltAm={gesuch.erstelltAm}
+                linkPrefix="suche-einen-job"
+                type="search"
+              />
             </div>
-          </div>
+          ))}
         </div>
+        {hasMoreStellengesuche && (
+          <div className="text-center mt-4">
+            <button 
+              className="btn btn-outline-primary"
+              onClick={handleLoadMoreStellengesuche}
+              disabled={loadingMoreStellengesuche}
+            >
+              {loadingMoreStellengesuche ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Lade...
+                </>
+              ) : (
+                'Mehr Stellengesuche laden'
+              )}
+            </button>
+          </div>
+        )}
       </section>
     </main>
   );

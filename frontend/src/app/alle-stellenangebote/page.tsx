@@ -4,19 +4,8 @@ import { kategorien } from "@shared/lib/berufe";
 import Link from "next/link";
 import { getApiUrl } from "@/utils/api";
 import { FaMapMarkerAlt, FaBuilding } from "react-icons/fa";
-
-interface Job {
-  _id: string;
-  titel: string;
-  unternehmen: string;
-  standort: string;
-  artDerStelle: string;
-  erfahrung: string;
-  berufId: string;
-  kategorie: string;
-  erstelltAm: string;
-  beschreibung: string;
-}
+import JobCard from "@/app/components/JobCard";
+import { Job } from "@/types/job";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -143,20 +132,17 @@ export default function JobsPage() {
             <>
               {jobs.map((job) => (
                 <div key={job._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
-                  <div className="card h-100">
-                    <div className="card-body">
-                      <h5 className="card-title">{job.titel}</h5>
-                      <p className="card-text">
-                        <i className="bi bi-geo-alt"></i> {job.standort}<br />
-                        {job.unternehmen && <><i className="bi bi-building"></i> {job.unternehmen}<br /></>}
-                        {job.artDerStelle && <><i className="bi bi-briefcase"></i> {job.artDerStelle}<br /></>}
-                        <i className="bi bi-calendar"></i> Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString('de-DE')}
-                      </p>
-                      <Link href={`/berufe/${job.kategorie}/${job._id}`} className="btn btn-primary">
-                        Details anzeigen
-                      </Link>
-                    </div>
-                  </div>
+                  <JobCard
+                    id={job._id}
+                    titel={job.titel}
+                    standort={job.standort}
+                    unternehmen={job.unternehmen}
+                    artDerStelle={job.artDerStelle}
+                    erstelltAm={job.erstelltAm}
+                    kategorie={job.kategorie}
+                    linkPrefix="berufe"
+                    type="job"
+                  />
                 </div>
               ))}
               {hasMore && (

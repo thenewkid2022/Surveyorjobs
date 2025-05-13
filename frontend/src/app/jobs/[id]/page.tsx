@@ -1,18 +1,7 @@
 import { FaMapMarkerAlt, FaBuilding, FaCalendarAlt, FaArrowLeft, FaUser, FaEnvelope, FaPhone } from "react-icons/fa";
 import { IconBaseProps } from "react-icons";
 import Link from "next/link";
-
-interface Job {
-  _id: string;
-  titel: string;
-  standort: string;
-  beschreibung: string;
-  erstelltAm: string;
-  unternehmen?: string;
-  artDerStelle?: string;
-  kontaktEmail?: string;
-  kontaktTelefon?: string;
-}
+import { Job } from "@/types/job";
 
 async function getJob(id: string): Promise<Job> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/jobs/${id}`, { cache: "no-store" });
@@ -64,19 +53,19 @@ export default async function Page({
           {/* Unternehmen und Standort */}
           {job.unternehmen && (
             <div className="mb-3">
-              <FaBuilding {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
+              <FaBuilding className="me-2 text-primary" size={20} />
               <span className="text-primary"><strong>Unternehmen:</strong> {job.unternehmen}</span>
             </div>
           )}
           <div className="mb-3">
-            <FaMapMarkerAlt {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
+            <FaMapMarkerAlt className="me-2 text-primary" size={20} />
             <span className="text-primary"><strong>Standort:</strong> {job.standort}</span>
           </div>
 
           {/* Anstellungsart */}
           {job.artDerStelle && (
             <div className="mb-3">
-              <FaUser {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
+              <FaUser className="me-2 text-primary" size={20} />
               <span className="text-primary"><strong>Anstellungsart:</strong> {job.artDerStelle}</span>
             </div>
           )}
@@ -88,40 +77,47 @@ export default async function Page({
           </div>
 
           {/* Kontakt */}
-          {(job.kontaktEmail || job.kontaktTelefon) && (
-            <div className="card bg-light border-primary">
-              <div className="card-body">
-                <h2 className="h4 mb-3 text-primary">Kontakt</h2>
-                {job.kontaktEmail && (
-                  <div className="mb-2">
-                    <FaEnvelope {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-                    <span className="text-primary">
-                      <strong>E-Mail:</strong>{" "}
-                      <a href={`mailto:${job.kontaktEmail}`} className="text-primary">
-                        {job.kontaktEmail}
-                      </a>
-                    </span>
-                  </div>
-                )}
-                {job.kontaktTelefon && (
-                  <div className="mb-0">
-                    <FaPhone {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-                    <span className="text-primary">
-                      <strong>Telefon:</strong>{" "}
-                      <a href={`tel:${job.kontaktTelefon}`} className="text-primary">
-                        {job.kontaktTelefon}
-                      </a>
-                    </span>
-                  </div>
-                )}
-              </div>
+          <div className="card bg-light border-primary">
+            <div className="card-body">
+              <h2 className="h4 mb-3 text-primary">Kontakt</h2>
+              {job.kontaktName && (
+                <div className="mb-2">
+                  <FaUser className="me-2 text-primary" size={20} />
+                  <span className="text-primary"><strong>Ansprechpartner:</strong> {job.kontaktName}</span>
+                </div>
+              )}
+              {job.kontaktEmail && (
+                <div className="mb-2">
+                  <FaEnvelope className="me-2 text-primary" size={20} />
+                  <span className="text-primary">
+                    <strong>E-Mail:</strong>{" "}
+                    <a href={`mailto:${job.kontaktEmail}`} className="text-primary">
+                      {job.kontaktEmail}
+                    </a>
+                  </span>
+                </div>
+              )}
+              {job.kontaktTelefon && (
+                <div className="mb-0">
+                  <FaPhone className="me-2 text-primary" size={20} />
+                  <span className="text-primary">
+                    <strong>Telefon:</strong>{" "}
+                    <a href={`tel:${job.kontaktTelefon}`} className="text-primary">
+                      {job.kontaktTelefon}
+                    </a>
+                  </span>
+                </div>
+              )}
             </div>
-          )}
+          </div>
 
-          {/* Datum */}
+          {/* Status und Datum */}
           <div className="mt-3">
-            <small className="text-muted">
+            <small className="text-secondary">
               Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString("de-DE")}
+              {job.status !== 'aktiv' && (
+                <span className="ms-2 badge bg-secondary">{job.status}</span>
+              )}
             </small>
           </div>
         </div>

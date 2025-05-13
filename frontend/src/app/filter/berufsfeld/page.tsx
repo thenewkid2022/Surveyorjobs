@@ -34,22 +34,18 @@ export default function BerufsfeldFilterPage() {
           {Object.entries(kategorien).map(([key, titel]) => (
             <div className="col-12 col-md-4" key={key}>
               <button
-                className={`btn btn-outline-primary w-100 py-3 ${selectedKategorie === key ? 'active' : ''}`}
-                onClick={() => setSelectedKategorie(key)}
+                className="btn btn-outline-primary w-100 py-3"
+                onClick={() => {
+                  const urlKey = kategorieToUrlKey[titel];
+                  if (urlKey) {
+                    router.push(`/berufe/${urlKey}`);
+                  }
+                }}
               >
                 {titel}
               </button>
             </div>
           ))}
-        </div>
-        <div className="mt-4 text-center">
-          <button
-            className="btn btn-primary btn-lg"
-            onClick={handleApply}
-            disabled={!selectedKategorie}
-          >
-            Berufsfeld anwenden
-          </button>
         </div>
       </div>
     </main>

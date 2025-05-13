@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { theme } from "@/styles/theme";
 import { kantone } from "@shared/lib/kantone";
 
 export default function Navbar() {
@@ -22,14 +21,14 @@ export default function Navbar() {
         </button>
         <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`}>          
           <div className="d-flex gap-2 ms-auto">
-            <Link href="/filter/berufsfeld" className="btn btn-outline-primary fw-bold">
+            <Link href="/filter/berufsfeld" className="btn btn-outline-primary">
               Berufsfeld wählen
             </Link>
-            <Link href="/filter/kanton" className="btn btn-outline-success fw-bold">
+            <Link href="/filter/kanton" className="btn btn-outline-primary">
               Kanton wählen
             </Link>
-            <Link href="/suche-einen-job" className="btn btn-warning fw-bold">Suche einen Job</Link>
-            <Link href="/stellenanzeigen-aufgeben" className="btn btn-warning fw-bold">Stellenanzeigen aufgeben</Link>
+            <Link href="/suche-einen-job" className="btn btn-primary">Suche einen Job</Link>
+            <Link href="/stellenanzeigen-aufgeben" className="btn btn-primary">Stellenanzeigen aufgeben</Link>
           </div>
         </div>
       </div>

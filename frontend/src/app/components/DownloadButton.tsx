@@ -41,10 +41,10 @@ export default function DownloadButton({ fileUrl, variant = 'download' }: Downlo
 
   return (
     <button
-      className="btn btn-outline-success"
+      className={`btn ${variant === 'view' ? 'btn-outline-primary' : 'btn-primary'}`}
       onClick={handleDownload}
     >
-      <FaFilePdf {...{ size: 20, style: { marginRight: '0.5rem' } } as IconBaseProps} />
+      <FaFilePdf className="me-2" size={20} />
       {buttonText}
     </button>
   );

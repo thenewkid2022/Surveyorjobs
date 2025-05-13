@@ -1,19 +1,21 @@
 export const theme = {
   colors: {
-    primary: '#2563eb', // Hauptfarbe (Blau)
-    secondary: '#64748b', // Sekundärfarbe (Grau)
-    success: '#22c55e', // Erfolgsfarbe (Grün)
-    warning: '#f59e0b', // Warnfarbe (Orange)
-    danger: '#ef4444', // Gefahrenfarbe (Rot)
+    primary: 'var(--bs-primary)', // Hauptfarbe (Blau)
+    primaryHover: 'var(--bs-primary-hover)',
+    secondary: 'var(--bs-secondary)', // Sekundärfarbe (Grau)
+    success: 'var(--bs-success)', // Erfolgsfarbe (Grün)
+    successHover: 'var(--bs-success-hover)',
+    warning: 'var(--bs-warning)', // Warnfarbe (Orange)
+    danger: 'var(--bs-danger)', // Gefahrenfarbe (Rot)
     background: {
-      light: '#ffffff',
-      dark: '#0a0a0a',
+      light: 'var(--background)',
+      dark: 'var(--background)',
     },
     text: {
-      light: '#171717',
-      dark: '#ededed',
+      light: 'var(--foreground)',
+      dark: 'var(--foreground)',
     },
-    border: '#e2e8f0',
+    border: 'var(--bs-border)',
   },
   spacing: {
     xs: '0.25rem',
