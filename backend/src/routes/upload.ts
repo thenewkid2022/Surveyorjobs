@@ -62,4 +62,38 @@ router.get("/download-url", async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/upload/download?key=uploads/filename.pdf
+router.get("/download", async (req: Request, res: Response) => {
+  try {
+    const { key } = req.query;
+    if (!key || typeof key !== "string") {
+      return res.status(400).json({ error: "Key ist erforderlich" });
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET!,
+      Key: key,
+    });
+
+    // Hole das Objekt von S3
+    const response = await s3.send(command);
+    
+    if (!response.Body) {
+      throw new Error("Keine Datei gefunden");
+    }
+
+    // Setze die Header für den Download
+    res.setHeader('Content-Type', response.ContentType || 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(key.split('/').pop() || 'download.pdf')}"`);
+    res.setHeader('Content-Length', response.ContentLength?.toString() || '0');
+
+    // Stream die Datei direkt an den Client
+    const stream = response.Body as any;
+    stream.pipe(res);
+  } catch (error) {
+    console.error("Fehler beim Download:", error);
+    return res.status(500).json({ error: "Fehler beim Download der Datei" });
+  }
+});
+
 export default router; 

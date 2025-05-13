@@ -30,61 +30,45 @@ export default function DownloadButton({ fileUrl, variant = 'download' }: Downlo
       console.log('Ist Safari:', isSafari);
       
       // Hole die pre-signed URL vom Backend
-      console.log('Fordere pre-signed URL an...');
-      const response = await fetch(`${getApiUrl()}/api/upload/download-url?key=${encodeURIComponent(fullKey)}`);
-      
-      if (!response.ok) {
-        throw new Error(`Fehler beim Abrufen der Download-URL: ${response.statusText}`);
-      }
-      
-      const { url } = await response.json();
-      console.log('Pre-signed URL erhalten:', url);
+      console.log('Fordere Download-URL an...');
+      const downloadUrl = `${getApiUrl()}/api/upload/download?key=${encodeURIComponent(fullKey)}`;
       
       if (isSafari) {
         // Safari-spezifische Download-Methode
         console.log('Verwende Safari-spezifische Download-Methode');
         
-        // Versuche zuerst, die URL direkt zu öffnen
-        console.log('Versuche direkten Download...');
-        const downloadWindow = window.open(url, '_blank');
+        // Erstelle einen temporären Link
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener,noreferrer');
         
-        // Wenn das Fenster blockiert wurde oder nicht geöffnet werden konnte
-        if (!downloadWindow || downloadWindow.closed || typeof downloadWindow.closed === 'undefined') {
-          console.log('Direkter Download blockiert, versuche alternative Methode...');
-          
-          // Alternative Methode: Erstelle einen temporären Link
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('target', '_blank');
-          link.setAttribute('rel', 'noopener,noreferrer');
-          
-          // Füge einen unsichtbaren Container hinzu
-          const container = document.createElement('div');
-          container.style.position = 'fixed';
-          container.style.top = '0';
-          container.style.left = '0';
-          container.style.width = '100%';
-          container.style.height = '100%';
-          container.style.zIndex = '-1';
-          container.style.opacity = '0';
-          
-          // Füge den Link zum Container hinzu und den Container zum Body
-          container.appendChild(link);
-          document.body.appendChild(container);
-          
-          // Versuche den Download zu starten
-          console.log('Starte Download mit alternativer Methode...');
-          link.click();
-          
-          // Entferne den Container nach kurzer Verzögerung
-          setTimeout(() => {
-            document.body.removeChild(container);
-          }, 1000);
-        }
+        // Füge einen unsichtbaren Container hinzu
+        const container = document.createElement('div');
+        container.style.position = 'fixed';
+        container.style.top = '0';
+        container.style.left = '0';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.zIndex = '-1';
+        container.style.opacity = '0';
+        
+        // Füge den Link zum Container hinzu und den Container zum Body
+        container.appendChild(link);
+        document.body.appendChild(container);
+        
+        // Versuche den Download zu starten
+        console.log('Starte Download mit Backend-Proxy...');
+        link.click();
+        
+        // Entferne den Container nach kurzer Verzögerung
+        setTimeout(() => {
+          document.body.removeChild(container);
+        }, 1000);
       } else {
         // Standard-Methode für andere Browser
         console.log('Verwende Standard-Download-Methode');
-        window.open(url, '_blank', 'noopener,noreferrer');
+        window.open(downloadUrl, '_blank', 'noopener,noreferrer');
       }
       
       console.log('Download-Prozess abgeschlossen');
