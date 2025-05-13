@@ -20,15 +20,15 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`}>          
-          <div className="d-flex gap-2 ms-auto">
-            <Link href="/filter/berufsfeld" className="btn btn-outline-primary">
+          <div className="d-flex flex-column flex-lg-row gap-2 ms-auto mt-3 mt-lg-0">
+            <Link href="/filter/berufsfeld" className="btn btn-outline-primary w-100 w-lg-auto">
               Berufsfeld wählen
             </Link>
-            <Link href="/filter/kanton" className="btn btn-outline-primary">
+            <Link href="/filter/kanton" className="btn btn-outline-primary w-100 w-lg-auto">
               Kanton wählen
             </Link>
-            <Link href="/suche-einen-job" className="btn btn-primary">Suche einen Job</Link>
-            <Link href="/stellenanzeigen-aufgeben" className="btn btn-primary">Stellenanzeigen aufgeben</Link>
+            <Link href="/suche-einen-job" className="btn btn-primary w-100 w-lg-auto">Suche einen Job</Link>
+            <Link href="/stellenanzeigen-aufgeben" className="btn btn-primary w-100 w-lg-auto">Stellenanzeigen aufgeben</Link>
           </div>
         </div>
       </div>

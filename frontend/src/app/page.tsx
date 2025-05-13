@@ -123,7 +123,7 @@ export default function Home() {
   return (
     <main className="bg-white min-vh-100 font-sans">
       {/* Header mit Bild und Overlay */}
-      <header className="position-relative w-100 mb-4" style={{height: 340, overflow: 'hidden'}}>
+      <header className="position-relative w-100 mb-4 header-height" style={{overflow: 'hidden'}}>
         <Image
           src="/header-image.jpg"
           alt="Bauarbeiter bei der Arbeit"
@@ -131,9 +131,9 @@ export default function Home() {
           className="object-fit-cover object-position-center brightness-70"
           priority
         />
-        <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center" style={{zIndex: 2}}>
-          <h1 className="display-3 fw-bold text-white mb-3 shadow-text">Baujobs finden</h1>
-          <p className="lead text-white mb-4 shadow-text" style={{maxWidth: 600}}>
+        <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center px-3" style={{zIndex: 2}}>
+          <h1 className="display-4 display-lg-3 fw-bold text-white mb-2 mb-lg-3 shadow-text">Baujobs finden</h1>
+          <p className="lead fs-5 fs-lg-4 text-white mb-3 mb-lg-4 shadow-text" style={{maxWidth: 'min(600px, 90%)'}}>
             Das moderne Jobboard für die Baubranche. Finde gezielt deinen nächsten Job als Bauarbeiter, Polier, Bauingenieur oder in anderen Bauberufen – einfach, schnell und ohne Umwege.
           </p>
         </div>

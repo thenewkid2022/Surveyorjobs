@@ -170,3 +170,20 @@ body {
   background-color: var(--bs-border) !important;
   transition: background-color 0.2s ease-in-out;
 }
+
+/* Header Responsive Heights */
+.header-height {
+  height: 280px;
+}
+
+@media (min-width: 576px) {
+  .header-height {
+    height: 320px;
+  }
+}
+
+@media (min-width: 768px) {
+  .header-height {
+    height: 340px;
+  }
+}
