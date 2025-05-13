@@ -8,7 +8,7 @@ export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <nav className="navbar navbar-expand-lg sticky-top shadow-sm dark-mode-navbar">
       <div className="container">
         <Link href="/" className="navbar-brand fw-bold text-primary">BauJobs</Link>
         <button
@@ -21,10 +21,10 @@ export default function Navbar() {
         </button>
         <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`}>          
           <div className="d-flex flex-column flex-lg-row gap-2 ms-auto mt-3 mt-lg-0">
-            <Link href="/filter/berufsfeld" className="btn btn-outline-primary w-100 w-lg-auto">
+            <Link href="/filter/berufsfeld" className="btn btn-outline-primary w-100 w-lg-auto dark-mode-btn">
               Berufsfeld wählen
             </Link>
-            <Link href="/filter/kanton" className="btn btn-outline-primary w-100 w-lg-auto">
+            <Link href="/filter/kanton" className="btn btn-outline-primary w-100 w-lg-auto dark-mode-btn">
               Kanton wählen
             </Link>
             <Link href="/suche-einen-job" className="btn btn-warning w-100 w-lg-auto">Suche einen Job</Link>

@@ -46,6 +46,24 @@
     background: var(--background);
     color: var(--foreground);
   }
+  .dark-mode-navbar {
+    background-color: #23272b !important;
+    border-bottom: 1px solid var(--bs-border) !important;
+  }
+  .dark-mode-navbar .navbar-toggler {
+    border-color: var(--bs-border) !important;
+  }
+  .dark-mode-navbar .navbar-toggler-icon {
+    filter: invert(1) !important;
+  }
+  .dark-mode-btn {
+    border-color: var(--bs-primary) !important;
+    color: var(--bs-primary) !important;
+  }
+  .dark-mode-btn:hover {
+    background-color: var(--bs-primary) !important;
+    color: white !important;
+  }
   .card, .bg-white {
     background-color: #23272b !important;
     color: var(--foreground) !important;
