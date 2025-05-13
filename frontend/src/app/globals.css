@@ -53,8 +53,23 @@
   .dark-mode-navbar .navbar-toggler {
     border-color: var(--bs-border) !important;
   }
-  .dark-mode-navbar .navbar-toggler-icon {
-    filter: invert(1) !important;
+  .dark-mode-navbar .navbar-toggler .navbar-toggler-icon {
+    background-image: none !important;
+    width: 2rem;
+    height: 2rem;
+    display: inline-block;
+    position: relative;
+  }
+  .dark-mode-navbar .navbar-toggler .navbar-toggler-icon::before,
+  .dark-mode-navbar .navbar-toggler .navbar-toggler-icon::after,
+  .dark-mode-navbar .navbar-toggler .navbar-toggler-icon div {
+    content: '';
+    display: block;
+    height: 3px;
+    width: 100%;
+    background: #fff;
+    margin: 5px 0;
+    border-radius: 2px;
   }
   .dark-mode-btn {
     border-color: var(--bs-primary) !important;
