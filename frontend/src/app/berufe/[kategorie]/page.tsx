@@ -165,8 +165,7 @@ export default function BerufskategoriePage({
               <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={gesuch._id}>
                 <JobCard
                   id={gesuch._id}
-                  berufswunsch={gesuch.berufswunsch}
-                  position={gesuch.position}
+                  beruf={gesuch.beruf}
                   standort={gesuch.standort || ""}
                   artDerStelle={gesuch.artDerStelle}
                   erstelltAm={gesuch.erstelltAm}

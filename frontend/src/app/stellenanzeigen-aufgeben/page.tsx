@@ -69,6 +69,7 @@ interface StellenanzeigeFormData {
   kontaktEmail: string;
   kontaktTelefon?: string;
   kanton?: string;
+  artDerStelle: string;
 }
 
 function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: { setShowForm: (show: boolean) => void, clientSecret: string, selectedPackage: PricingPackage }) {
@@ -83,7 +84,8 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
     standort: "",
     kontaktName: "",
     kontaktEmail: "",
-    kontaktTelefon: ""
+    kontaktTelefon: "",
+    artDerStelle: "Vollzeit"
   });
   const [titelSuggestions, setTitelSuggestions] = useState<string[]>([]);
   const [showTitelSuggestions, setShowTitelSuggestions] = useState(false);
@@ -257,6 +259,22 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
           value={formData.kontaktTelefon}
           onChange={handleChange}
         />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="artDerStelle" className="form-label">Anstellungsart *</label>
+        <select 
+          className="form-select" 
+          id="artDerStelle" 
+          name="artDerStelle" 
+          value={formData.artDerStelle} 
+          onChange={handleChange} 
+          required
+        >
+          <option value="Vollzeit">Vollzeit</option>
+          <option value="Teilzeit">Teilzeit</option>
+          <option value="Befristet">Befristet</option>
+          <option value="Projektarbeit">Projektarbeit</option>
+        </select>
       </div>
       <div className="mb-3">
         <PaymentElement />

@@ -16,7 +16,7 @@ interface StellenanzeigeData {
   faehigkeiten?: string[];
   sprachen?: string[];
   mobilitaet?: string;
-  artDerStelle?: string;
+  artDerStelle: string;
   verfuegbarAb?: string;
   kontaktEmail?: string;
   kontaktTelefon?: string;

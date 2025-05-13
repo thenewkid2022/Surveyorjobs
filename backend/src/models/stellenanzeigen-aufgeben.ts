@@ -9,6 +9,11 @@ const StellenanzeigenAufgebenSchema = new mongoose.Schema({
     required: true,
     enum: ['Hochbau', 'Tiefbau', 'Ausbau', 'Planung & Technik', 'Weitere Berufe']
   },
+  artDerStelle: {
+    type: String,
+    required: true,
+    enum: ['Vollzeit', 'Teilzeit', 'Befristet', 'Projektarbeit']
+  },
   erstelltAm: { type: Date, required: true },
   expiresAt: { type: Date, required: true },
   kontaktName: { type: String, required: true },

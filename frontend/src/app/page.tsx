@@ -11,12 +11,12 @@ import { Job } from "@/types/job";
 interface Stellengesuch {
   _id: string;
   name?: string;
-  berufswunsch?: string;
+  beruf: string;
   position?: string;
   standort?: string;
   beschreibung?: string;
   erstelltAm: string;
-  artDerStelle?: string;
+  artDerStelle: string;
   erfahrung?: string;
   kategorie?: string;
 }
@@ -31,6 +31,8 @@ interface Stellenanzeige {
   kontaktName: string;
   kontaktEmail: string;
   kontaktTelefon?: string;
+  artDerStelle: string;
+  status: string;
 }
 
 export default function Home() {
@@ -49,6 +51,7 @@ export default function Home() {
       const stellenanzeigenRes = await fetch(`${getApiUrl()}/api/stellenanzeigen-aufgeben?page=${pageNum}&limit=6`);
       if (stellenanzeigenRes.ok) {
         const stellenanzeigenData = await stellenanzeigenRes.json();
+        console.log('Stellenanzeigen von API:', stellenanzeigenData.stellenanzeigen);
         const newStellenanzeigen = stellenanzeigenData.stellenanzeigen || [];
         setStellenanzeigen(prevJobs => append ? [...prevJobs, ...newStellenanzeigen] : newStellenanzeigen);
         setHasMoreStellenanzeigen(pageNum < stellenanzeigenData.pagination.pages);
@@ -140,21 +143,28 @@ export default function Home() {
       <section className="container py-5">
         <h2 className="h3 mb-4 text-primary">Aktuelle Stellenangebote</h2>
         <div className="row g-4">
-          {stellenanzeigen.map((job: Job) => (
-            <div className="col-12 col-md-6 col-lg-4" key={job._id}>
-              <JobCard
-                id={job._id}
-                titel={job.titel}
-                standort={job.standort}
-                unternehmen={job.unternehmen}
-                artDerStelle={job.artDerStelle}
-                erstelltAm={job.erstelltAm}
-                kategorie={job.kategorie}
-                linkPrefix="berufe"
-                type="job"
-              />
-            </div>
-          ))}
+          {stellenanzeigen.map((job: Job) => {
+            console.log('Übergebe an JobCard:', {
+              id: job._id,
+              erstelltAm: job.erstelltAm,
+              titel: job.titel
+            });
+            return (
+              <div className="col-12 col-md-6 col-lg-4" key={job._id}>
+                <JobCard
+                  id={job._id}
+                  titel={job.titel}
+                  standort={job.standort}
+                  unternehmen={job.unternehmen}
+                  artDerStelle={job.artDerStelle}
+                  erstelltAm={job.erstelltAm}
+                  kategorie={job.kategorie}
+                  linkPrefix="berufe"
+                  type="job"
+                />
+              </div>
+            );
+          })}
         </div>
         {hasMoreStellenanzeigen && (
           <div className="text-center mt-4">
@@ -184,8 +194,7 @@ export default function Home() {
             <div className="col-12 col-md-6 col-lg-4" key={gesuch._id}>
               <JobCard
                 id={gesuch._id}
-                berufswunsch={gesuch.berufswunsch}
-                position={gesuch.position}
+                beruf={gesuch.beruf}
                 standort={gesuch.standort || ""}
                 artDerStelle={gesuch.artDerStelle}
                 erstelltAm={gesuch.erstelltAm}

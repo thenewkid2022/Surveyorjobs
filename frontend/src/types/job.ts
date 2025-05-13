@@ -10,15 +10,15 @@ export interface Job {
   standort: string;
   erstelltAm: string;
   kategorie: string;
+  artDerStelle: string;
+  status: string;
   
   // Optionale Felder
   unternehmen?: string;
-  artDerStelle?: string;
   erfahrung?: string;
   kontaktName?: string;
   kontaktEmail?: string;
   kontaktTelefon?: string;
-  status?: string;
   expiresAt?: string;
   lebenslauf?: string;
   berufId?: string;
