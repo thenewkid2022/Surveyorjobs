@@ -3,11 +3,12 @@
     "target": "es2017",
     "module": "commonjs",
     "declaration": true,
-    "outDir": "./dist",
+    "outDir": "../backend/dist/shared",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true
   },
   "include": ["lib/**/*"],
   "exclude": ["node_modules", "dist"]

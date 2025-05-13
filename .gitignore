@@ -37,4 +37,8 @@ yarn-error.log*
 *.swo
 
 # Vercel
-.vercel 
+.vercel
+
+# TypeScript compiled files in shared
+shared/lib/*.js
+shared/lib/*.js.map 
