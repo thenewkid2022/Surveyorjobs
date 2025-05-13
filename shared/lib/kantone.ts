@@ -2,7 +2,7 @@
 // Zuletzt generiert: 2025-05-09T04:09:46.451Z
 
 export const ortschaftZuKanton: Record<string, Kanton> = {
-  "Aadorf": "AG",
+  "Aadorf": "TG",
   "Aarau": "AG",
   "Aarau Rohr": "AG",
   "Aarberg": "BE",

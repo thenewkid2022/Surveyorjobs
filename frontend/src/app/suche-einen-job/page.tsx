@@ -77,6 +77,36 @@ interface JobSucheFormData {
   titel: string;
 }
 
+function PackageCard({ pkg, onSelect }: { pkg: PricingPackage, onSelect: (pkg: PricingPackage) => void }) {
+  return (
+    <div className="col-md-4">
+      <div className="card h-100 shadow-sm border-0 bg-dark text-white">
+        <div className="card-body p-4">
+          <h3 className="card-title h4 mb-3 text-white">{pkg.name}</h3>
+          <div className="mb-4">
+            <span className="display-4 fw-bold text-white">CHF {pkg.price}</span>
+            <span className="text-white-50">/ {pkg.duration} Tage</span>
+          </div>
+          <ul className="list-unstyled mb-4">
+            {pkg.features.map((feature, index) => (
+              <li key={index} className="mb-2 text-white-50">
+                <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                {feature}
+              </li>
+            ))}
+          </ul>
+          <button
+            onClick={() => onSelect(pkg)}
+            className="btn btn-primary w-100"
+          >
+            Jetzt auswählen
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function JobSucheFormular({ setShowForm, clientSecret }: { setShowForm: (show: boolean) => void, clientSecret: string }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -220,168 +250,225 @@ function JobSucheFormular({ setShowForm, clientSecret }: { setShowForm: (show: b
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4">
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
       {error && (
-        <div className="alert alert-danger" role="alert">
-          {error}
+        <div className="alert alert-danger d-flex align-items-center bg-danger-subtle border-danger-subtle text-white" role="alert">
+          <i className="bi bi-exclamation-triangle-fill me-2"></i>
+          <div>{error}</div>
         </div>
       )}
 
-      <div className="mb-3">
-        <label htmlFor="beruf" className="form-label">Berufsbezeichnung *</label>
-        <select
-          className="form-select"
-          id="beruf"
-          name="beruf"
-          value={formData.beruf}
-          onChange={handleChange}
-          required
+      <div className="card shadow-sm border-0 mb-4 bg-dark">
+        <div className="card-body p-4">
+          <h4 className="card-title mb-4 text-white">Berufliche Details</h4>
+          
+          <div className="mb-4">
+            <label htmlFor="beruf" className="form-label fw-medium text-white">Berufsbezeichnung *</label>
+            <select
+              className="form-select bg-dark text-white border-secondary"
+              id="beruf"
+              name="beruf"
+              value={formData.beruf}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Bitte wählen</option>
+              {[...berufe].sort((a, b) => a.titel.localeCompare(b.titel)).map((beruf) => (
+                <option key={beruf.id} value={beruf.titel}>{beruf.titel}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="standort" className="form-label fw-medium text-body-emphasis">Gewünschter Arbeitsort *</label>
+            <LocationInput
+              value={formData.standort}
+              onChange={(value) => setFormData(prev => ({ ...prev, standort: value }))}
+              required
+            />
+            <div className="form-text text-body-secondary">
+              Bitte geben Sie einen Schweizer Ort ein. Der Kanton wird automatisch zugewiesen.
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="erfahrung" className="form-label fw-medium text-white">Berufserfahrung *</label>
+            <select 
+              className="form-select bg-dark text-white border-secondary" 
+              id="erfahrung" 
+              name="erfahrung" 
+              value={formData.erfahrung} 
+              onChange={handleChange} 
+              required
+            >
+              <option value="">Bitte wählen</option>
+              <option value="Berufseinsteiger">Berufseinsteiger</option>
+              <option value="1-3 Jahre">1-3 Jahre</option>
+              <option value="3-5 Jahre">3-5 Jahre</option>
+              <option value="5+ Jahre">5+ Jahre</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="ausbildung" className="form-label fw-medium text-white">Ausbildung/Abschlüsse *</label>
+            <textarea 
+              className="form-control bg-dark text-white border-secondary" 
+              id="ausbildung" 
+              name="ausbildung" 
+              rows={3} 
+              value={formData.ausbildung} 
+              onChange={handleChange} 
+              required 
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="beschreibung" className="form-label fw-medium text-white">Kurze Beschreibung Ihrer Qualifikationen *</label>
+            <textarea 
+              className="form-control bg-dark text-white border-secondary" 
+              id="beschreibung" 
+              name="beschreibung" 
+              rows={5} 
+              value={formData.beschreibung} 
+              onChange={handleChange} 
+              required 
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="mobilitaet" className="form-label fw-medium text-white">Mobilität *</label>
+            <select 
+              className="form-select bg-dark text-white border-secondary" 
+              id="mobilitaet" 
+              name="mobilitaet" 
+              value={formData.mobilitaet} 
+              onChange={handleChange} 
+              required
+            >
+              <option value="In der Region">In der Region</option>
+              <option value="Schweizweit">Schweizweit</option>
+              <option value="International">International</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="artDerStelle" className="form-label fw-medium text-white">Gewünschte Anstellungsart *</label>
+            <select 
+              className="form-select bg-dark text-white border-secondary" 
+              id="artDerStelle" 
+              name="artDerStelle" 
+              value={formData.artDerStelle} 
+              onChange={handleChange} 
+              required
+            >
+              <option value="Vollzeit">Vollzeit</option>
+              <option value="Teilzeit">Teilzeit</option>
+              <option value="Befristet">Befristet</option>
+              <option value="Projektarbeit">Projektarbeit</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="card shadow-sm border-0 mb-4 bg-dark">
+        <div className="card-body p-4">
+          <h4 className="card-title mb-4 text-white">Kontaktdaten</h4>
+          
+          <div className="mb-4">
+            <label htmlFor="kontaktEmail" className="form-label fw-medium text-white">E-Mail *</label>
+            <input
+              type="email"
+              className="form-control bg-dark text-white border-secondary"
+              id="kontaktEmail"
+              name="kontaktEmail"
+              value={formData.kontaktEmail}
+              onChange={handleChange}
+              required
+              placeholder="max.mustermann@beispiel.ch"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="kontaktTelefon" className="form-label fw-medium text-white">Telefon (optional)</label>
+            <input
+              type="tel"
+              className="form-control bg-dark text-white border-secondary"
+              id="kontaktTelefon"
+              name="kontaktTelefon"
+              value={formData.kontaktTelefon}
+              onChange={handleChange}
+              placeholder="+41 79 123 45 67"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="card shadow-sm border-0 mb-4 bg-dark">
+        <div className="card-body p-4">
+          <h4 className="card-title mb-4 text-white">Dokumente</h4>
+          
+          <div className="mb-4">
+            <label htmlFor="lebenslauf" className="form-label fw-medium text-white">Lebenslauf (PDF) *</label>
+            <input
+              type="file"
+              className="form-control bg-dark text-white border-secondary"
+              id="lebenslauf"
+              name="lebenslauf"
+              onChange={handleFileChange}
+              accept=".pdf"
+              required
+            />
+            <div className="form-text text-white-50">
+              Bitte laden Sie Ihren Lebenslauf als PDF-Datei hoch (max. 5MB)
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="anschreiben" className="form-label fw-medium text-white">Anschreiben (optional)</label>
+            <textarea
+              className="form-control bg-dark text-white border-secondary"
+              id="anschreiben"
+              name="anschreiben"
+              rows={4}
+              value={formData.anschreiben}
+              onChange={handleChange}
+              placeholder="Optional: Fügen Sie hier Ihr Anschreiben ein..."
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="card shadow-sm border-0 mb-4 bg-dark">
+        <div className="card-body p-4">
+          <h4 className="card-title mb-4 text-white">Zahlungsinformationen</h4>
+          <div className="payment-element-wrapper">
+            <PaymentElement />
+          </div>
+        </div>
+      </div>
+
+      <div className="d-flex justify-content-between align-items-center mt-4">
+        <button 
+          type="button" 
+          className="btn btn-outline-light px-4"
+          onClick={() => setShowForm(false)}
         >
-          <option value="">Bitte wählen</option>
-          {[...berufe].sort((a, b) => a.titel.localeCompare(b.titel)).map((beruf) => (
-            <option key={beruf.id} value={beruf.titel}>{beruf.titel}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="standort" className="form-label">Gewünschter Arbeitsort *</label>
-        <LocationInput
-          value={formData.standort}
-          onChange={(value) => setFormData(prev => ({ ...prev, standort: value }))}
-          required
-        />
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="erfahrung" className="form-label">Berufserfahrung *</label>
-        <select className="form-select" id="erfahrung" name="erfahrung" value={formData.erfahrung} onChange={handleChange} required>
-          <option value="">Bitte wählen</option>
-          <option value="Berufseinsteiger">Berufseinsteiger</option>
-          <option value="1-3 Jahre">1-3 Jahre</option>
-          <option value="3-5 Jahre">3-5 Jahre</option>
-          <option value="5+ Jahre">5+ Jahre</option>
-        </select>
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="ausbildung" className="form-label">Ausbildung/Abschlüsse *</label>
-        <textarea 
-          className="form-control" 
-          id="ausbildung" 
-          name="ausbildung" 
-          rows={3} 
-          value={formData.ausbildung} 
-          onChange={handleChange} 
-          required 
-        />
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="beschreibung" className="form-label">Kurze Beschreibung Ihrer Qualifikationen *</label>
-        <textarea 
-          className="form-control" 
-          id="beschreibung" 
-          name="beschreibung" 
-          rows={5} 
-          value={formData.beschreibung} 
-          onChange={handleChange} 
-          required 
-        />
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="mobilitaet" className="form-label">Mobilität *</label>
-        <select className="form-select" id="mobilitaet" name="mobilitaet" value={formData.mobilitaet} onChange={handleChange} required>
-          <option value="In der Region">In der Region</option>
-          <option value="Schweizweit">Schweizweit</option>
-          <option value="International">International</option>
-        </select>
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="artDerStelle" className="form-label">Gewünschte Anstellungsart *</label>
-        <select className="form-select" id="artDerStelle" name="artDerStelle" value={formData.artDerStelle} onChange={handleChange} required>
-          <option value="Vollzeit">Vollzeit</option>
-          <option value="Teilzeit">Teilzeit</option>
-          <option value="Befristet">Befristet</option>
-          <option value="Projektarbeit">Projektarbeit</option>
-        </select>
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="verfuegbarAb" className="form-label">Verfügbarkeit ab *</label>
-        <input 
-          type="date" 
-          className="form-control" 
-          id="verfuegbarAb" 
-          name="verfuegbarAb" 
-          value={formData.verfuegbarAb} 
-          onChange={handleChange} 
-          required 
-        />
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="lebenslauf" className="form-label">Lebenslauf (PDF) *</label>
-        <input 
-          type="file" 
-          className="form-control" 
-          id="lebenslauf" 
-          name="lebenslauf" 
-          accept=".pdf"
-          onChange={handleFileChange} 
-          required 
-        />
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="anschreiben" className="form-label">Anschreiben (optional)</label>
-        <textarea 
-          className="form-control" 
-          id="anschreiben" 
-          name="anschreiben" 
-          rows={5} 
-          value={formData.anschreiben} 
-          onChange={handleChange} 
-        />
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="kontaktEmail" className="form-label">Kontakt E-Mail *</label>
-        <input 
-          type="email" 
-          className="form-control" 
-          id="kontaktEmail" 
-          name="kontaktEmail" 
-          value={formData.kontaktEmail} 
-          onChange={handleChange} 
-          required 
-        />
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="kontaktTelefon" className="form-label">Kontakt Telefon</label>
-        <input 
-          type="tel" 
-          className="form-control" 
-          id="kontaktTelefon" 
-          name="kontaktTelefon" 
-          value={formData.kontaktTelefon} 
-          onChange={handleChange} 
-        />
-      </div>
-
-      <div className="mb-3">
-        <PaymentElement />
-      </div>
-
-      <div className="d-flex justify-content-between">
-        <button type="button" className="btn btn-outline-secondary" onClick={() => setShowForm(false)}>
+          <i className="bi bi-arrow-left me-2"></i>
           Zurück zur Auswahl
         </button>
-        <button type="submit" className="btn btn-success" disabled={isLoading}>
-          {isLoading ? 'Wird verarbeitet...' : 'Jobsuche veröffentlichen'}
+        <button 
+          type="submit" 
+          className="btn btn-primary px-5"
+          disabled={!stripe || isLoading}
+        >
+          {isLoading ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Wird verarbeitet...
+            </>
+          ) : (
+            'Jobsuche veröffentlichen'
+          )}
         </button>
       </div>
     </form>
@@ -425,73 +512,51 @@ export default function SucheEinenJob() {
   return (
     <main className="container py-5">
       <div className="text-center mb-5">
-        <h1 className="display-4 mb-3">Jobsuche veröffentlichen</h1>
-        <p className="lead text-secondary">
+        <h1 className="display-4 fw-bold mb-3 text-white">Jobsuche veröffentlichen</h1>
+        <p className="lead text-white-50">
           Wählen Sie ein Paket und veröffentlichen Sie Ihre Jobsuche
         </p>
       </div>
 
-      <div className="container">
+      <div className="container px-4">
         {!showForm ? (
           <div className="row g-4 justify-content-center">
             {packages.map((pkg) => (
-              <div className="col-md-4" key={pkg.id}>
-                <div className="card h-100 shadow-sm">
-                  <div className="card-body d-flex flex-column">
-                    <h3 className="card-title text-center mb-4">{pkg.name}</h3>
-                    <div className="text-center mb-4">
-                      <span className="display-4 fw-bold">{pkg.price} CHF</span>
-                      <span className="text-muted">/ {pkg.duration} Tage</span>
-                    </div>
-                    <ul className="list-unstyled mb-4">
-                      {pkg.features.map((feature, index) => (
-                        <li key={index} className="mb-2">
-                          <i className="bi bi-check-circle-fill text-success me-2"></i>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-auto">
-                      <button
-                        className="btn btn-success w-100"
-                        onClick={() => handlePackageSelect(pkg)}
-                      >
-                        Jetzt auswählen
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <PackageCard key={pkg.id} pkg={pkg} onSelect={handlePackageSelect} />
             ))}
           </div>
-        ) : (
-          clientSecret ? (
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
-              <div className="row justify-content-center">
-                <div className="col-md-8">
-                  <div className="card shadow-sm">
-                    <div className="card-body">
-                      <h3 className="card-title mb-4">Jobsuche erstellen</h3>
-                      <JobSucheFormular setShowForm={setShowForm} clientSecret={clientSecret} />
-                    </div>
+        ) : clientSecret ? (
+          <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <div className="row justify-content-center">
+              <div className="col-lg-10">
+                <div className="card shadow-sm border-0 bg-dark">
+                  <div className="card-body p-4">
+                    <h3 className="card-title h4 mb-4 text-white">Jobsuche erstellen</h3>
+                    <JobSucheFormular 
+                      setShowForm={setShowForm} 
+                      clientSecret={clientSecret}
+                    />
                   </div>
                 </div>
               </div>
-            </Elements>
-          ) : (
-            <div className="text-center py-5">
-              <div className="spinner-border text-success" role="status">
-                <span className="visually-hidden">Lade Zahlungsdaten…</span>
-              </div>
-              <p className="mt-3 text-secondary">Lade Zahlungsdaten…</p>
             </div>
-          )
+          </Elements>
+        ) : (
+          <div className="text-center py-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Lade Zahlungsdaten…</span>
+            </div>
+            <p className="mt-3 text-white-50">Lade Zahlungsdaten…</p>
+          </div>
         )}
 
-        <div className="text-center mt-4">
-          <p className="text-secondary">
-            <small>✓ Keine automatische Verlängerung ✓ Keine versteckten Kosten</small>
-          </p>
+        <div className="text-center mt-5">
+          <div className="d-inline-flex align-items-center gap-3 text-white-50">
+            <i className="bi bi-shield-check"></i>
+            <span>✓ Keine automatische Verlängerung</span>
+            <i className="bi bi-shield-check"></i>
+            <span>✓ Keine versteckten Kosten</span>
+          </div>
         </div>
       </div>
     </main>

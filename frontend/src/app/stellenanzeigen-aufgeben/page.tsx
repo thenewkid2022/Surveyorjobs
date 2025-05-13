@@ -72,6 +72,38 @@ interface StellenanzeigeFormData {
   artDerStelle: string;
 }
 
+// Optimiertes Design für die Paket-Karten
+function PackageCard({ pkg, onSelect }: { pkg: PricingPackage, onSelect: (pkg: PricingPackage) => void }) {
+  return (
+    <div className="col-md-4">
+      <div className="card h-100 shadow-sm border-0 bg-dark text-white">
+        <div className="card-body p-4">
+          <h3 className="card-title h4 mb-3 text-white">{pkg.name}</h3>
+          <div className="mb-4">
+            <span className="display-4 fw-bold text-white">CHF {pkg.price}</span>
+            <span className="text-white-50">/ {pkg.duration} Tage</span>
+          </div>
+          <ul className="list-unstyled mb-4">
+            {pkg.features.map((feature, index) => (
+              <li key={index} className="mb-2 text-white-50">
+                <i className="bi bi-check-circle-fill text-primary me-2"></i>
+                {feature}
+              </li>
+            ))}
+          </ul>
+          <button
+            onClick={() => onSelect(pkg)}
+            className="btn btn-primary w-100"
+          >
+            Jetzt auswählen
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Optimiertes Formular-Design
 function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: { setShowForm: (show: boolean) => void, clientSecret: string, selectedPackage: PricingPackage }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -163,128 +195,178 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4">
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
       {error && (
-        <div className="alert alert-danger" role="alert">
-          {error}
+        <div className="alert alert-danger d-flex align-items-center bg-danger-subtle border-danger-subtle text-white" role="alert">
+          <i className="bi bi-exclamation-triangle-fill me-2"></i>
+          <div>{error}</div>
         </div>
       )}
-      <div className="mb-3 position-relative">
-        <label htmlFor="titel" className="form-label">Stellentitel *</label>
-        <input
-          type="text"
-          className="form-control"
-          id="titel"
-          name="titel"
-          value={formData.titel}
-          onChange={handleTitelChange}
-          required
-          placeholder="z.B. Bauleiter/in"
-          autoComplete="off"
-          ref={titelInputRef}
-          onFocus={() => setShowTitelSuggestions(titelSuggestions.length > 0)}
-          onBlur={() => setTimeout(() => setShowTitelSuggestions(false), 200)}
-        />
-        {showTitelSuggestions && titelSuggestions.length > 0 && (
-          <ul className="list-group position-absolute w-100 mt-1 shadow-sm" style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
-            {titelSuggestions.map((suggestion) => (
-              <li
-                key={suggestion}
-                className="list-group-item list-group-item-action py-2"
-                onClick={() => handleTitelSuggestionClick(suggestion)}
-                style={{ cursor: 'pointer' }}
+
+      <div className="card shadow-sm border-0 mb-4 bg-dark">
+        <div className="card-body p-4">
+          <h4 className="card-title mb-4 text-white">Stellendetails</h4>
+          
+          <div className="mb-4 position-relative">
+            <label htmlFor="titel" className="form-label fw-medium text-white">Stellentitel *</label>
+            <input
+              type="text"
+              className="form-control form-control-lg bg-dark text-white border-secondary"
+              id="titel"
+              name="titel"
+              value={formData.titel}
+              onChange={handleTitelChange}
+              required
+              placeholder="z.B. Bauleiter/in"
+              autoComplete="off"
+              ref={titelInputRef}
+              onFocus={() => setShowTitelSuggestions(titelSuggestions.length > 0)}
+              onBlur={() => setTimeout(() => setShowTitelSuggestions(false), 200)}
+            />
+            {showTitelSuggestions && titelSuggestions.length > 0 && (
+              <ul className="list-group position-absolute w-100 mt-1 shadow-sm rounded-3 bg-dark" style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
+                {titelSuggestions.map((suggestion) => (
+                  <li
+                    key={suggestion}
+                    className="list-group-item list-group-item-action py-2 px-3 bg-dark text-white border-secondary"
+                    onClick={() => handleTitelSuggestionClick(suggestion)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="beschreibung" className="form-label fw-medium text-white">Stellenbeschreibung *</label>
+            <textarea
+              className="form-control bg-dark text-white border-secondary"
+              id="beschreibung"
+              name="beschreibung"
+              rows={6}
+              value={formData.beschreibung}
+              onChange={handleChange}
+              required
+              placeholder="Beschreiben Sie die Stelle und die Anforderungen..."
+              style={{ resize: 'vertical' }}
+            />
+          </div>
+
+          <div className="row">
+            <div className="col-md-6 mb-4">
+              <label htmlFor="standort" className="form-label fw-medium text-white">Standort *</label>
+              <LocationInput
+                value={formData.standort}
+                onChange={(value) => setFormData(prev => ({ ...prev, standort: value }))}
+                required
+              />
+              <div className="form-text text-white-50">
+                Bitte geben Sie einen Schweizer Ort ein. Der Kanton wird automatisch zugewiesen.
+              </div>
+            </div>
+
+            <div className="col-md-6 mb-4">
+              <label htmlFor="artDerStelle" className="form-label fw-medium text-white">Anstellungsart *</label>
+              <select 
+                className="form-select bg-dark text-white border-secondary"
+                id="artDerStelle" 
+                name="artDerStelle" 
+                value={formData.artDerStelle} 
+                onChange={handleChange} 
+                required
               >
-                {suggestion}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      <div className="mb-3">
-        <label htmlFor="beschreibung" className="form-label">Stellenbeschreibung *</label>
-        <textarea
-          className="form-control"
-          id="beschreibung"
-          name="beschreibung"
-          rows={5}
-          value={formData.beschreibung}
-          onChange={handleChange}
-          required
-          placeholder="Beschreiben Sie die Stelle und die Anforderungen..."
-        />
-      </div>
-      <div className="mb-3">
-        <label htmlFor="standort" className="form-label">Standort *</label>
-        <LocationInput
-          value={formData.standort}
-          onChange={(value) => setFormData(prev => ({ ...prev, standort: value }))}
-          required
-        />
-        <div className="form-text">
-          Bitte geben Sie einen Schweizer Ort ein. Der Kanton wird automatisch zugewiesen.
+                <option value="Vollzeit">Vollzeit</option>
+                <option value="Teilzeit">Teilzeit</option>
+                <option value="Befristet">Befristet</option>
+                <option value="Projektarbeit">Projektarbeit</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="mb-3">
-        <label htmlFor="kontaktName" className="form-label">Ansprechperson *</label>
-        <input
-          type="text"
-          className="form-control"
-          id="kontaktName"
-          name="kontaktName"
-          value={formData.kontaktName}
-          onChange={handleChange}
-          required
-          placeholder="z.B. Max Mustermann"
-        />
+
+      <div className="card shadow-sm border-0 mb-4 bg-dark">
+        <div className="card-body p-4">
+          <h4 className="card-title mb-4 text-white">Kontaktdaten</h4>
+          
+          <div className="row">
+            <div className="col-md-6 mb-4">
+              <label htmlFor="kontaktName" className="form-label fw-medium text-white">Ansprechperson *</label>
+              <input
+                type="text"
+                className="form-control bg-dark text-white border-secondary"
+                id="kontaktName"
+                name="kontaktName"
+                value={formData.kontaktName}
+                onChange={handleChange}
+                required
+                placeholder="z.B. Max Mustermann"
+              />
+            </div>
+
+            <div className="col-md-6 mb-4">
+              <label htmlFor="kontaktEmail" className="form-label fw-medium text-white">E-Mail *</label>
+              <input
+                type="email"
+                className="form-control bg-dark text-white border-secondary"
+                id="kontaktEmail"
+                name="kontaktEmail"
+                value={formData.kontaktEmail}
+                onChange={handleChange}
+                required
+                placeholder="max.mustermann@beispiel.ch"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="kontaktTelefon" className="form-label fw-medium text-white">Telefon (optional)</label>
+            <input
+              type="tel"
+              className="form-control bg-dark text-white border-secondary"
+              id="kontaktTelefon"
+              name="kontaktTelefon"
+              value={formData.kontaktTelefon}
+              onChange={handleChange}
+              placeholder="+41 79 123 45 67"
+            />
+          </div>
+        </div>
       </div>
-      <div className="mb-3">
-        <label htmlFor="kontaktEmail" className="form-label">E-Mail der Ansprechperson *</label>
-        <input
-          type="email"
-          className="form-control"
-          id="kontaktEmail"
-          name="kontaktEmail"
-          value={formData.kontaktEmail}
-          onChange={handleChange}
-          required
-        />
+
+      <div className="card shadow-sm border-0 mb-4 bg-dark">
+        <div className="card-body p-4">
+          <h4 className="card-title mb-4 text-white">Zahlungsinformationen</h4>
+          <div className="payment-element-wrapper">
+            <PaymentElement />
+          </div>
+        </div>
       </div>
-      <div className="mb-3">
-        <label htmlFor="kontaktTelefon" className="form-label">Telefon der Ansprechperson (optional)</label>
-        <input
-          type="tel"
-          className="form-control"
-          id="kontaktTelefon"
-          name="kontaktTelefon"
-          value={formData.kontaktTelefon}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="mb-3">
-        <label htmlFor="artDerStelle" className="form-label">Anstellungsart *</label>
-        <select 
-          className="form-select" 
-          id="artDerStelle" 
-          name="artDerStelle" 
-          value={formData.artDerStelle} 
-          onChange={handleChange} 
-          required
+
+      <div className="d-flex justify-content-between align-items-center mt-4">
+        <button 
+          type="button" 
+          className="btn btn-outline-light px-4"
+          onClick={() => setShowForm(false)}
         >
-          <option value="Vollzeit">Vollzeit</option>
-          <option value="Teilzeit">Teilzeit</option>
-          <option value="Befristet">Befristet</option>
-          <option value="Projektarbeit">Projektarbeit</option>
-        </select>
-      </div>
-      <div className="mb-3">
-        <PaymentElement />
-      </div>
-      <div className="d-flex justify-content-between">
-        <button type="button" className="btn btn-outline-secondary" onClick={() => setShowForm(false)}>
+          <i className="bi bi-arrow-left me-2"></i>
           Zurück zur Auswahl
         </button>
-        <button type="submit" className="btn btn-success" disabled={!stripe || isLoading}>
-          {isLoading ? 'Wird verarbeitet...' : 'Stellenanzeige aufgeben'}
+        <button 
+          type="submit" 
+          className="btn btn-primary px-5"
+          disabled={!stripe || isLoading}
+        >
+          {isLoading ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Wird verarbeitet...
+            </>
+          ) : (
+            'Stellenanzeige aufgeben'
+          )}
         </button>
       </div>
     </form>
@@ -328,56 +410,30 @@ export default function StellenanzeigeAufgeben() {
   return (
     <main className="container py-5">
       <div className="text-center mb-5">
-        <h1 className="display-4 mb-3">Stellenanzeige aufgeben</h1>
-        <p className="lead text-secondary">
-          Wählen Sie ein Paket und veröffentlichen Sie Ihre Stellenanzeige
+        <h1 className="display-4 fw-bold mb-3 text-white">Stellenanzeige aufgeben</h1>
+        <p className="lead text-white-50">
+          Wählen Sie ein Paket und veröffentlichen Sie Ihre Stellenanzeige in der Schweiz
         </p>
       </div>
 
-      <div className="container">
+      <div className="container px-4">
         {!showForm ? (
           <div className="row g-4 justify-content-center">
             {packages.map((pkg) => (
-              <div className="col-md-4" key={pkg.id}>
-                <div className="card h-100 shadow-sm">
-                  <div className="card-body d-flex flex-column">
-                    <h3 className="card-title text-center mb-4">{pkg.name}</h3>
-                    <div className="text-center mb-4">
-                      <span className="display-4 fw-bold">{pkg.price} CHF</span>
-                      <span className="text-muted">/ {pkg.duration} Tage</span>
-                    </div>
-                    <ul className="list-unstyled mb-4">
-                      {pkg.features.map((feature, index) => (
-                        <li key={index} className="mb-2">
-                          <i className="bi bi-check-circle-fill text-success me-2"></i>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-auto">
-                      <button
-                        className="btn btn-success w-100"
-                        onClick={() => handlePackageSelect(pkg)}
-                      >
-                        Jetzt auswählen
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <PackageCard key={pkg.id} pkg={pkg} onSelect={handlePackageSelect} />
             ))}
           </div>
-        ) : clientSecret && selectedPackage ? (
+        ) : clientSecret ? (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <div className="row justify-content-center">
-              <div className="col-md-8">
-                <div className="card shadow-sm">
-                  <div className="card-body">
-                    <h3 className="card-title mb-4">Stellenanzeige erstellen</h3>
+              <div className="col-lg-10">
+                <div className="card shadow-sm border-0 bg-dark">
+                  <div className="card-body p-4">
+                    <h3 className="card-title h4 mb-4 text-white">Stellenanzeige erstellen</h3>
                     <StellenanzeigeFormular 
                       setShowForm={setShowForm} 
                       clientSecret={clientSecret} 
-                      selectedPackage={selectedPackage}
+                      selectedPackage={selectedPackage!}
                     />
                   </div>
                 </div>
@@ -386,17 +442,20 @@ export default function StellenanzeigeAufgeben() {
           </Elements>
         ) : (
           <div className="text-center py-5">
-            <div className="spinner-border text-success" role="status">
+            <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Lade Zahlungsdaten…</span>
             </div>
-            <p className="mt-3 text-secondary">Lade Zahlungsdaten…</p>
+            <p className="mt-3 text-white-50">Lade Zahlungsdaten…</p>
           </div>
         )}
 
-        <div className="text-center mt-4">
-          <p className="text-secondary">
-            <small>✓ Keine automatische Verlängerung ✓ Keine versteckten Kosten</small>
-          </p>
+        <div className="text-center mt-5">
+          <div className="d-inline-flex align-items-center gap-3 text-body-secondary">
+            <i className="bi bi-shield-check"></i>
+            <span>✓ Keine automatische Verlängerung</span>
+            <i className="bi bi-shield-check"></i>
+            <span>✓ Keine versteckten Kosten</span>
+          </div>
         </div>
       </div>
     </main>
