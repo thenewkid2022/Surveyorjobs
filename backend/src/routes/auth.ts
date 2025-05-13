@@ -29,9 +29,9 @@ router.post("/register", async (req: Request, res: Response) => {
       return res.status(400).json({ message: "E-Mail bereits registriert" });
     }
 
-    const user = await withDB(async () => {
+    await withDB(async () => {
       const newUser = new User({ email, password });
-      return await newUser.save();
+      await newUser.save();
     });
 
     return res.status(201).json({ message: "Registrierung erfolgreich" });
