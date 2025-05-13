@@ -12,6 +12,7 @@ interface Stellengesuch {
   _id: string;
   name?: string;
   berufswunsch?: string;
+  beruf?: string;
   position?: string;
   standort?: string;
   beschreibung?: string;
@@ -165,9 +166,9 @@ export default function BerufskategoriePage({
               <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={gesuch._id}>
                 <JobCard
                   id={gesuch._id}
-                  beruf={gesuch.beruf}
+                  beruf={gesuch.berufswunsch || gesuch.beruf || ""}
                   standort={gesuch.standort || ""}
-                  artDerStelle={gesuch.artDerStelle}
+                  artDerStelle={gesuch.artDerStelle || "Vollzeit"}
                   erstelltAm={gesuch.erstelltAm}
                   kategorie={params.kategorie}
                   linkPrefix="berufe"

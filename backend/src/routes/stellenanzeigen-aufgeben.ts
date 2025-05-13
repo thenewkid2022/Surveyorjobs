@@ -3,6 +3,7 @@ import StellenanzeigenAufgeben from "../models/stellenanzeigen-aufgeben";
 import { ortschaftZuKanton } from "@shared/lib/kantone";
 import { authenticateJWT } from "../middleware/auth";
 import { berufe } from "@shared/lib/berufe";
+import { withDB } from "../db/connection";
 
 const router = express.Router();
 
@@ -39,25 +40,29 @@ router.get("/", async (req: Request, res: Response) => {
       filter.standort = { $in: orteImKanton };
     }
 
-    // Hole Stellenanzeigen mit Pagination
-    const stellenanzeigen = await StellenanzeigenAufgeben
-      .find(filter)
-      .sort({ erstelltAm: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit);
+    const result = await withDB(async () => {
+      // Hole Stellenanzeigen mit Pagination
+      const stellenanzeigen = await StellenanzeigenAufgeben
+        .find(filter)
+        .sort({ erstelltAm: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
 
-    // Zähle Gesamtanzahl
-    const totalStellenanzeigen = await StellenanzeigenAufgeben.countDocuments(filter);
+      // Zähle Gesamtanzahl
+      const totalStellenanzeigen = await StellenanzeigenAufgeben.countDocuments(filter);
 
-    res.json({
-      stellenanzeigen,
-      pagination: {
-        total: totalStellenanzeigen,
-        page,
-        limit,
-        pages: Math.ceil(totalStellenanzeigen / limit)
-      }
+      return {
+        stellenanzeigen,
+        pagination: {
+          total: totalStellenanzeigen,
+          page,
+          limit,
+          pages: Math.ceil(totalStellenanzeigen / limit)
+        }
+      };
     });
+
+    res.json(result);
   } catch (error) {
     res.status(500).json({ message: "Fehler beim Abrufen der Stellenanzeigen", error });
   }
@@ -66,7 +71,10 @@ router.get("/", async (req: Request, res: Response) => {
 // Einzelne Stellenanzeige abrufen
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const stellenanzeige = await StellenanzeigenAufgeben.findById(req.params.id);
+    const stellenanzeige = await withDB(async () => {
+      return await StellenanzeigenAufgeben.findById(req.params.id);
+    });
+
     if (!stellenanzeige) {
       res.status(404).json({ message: "Stellenanzeige nicht gefunden" });
       return;
@@ -106,12 +114,15 @@ router.post("/", authenticateJWT, async (req: Request, res: Response) => {
     const erstelltAm = new Date();
     const expiresAt = new Date(erstelltAm.getTime() + duration * 24 * 60 * 60 * 1000);
 
-    const stellenanzeige = new StellenanzeigenAufgeben({
-      ...data,
-      erstelltAm,
-      expiresAt
+    const stellenanzeige = await withDB(async () => {
+      const newStellenanzeige = new StellenanzeigenAufgeben({
+        ...data,
+        erstelltAm,
+        expiresAt
+      });
+      return await newStellenanzeige.save();
     });
-    await stellenanzeige.save();
+
     return res.status(201).json(stellenanzeige);
   } catch (error) {
     return res.status(500).json({ message: "Fehler beim Erstellen der Stellenanzeige", error });
@@ -121,7 +132,10 @@ router.post("/", authenticateJWT, async (req: Request, res: Response) => {
 // Stellenanzeige aktualisieren (authentifiziert)
 router.put("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const stellenanzeige = await StellenanzeigenAufgeben.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const stellenanzeige = await withDB(async () => {
+      return await StellenanzeigenAufgeben.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    });
+
     if (!stellenanzeige) {
       return res.status(404).json({ message: "Stellenanzeige nicht gefunden" });
     }
@@ -134,7 +148,10 @@ router.put("/:id", authenticateJWT, async (req: Request, res: Response) => {
 // Stellenanzeige löschen (authentifiziert)
 router.delete("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const stellenanzeige = await StellenanzeigenAufgeben.findByIdAndDelete(req.params.id);
+    const stellenanzeige = await withDB(async () => {
+      return await StellenanzeigenAufgeben.findByIdAndDelete(req.params.id);
+    });
+
     if (!stellenanzeige) {
       return res.status(404).json({ message: "Stellenanzeige nicht gefunden" });
     }

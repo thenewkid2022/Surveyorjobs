@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/User";
 import Stripe from "stripe";
+import { withDB } from "../db/connection";
 
 const router = express.Router();
 
@@ -20,12 +21,19 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 router.post("/register", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    const existingUser = await User.findOne({ email });
+    const existingUser = await withDB(async () => {
+      return await User.findOne({ email });
+    });
+
     if (existingUser) {
       return res.status(400).json({ message: "E-Mail bereits registriert" });
     }
-    const user = new User({ email, password });
-    await user.save();
+
+    const user = await withDB(async () => {
+      const newUser = new User({ email, password });
+      return await newUser.save();
+    });
+
     return res.status(201).json({ message: "Registrierung erfolgreich" });
   } catch (error) {
     return res.status(500).json({ message: "Fehler bei der Registrierung", error });
@@ -36,14 +44,19 @@ router.post("/register", async (req: Request, res: Response) => {
 router.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email }) as IUser;
+    const user = await withDB(async () => {
+      return await User.findOne({ email }) as IUser;
+    });
+
     if (!user) {
       return res.status(400).json({ message: "Ungültige Anmeldedaten" });
     }
+
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({ message: "Ungültige Anmeldedaten" });
     }
+
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, { expiresIn: "1d" });
     return res.json({ token });
   } catch (error) {

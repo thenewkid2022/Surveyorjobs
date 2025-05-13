@@ -3,6 +3,7 @@ import SucheEinenJob from "../models/suche-einen-job";
 import { authenticateJWT } from "../middleware/auth";
 import { ortschaftZuKanton } from "@shared/lib/kantone";
 import { berufe } from "@shared/lib/berufe";
+import { withDB } from "../db/connection";
 
 const router = express.Router();
 
@@ -48,25 +49,29 @@ router.get("/", async (req: Request, res: Response) => {
       filter.standort = { $in: orteImKanton };
     }
 
-    // Hole Jobs mit Pagination
-    const jobs = await SucheEinenJob
-      .find(filter)
-      .sort({ erstelltAm: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit);
+    const result = await withDB(async () => {
+      // Hole Jobs mit Pagination
+      const jobs = await SucheEinenJob
+        .find(filter)
+        .sort({ erstelltAm: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
 
-    // Zähle Gesamtanzahl
-    const totalJobs = await SucheEinenJob.countDocuments(filter);
+      // Zähle Gesamtanzahl
+      const totalJobs = await SucheEinenJob.countDocuments(filter);
 
-    res.json({
-      jobs,
-      pagination: {
-        total: totalJobs,
-        page,
-        limit,
-        pages: Math.ceil(totalJobs / limit)
-      }
+      return {
+        jobs,
+        pagination: {
+          total: totalJobs,
+          page,
+          limit,
+          pages: Math.ceil(totalJobs / limit)
+        }
+      };
     });
+
+    res.json(result);
   } catch (error) {
     res.status(500).json({ message: "Fehler beim Abrufen der Jobs", error });
   }
@@ -75,7 +80,10 @@ router.get("/", async (req: Request, res: Response) => {
 // Einzelnen Job abrufen
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const job = await SucheEinenJob.findById(req.params.id);
+    const job = await withDB(async () => {
+      return await SucheEinenJob.findById(req.params.id);
+    });
+
     if (!job) {
       return res.status(404).json({ message: "Job nicht gefunden" });
     }
@@ -118,13 +126,15 @@ router.post("/", authenticateJWT, async (req: Request, res: Response) => {
     // Setze titel automatisch auf die Berufsbezeichnung
     data.titel = data.beruf;
 
-    const job = new SucheEinenJob({
-      ...data,
-      erstelltAm,
-      expiresAt
+    const job = await withDB(async () => {
+      const newJob = new SucheEinenJob({
+        ...data,
+        erstelltAm,
+        expiresAt
+      });
+      return await newJob.save();
     });
 
-    await job.save();
     return res.status(201).json(job);
   } catch (error) {
     console.error("Fehler beim Anlegen des Jobs:", error);
@@ -135,7 +145,10 @@ router.post("/", authenticateJWT, async (req: Request, res: Response) => {
 // Job aktualisieren (authentifiziert)
 router.put("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const job = await SucheEinenJob.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const job = await withDB(async () => {
+      return await SucheEinenJob.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    });
+
     if (!job) {
       return res.status(404).json({ message: "Job nicht gefunden" });
     }
@@ -148,7 +161,10 @@ router.put("/:id", authenticateJWT, async (req: Request, res: Response) => {
 // Job löschen (authentifiziert)
 router.delete("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const job = await SucheEinenJob.findByIdAndDelete(req.params.id);
+    const job = await withDB(async () => {
+      return await SucheEinenJob.findByIdAndDelete(req.params.id);
+    });
+
     if (!job) {
       return res.status(404).json({ message: "Job nicht gefunden" });
     }
