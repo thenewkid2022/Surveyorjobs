@@ -3,6 +3,9 @@ import jwt from "jsonwebtoken";
 
 export interface AuthRequest extends Request {
   user?: any;
+  headers: {
+    authorization?: string;
+  };
 }
 
 export function authenticateJWT(req: AuthRequest, res: Response, next: NextFunction): void | Response {
