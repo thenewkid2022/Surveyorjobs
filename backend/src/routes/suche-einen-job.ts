@@ -115,9 +115,11 @@ router.post("/", authenticateJWT, async (req: Request, res: Response) => {
       }
     }
 
-    const { titel, ...jobData } = data; // Entferne titel aus den Daten
+    // Setze titel automatisch auf die Berufsbezeichnung
+    data.titel = data.beruf;
+
     const job = new SucheEinenJob({
-      ...jobData,
+      ...data,
       erstelltAm,
       expiresAt
     });

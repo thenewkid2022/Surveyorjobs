@@ -132,34 +132,19 @@ export default function BerufskategoriePage({
           )}
           <div className="row g-4">
             {jobs.map((job) => (
-              <div className="col-12 col-md-4" key={job._id}>
-                <div className="border rounded-3 p-4 h-100 d-flex flex-column justify-content-between">
-                  <div>
-                    <h5 className="fw-bold mb-2">{job.titel}</h5>
-                    <div className="mb-2 text-primary d-flex align-items-center gap-2">
-                      <FaMapMarkerAlt size={16} />
-                      <span>{job.standort}</span>
-                    </div>
-                    {job.unternehmen && (
-                      <div className="mb-2 text-primary d-flex align-items-center gap-2">
-                        <FaBuilding size={16} />
-                        <span>{job.unternehmen}</span>
-                      </div>
-                    )}
-                    <p className="text-secondary mb-2" style={{minHeight: 60}}>{job.beschreibung}</p>
-                  </div>
-                  <div>
-                    <small className="text-muted">
-                      Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString('de-DE')}
-                    </small>
-                    {job.artDerStelle && (
-                      <span className="badge bg-primary ms-2">{job.artDerStelle}</span>
-                    )}
-                    <div className="mt-3">
-                      <Link href={`/berufe/${params.kategorie}/${job._id}`} className="btn btn-outline-primary w-100">
-                        Details anzeigen
-                      </Link>
-                    </div>
+              <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={job._id}>
+                <div className="card h-100">
+                  <div className="card-body">
+                    <h5 className="card-title">{job.titel}</h5>
+                    <p className="card-text">
+                      <i className="bi bi-geo-alt"></i> {job.standort}<br />
+                      {job.unternehmen && <><i className="bi bi-building"></i> {job.unternehmen}<br /></>}
+                      {job.artDerStelle && <><i className="bi bi-briefcase"></i> {job.artDerStelle}<br /></>}
+                      <i className="bi bi-calendar"></i> Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString('de-DE')}
+                    </p>
+                    <Link href={`/berufe/${params.kategorie}/${job._id}`} className="btn btn-primary">
+                      Details anzeigen
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -189,34 +174,20 @@ export default function BerufskategoriePage({
           )}
           <div className="row g-4">
             {stellengesuche.map((gesuch) => (
-              <div className="col-12 col-md-4" key={gesuch._id}>
-                <div className="border rounded-3 p-4 h-100 d-flex flex-column justify-content-between bg-light">
-                  <div>
-                    <h5 className="fw-bold mb-2">{gesuch.berufswunsch || gesuch.position}</h5>
-                    <div className="mb-2 text-success d-flex align-items-center gap-2">
-                      <FaMapMarkerAlt size={16} />
-                      <span>{gesuch.standort}</span>
-                    </div>
-                    <p className="text-secondary mb-2" style={{minHeight: 60}}>{gesuch.beschreibung}</p>
-                  </div>
-                  <div>
-                    <small className="text-muted">
-                      Eingestellt am: {new Date(gesuch.erstelltAm).toLocaleDateString('de-DE')}
-                    </small>
-                    {gesuch.artDerStelle && (
-                      <span className="badge bg-success ms-2">{gesuch.artDerStelle}</span>
-                    )}
-                    {gesuch.erfahrung && (
-                      <span className="badge bg-secondary ms-2">{gesuch.erfahrung}</span>
-                    )}
-                    <div className="mt-3">
-                      <Link 
-                        href={`/berufe/${params.kategorie}/${gesuch._id}`} 
-                        className="btn btn-outline-success w-100"
-                      >
-                        Details anzeigen
-                      </Link>
-                    </div>
+              <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={gesuch._id}>
+                <div className="card h-100">
+                  <div className="card-body">
+                    <h5 className="card-title">{gesuch.berufswunsch || gesuch.position}</h5>
+                    <p className="card-text">
+                      <i className="bi bi-geo-alt"></i> {gesuch.standort}<br />
+                      {gesuch.artDerStelle && <><i className="bi bi-briefcase"></i> {gesuch.artDerStelle}<br /></>}
+                      {gesuch.erfahrung && <><i className="bi bi-clock-history"></i> {gesuch.erfahrung}</>}
+                      <br />
+                      <span className="text-secondary">{gesuch.beschreibung}</span>
+                    </p>
+                    <Link href={`/berufe/${params.kategorie}/${gesuch._id}`} className="btn btn-primary">
+                      Details anzeigen
+                    </Link>
                   </div>
                 </div>
               </div>

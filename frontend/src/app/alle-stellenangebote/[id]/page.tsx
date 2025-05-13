@@ -67,7 +67,7 @@ export default async function Page({
         Zurück zur Übersicht
       </Link>
 
-      <div className="card shadow-sm">
+      <div className="card shadow-sm border-primary">
         <div className="card-body">
           <h1 className="card-title h2 mb-4 text-primary">{job.titel}</h1>
           
@@ -75,52 +75,54 @@ export default async function Page({
           {job.unternehmen && (
             <div className="mb-3">
               <FaBuilding {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-              <span><strong>Unternehmen:</strong> {job.unternehmen}</span>
+              <span className="text-primary"><strong>Unternehmen:</strong> {job.unternehmen}</span>
             </div>
           )}
           <div className="mb-3">
             <FaBuilding {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-            <span><strong>Kategorie:</strong> {job.kategorie}</span>
+            <span className="text-primary"><strong>Kategorie:</strong> {job.kategorie}</span>
           </div>
 
           {/* Standort */}
           <div className="mb-3">
             <FaMapMarkerAlt {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-            <span><strong>Standort:</strong> {job.standort}</span>
+            <span className="text-primary"><strong>Standort:</strong> {job.standort}</span>
           </div>
 
           {/* Anstellungsart und Erfahrung */}
           {job.artDerStelle && (
             <div className="mb-3">
               <FaUser {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-              <span><strong>Anstellungsart:</strong> {job.artDerStelle}</span>
+              <span className="text-primary"><strong>Anstellungsart:</strong> {job.artDerStelle}</span>
             </div>
           )}
           {job.erfahrung && (
             <div className="mb-3">
               <FaCalendarAlt {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-              <span><strong>Erfahrung:</strong> {job.erfahrung}</span>
+              <span className="text-primary"><strong>Erfahrung:</strong> {job.erfahrung}</span>
             </div>
           )}
 
           {/* Beschreibung */}
           <div className="mb-4">
-            <h2 className="h4 mb-3">Beschreibung</h2>
+            <h2 className="h4 mb-3 text-primary">Beschreibung</h2>
             <p className="text-secondary">{job.beschreibung}</p>
           </div>
 
           {/* Kontakt */}
-          <div className="card bg-light">
+          <div className="card bg-light border-primary">
             <div className="card-body">
-              <h2 className="h4 mb-3">Kontakt</h2>
-              <div className="mb-2">
-                <FaUser {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-                <span><strong>Ansprechpartner:</strong> {job.kontaktName}</span>
-              </div>
+              <h2 className="h4 mb-3 text-primary">Kontakt</h2>
+              {job.kontaktName && (
+                <div className="mb-2">
+                  <FaUser {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
+                  <span className="text-primary"><strong>Ansprechpartner:</strong> {job.kontaktName}</span>
+                </div>
+              )}
               {job.kontaktEmail && (
                 <div className="mb-2">
                   <FaEnvelope {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-                  <span>
+                  <span className="text-primary">
                     <strong>E-Mail:</strong>{" "}
                     <a href={`mailto:${job.kontaktEmail}`} className="text-primary">
                       {job.kontaktEmail}
@@ -131,7 +133,7 @@ export default async function Page({
               {job.kontaktTelefon && (
                 <div className="mb-0">
                   <FaPhone {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
-                  <span>
+                  <span className="text-primary">
                     <strong>Telefon:</strong>{" "}
                     <a href={`tel:${job.kontaktTelefon}`} className="text-primary">
                       {job.kontaktTelefon}

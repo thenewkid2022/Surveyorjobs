@@ -164,22 +164,32 @@ function JobSucheFormular({ setShowForm, clientSecret }: { setShowForm: (show: b
     setError(null);
 
     try {
-      // Zuerst den Lebenslauf hochladen
-      const formDataToSend = new FormData();
+      // Zuerst den Lebenslauf zu S3 hochladen
+      let lebenslaufUrl = '';
       if (formData.lebenslauf) {
-        formDataToSend.append('lebenslauf', formData.lebenslauf);
+        // 1. Pre-signed URL vom Backend holen
+        const presignRes = await fetch(`${getApiUrl()}/api/upload`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileName: formData.lebenslauf.name,
+            fileType: formData.lebenslauf.type,
+          }),
+        });
+        if (!presignRes.ok) throw new Error('Fehler beim Anfordern der Upload-URL');
+        const { url, key } = await presignRes.json();
+
+        // 2. Datei direkt zu S3 hochladen
+        const uploadRes = await fetch(url, {
+          method: 'PUT',
+          headers: { 'Content-Type': formData.lebenslauf.type },
+          body: formData.lebenslauf,
+        });
+        if (!uploadRes.ok) throw new Error('Fehler beim Hochladen zu S3');
+
+        // 3. S3-URL merken
+        lebenslaufUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${key}`;
       }
-
-      const uploadResponse = await fetch(`${getApiUrl()}/api/upload`, {
-        method: 'POST',
-        body: formDataToSend
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error('Fehler beim Hochladen des Lebenslaufs');
-      }
-
-      const { lebenslaufUrl } = await uploadResponse.json();
 
       // Dann die Zahlung verarbeiten
       const { error: submitError } = await stripe.confirmPayment({

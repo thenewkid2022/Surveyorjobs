@@ -64,6 +64,10 @@ app.get("/health", (_, res) => {
   res.json({ status: "ok" });
 });
 
+app.head("/api/ping", (_, res) => {
+  res.status(200).end();
+});
+
 // Server starten
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

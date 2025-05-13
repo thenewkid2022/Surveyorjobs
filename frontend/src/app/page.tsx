@@ -106,7 +106,7 @@ export default function Home() {
                     <div className="col-12 text-center text-muted">Keine Gesuche gefunden.</div>
                   ) : (
                     jobs.map((job) => (
-                      <div key={job._id} className="col-12 col-md-6">
+                      <div key={job._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div className="card h-100">
                           <div className="card-body">
                             <h5 className="card-title">{job.beruf}</h5>
@@ -146,7 +146,7 @@ export default function Home() {
                     <div className="col-12 text-center text-muted">Keine Stellenanzeigen gefunden.</div>
                   ) : (
                     stellenanzeigen.map((stellenanzeige) => (
-                      <div key={stellenanzeige._id} className="col-12 col-md-6">
+                      <div key={stellenanzeige._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div className="card h-100">
                           <div className="card-body">
                             <h5 className="card-title">{stellenanzeige.titel}</h5>

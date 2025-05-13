@@ -1,4 +1,4 @@
-import { FaMapMarkerAlt, FaBuilding, FaCalendarAlt, FaArrowLeft } from "react-icons/fa";
+import { FaMapMarkerAlt, FaBuilding, FaCalendarAlt, FaArrowLeft, FaUser, FaEnvelope, FaPhone } from "react-icons/fa";
 import { IconBaseProps } from "react-icons";
 import Link from "next/link";
 
@@ -57,55 +57,73 @@ export default async function Page({
         Zurück zur Übersicht
       </Link>
 
-      <div className="card shadow-sm">
+      <div className="card shadow-sm border-primary">
         <div className="card-body">
-          <h1 className="card-title h2 mb-4">{job.titel}</h1>
+          <h1 className="card-title h2 mb-4 text-primary">{job.titel}</h1>
+          
+          {/* Unternehmen und Standort */}
           {job.unternehmen && (
             <div className="mb-3">
-              <FaBuilding {...{ size: 20, style: { marginRight: '0.5rem', color: '#2563eb' } } as IconBaseProps} />
-              <span>{job.unternehmen}</span>
+              <FaBuilding {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
+              <span className="text-primary"><strong>Unternehmen:</strong> {job.unternehmen}</span>
             </div>
           )}
           <div className="mb-3">
-            <FaMapMarkerAlt {...{ size: 20, style: { marginRight: '0.5rem', color: '#2563eb' } } as IconBaseProps} />
-            <span>{job.standort}</span>
+            <FaMapMarkerAlt {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
+            <span className="text-primary"><strong>Standort:</strong> {job.standort}</span>
           </div>
+
+          {/* Anstellungsart */}
           {job.artDerStelle && (
             <div className="mb-3">
-              <span className="badge bg-primary fs-6">{job.artDerStelle}</span>
+              <FaUser {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
+              <span className="text-primary"><strong>Anstellungsart:</strong> {job.artDerStelle}</span>
             </div>
           )}
-          <div className="mb-3">
-            <FaCalendarAlt {...{ size: 20, style: { marginRight: '0.5rem', color: '#2563eb' } } as IconBaseProps} />
-            <span>Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString("de-DE")}</span>
-          </div>
+
+          {/* Beschreibung */}
           <div className="mb-4">
-            <h2 className="h4 mb-3">Beschreibung</h2>
+            <h2 className="h4 mb-3 text-primary">Beschreibung</h2>
             <p className="text-secondary">{job.beschreibung}</p>
           </div>
+
+          {/* Kontakt */}
           {(job.kontaktEmail || job.kontaktTelefon) && (
-            <div className="card bg-light">
+            <div className="card bg-light border-primary">
               <div className="card-body">
-                <h2 className="h4 mb-3">Kontakt</h2>
+                <h2 className="h4 mb-3 text-primary">Kontakt</h2>
                 {job.kontaktEmail && (
-                  <p className="mb-2">
-                    <strong>E-Mail:</strong>{" "}
-                    <a href={`mailto:${job.kontaktEmail}`} className="text-primary">
-                      {job.kontaktEmail}
-                    </a>
-                  </p>
+                  <div className="mb-2">
+                    <FaEnvelope {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
+                    <span className="text-primary">
+                      <strong>E-Mail:</strong>{" "}
+                      <a href={`mailto:${job.kontaktEmail}`} className="text-primary">
+                        {job.kontaktEmail}
+                      </a>
+                    </span>
+                  </div>
                 )}
                 {job.kontaktTelefon && (
-                  <p className="mb-0">
-                    <strong>Telefon:</strong>{" "}
-                    <a href={`tel:${job.kontaktTelefon}`} className="text-primary">
-                      {job.kontaktTelefon}
-                    </a>
-                  </p>
+                  <div className="mb-0">
+                    <FaPhone {...{ size: 20, style: { marginRight: '0.5rem', color: '#0d6efd' } } as IconBaseProps} />
+                    <span className="text-primary">
+                      <strong>Telefon:</strong>{" "}
+                      <a href={`tel:${job.kontaktTelefon}`} className="text-primary">
+                        {job.kontaktTelefon}
+                      </a>
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
           )}
+
+          {/* Datum */}
+          <div className="mt-3">
+            <small className="text-muted">
+              Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString("de-DE")}
+            </small>
+          </div>
         </div>
       </div>
     </div>

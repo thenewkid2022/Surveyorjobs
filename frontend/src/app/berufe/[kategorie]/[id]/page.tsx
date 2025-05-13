@@ -1,4 +1,4 @@
-import { FaMapMarkerAlt, FaBuilding, FaCalendarAlt, FaArrowLeft, FaUser, FaEnvelope, FaPhone, FaBriefcase, FaGraduationCap, FaCar } from "react-icons/fa";
+import { FaMapMarkerAlt, FaBuilding, FaCalendarAlt, FaArrowLeft, FaUser, FaEnvelope, FaPhone, FaBriefcase, FaGraduationCap, FaCar, FaFilePdf } from "react-icons/fa";
 import { IconBaseProps } from "react-icons";
 import Link from "next/link";
 import { getApiUrl } from "@/utils/api";
@@ -18,6 +18,7 @@ interface Job {
   unternehmen?: string;
   artDerStelle?: string;
   erfahrung?: string;
+  lebenslauf?: string;
 }
 
 async function getEntry(id: string) {
@@ -161,6 +162,37 @@ export default async function Page({
                   )}
                 </small>
               </div>
+              {/* Lebenslauf Download */}
+              {entry.data.lebenslauf && (
+                <div className="mt-3">
+                  <button
+                    className="btn btn-outline-success"
+                    onClick={async () => {
+                      try {
+                        // Extrahiere den Key aus der S3-URL
+                        const key = entry.data.lebenslauf.split('.com/')[1];
+                        if (!key) throw new Error('Ungültiger Dateipfad');
+                        
+                        // Hole die pre-signed URL vom Backend
+                        const res = await fetch(`${getApiUrl()}/api/upload/download-url?key=${encodeURIComponent(key)}`);
+                        if (!res.ok) throw new Error('Fehler beim Anfordern der Download-URL');
+                        
+                        const { url } = await res.json();
+                        if (!url) throw new Error('Keine Download-URL erhalten');
+                        
+                        // Öffne die Datei in einem neuen Tab
+                        window.open(url, '_blank');
+                      } catch (error) {
+                        console.error('Fehler beim Download:', error);
+                        alert('Fehler beim Herunterladen der Datei. Bitte versuchen Sie es später erneut.');
+                      }
+                    }}
+                  >
+                    <FaFilePdf {...{ size: 20, style: { marginRight: '0.5rem' } } as IconBaseProps} />
+                    PDF Lebenslauf herunterladen
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             // Stellengesuch anzeigen

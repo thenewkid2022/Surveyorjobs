@@ -123,29 +123,19 @@ export default function JobsPage() {
             <div className="col-12 text-center text-muted">Keine Stellenangebote gefunden.</div>
           ) : (
             jobs.map((job) => (
-              <div key={job._id} className="col-12 col-md-6">
-                <div className="card h-100 border-primary">
+              <div key={job._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div className="card h-100">
                   <div className="card-body">
-                    <h5 className="card-title text-primary">{job.titel}</h5>
-                    <div className="mb-2 text-primary d-flex align-items-center gap-2">
-                      <FaMapMarkerAlt size={16} />
-                      <span>{job.standort}</span>
-                    </div>
-                    {job.unternehmen && (
-                      <div className="mb-2 text-primary d-flex align-items-center gap-2">
-                        <FaBuilding size={16} />
-                        <span>{job.unternehmen}</span>
-                      </div>
-                    )}
-                    <p className="text-secondary mb-3">{job.beschreibung}</p>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <small className="text-muted">
-                        Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString('de-DE')}
-                      </small>
-                      <Link href={`/berufe/${job.kategorie}/${job._id}`} className="btn btn-outline-primary">
-                        Details anzeigen
-                      </Link>
-                    </div>
+                    <h5 className="card-title">{job.titel}</h5>
+                    <p className="card-text">
+                      <i className="bi bi-geo-alt"></i> {job.standort}<br />
+                      {job.unternehmen && <><i className="bi bi-building"></i> {job.unternehmen}<br /></>}
+                      {job.artDerStelle && <><i className="bi bi-briefcase"></i> {job.artDerStelle}<br /></>}
+                      <i className="bi bi-calendar"></i> Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString('de-DE')}
+                    </p>
+                    <Link href={`/berufe/${job.kategorie}/${job._id}`} className="btn btn-primary">
+                      Details anzeigen
+                    </Link>
                   </div>
                 </div>
               </div>
