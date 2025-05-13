@@ -24,7 +24,8 @@ export default function KantonFilterPage() {
                 className={`w-100 btn btn-lg btn-outline-primary`}
                 onClick={() => router.push(`/berufe/alle?kanton=${kuerzel}`)}
               >
-                {kantonNamen[kuerzel]}
+                <span className="d-md-none fw-bold">{kuerzel}</span>
+                <span className="d-none d-md-inline">{kantonNamen[kuerzel]}</span>
               </button>
             </div>
           ))}

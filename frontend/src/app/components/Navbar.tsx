@@ -21,14 +21,14 @@ export default function Navbar() {
         </button>
         <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`}>          
           <div className="d-flex flex-column flex-lg-row gap-2 ms-auto mt-3 mt-lg-0">
-            <Link href="/filter/berufsfeld" className="btn btn-outline-primary w-100 w-lg-auto dark-mode-btn">
+            <Link href="/filter/berufsfeld" className="btn btn-outline-primary w-100 w-lg-auto dark-mode-btn" onClick={() => setIsMenuOpen(false)}>
               Berufsfeld wählen
             </Link>
-            <Link href="/filter/kanton" className="btn btn-outline-primary w-100 w-lg-auto dark-mode-btn">
+            <Link href="/filter/kanton" className="btn btn-outline-primary w-100 w-lg-auto dark-mode-btn" onClick={() => setIsMenuOpen(false)}>
               Kanton wählen
             </Link>
-            <Link href="/suche-einen-job" className="btn btn-warning w-100 w-lg-auto">Suche einen Job</Link>
-            <Link href="/stellenanzeigen-aufgeben" className="btn btn-warning w-100 w-lg-auto">Stellenanzeigen aufgeben</Link>
+            <Link href="/suche-einen-job" className="btn btn-warning w-100 w-lg-auto" onClick={() => setIsMenuOpen(false)}>Suche einen Job</Link>
+            <Link href="/stellenanzeigen-aufgeben" className="btn btn-warning w-100 w-lg-auto" onClick={() => setIsMenuOpen(false)}>Stellenanzeigen aufgeben</Link>
           </div>
         </div>
       </div>
