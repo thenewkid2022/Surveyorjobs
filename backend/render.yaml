@@ -2,7 +2,13 @@ services:
   - type: web
     name: surveyjobs-backend
     env: node
-    buildCommand: npm install && npm run build
+    buildCommand: |
+      npm install
+      rm -rf dist/
+      npm run build
+      echo "=== Build Output ==="
+      find dist -type f
+      echo "=== End Build Output ==="
     startCommand: NODE_ENV=production npm start
     envVars:
       - key: NODE_OPTIONS
