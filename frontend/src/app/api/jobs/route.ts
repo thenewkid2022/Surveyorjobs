@@ -1,37 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "../mongodb";
+import { getApiUrl } from "@/utils/api";
 
 export async function GET(req: NextRequest) {
   try {
-    const client = await clientPromise;
-    const db = client.db();
-    
-    // Hole Query-Parameter
     const searchParams = req.nextUrl.searchParams;
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '6');
-    const skip = (page - 1) * limit;
-
-    // Hole Jobs mit Sortierung und Paginierung
-    const jobs = await db.collection("jobs")
-      .find({})
-      .sort({ erstelltAm: -1 }) // Sortiere nach Datum, neueste zuerst
-      .skip(skip)
-      .limit(limit)
-      .toArray();
-
-    // Hole Gesamtanzahl der Jobs
-    const totalJobs = await db.collection("jobs").countDocuments();
-
-    return NextResponse.json({
-      jobs,
-      pagination: {
-        total: totalJobs,
-        page,
-        limit,
-        totalPages: Math.ceil(totalJobs / limit)
-      }
-    });
+    const page = searchParams.get('page') || '1';
+    const limit = searchParams.get('limit') || '6';
+    
+    const response = await fetch(`${getApiUrl()}/api/jobs?page=${page}&limit=${limit}`);
+    if (!response.ok) {
+      throw new Error('Fehler beim Abrufen der Jobs');
+    }
+    
+    const data = await response.json();
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Fehler beim Abrufen der Jobs:', error);
     return NextResponse.json({ error: "Fehler beim Abrufen der Jobs" }, { status: 500 });
@@ -40,30 +22,21 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const client = await clientPromise;
-    const db = client.db();
     const data = await req.json();
-    
-    console.log('Empfangene Daten für neuen Job:', data);
-    
-    // Paket-Laufzeit in Tagen (default: 30)
-    const duration = data.duration || 30;
-    const erstelltAm = new Date();
-    const expiresAt = new Date(erstelltAm.getTime() + duration * 24 * 60 * 60 * 1000);
-
-    // Füge Erstellungs- und Ablaufdatum hinzu
-    const jobData = {
-      ...data,
-      erstelltAm: erstelltAm.toISOString(),
-      expiresAt: expiresAt.toISOString()
-    };
-
-    const result = await db.collection("jobs").insertOne(jobData);
-    console.log('Insert-Result:', result);
-    return NextResponse.json({ 
-      insertedId: result.insertedId,
-      ...jobData
+    const response = await fetch(`${getApiUrl()}/api/jobs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
     });
+
+    if (!response.ok) {
+      throw new Error('Fehler beim Anlegen des Jobs');
+    }
+
+    const result = await response.json();
+    return NextResponse.json(result);
   } catch (error) {
     console.error('Fehler beim Anlegen des Jobs:', error);
     return NextResponse.json({ error: "Fehler beim Anlegen des Jobs" }, { status: 500 });
