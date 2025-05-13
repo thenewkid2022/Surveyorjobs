@@ -19,53 +19,26 @@ export default function DownloadButton({ fileUrl, variant = 'download' }: Downlo
     setError(null);
     
     try {
-      console.log('Starte Download-Prozess...');
-      
       // Extrahiere den Key aus der S3-URL
       const key = fileUrl.split('.com/')[1];
       if (!key) throw new Error('Ungültiger Dateipfad');
-      console.log('Extrahierter Key:', key);
       
       // Hole die pre-signed URL vom Backend
-      console.log('Hole pre-signed URL...');
       const res = await fetch(`${getApiUrl()}/api/upload/download-url?key=${encodeURIComponent(key)}`);
       if (!res.ok) throw new Error('Fehler beim Anfordern der Download-URL');
       
       const { url } = await res.json();
       if (!url) throw new Error('Keine Download-URL erhalten');
-      console.log('Pre-signed URL erhalten:', url);
 
-      // Prüfe ob wir auf einem mobilen Gerät sind
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      console.log('Ist Mobile-Gerät:', isMobile, 'UserAgent:', navigator.userAgent);
+      // Erstelle einen Link und öffne ihn in einem neuen Tab
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       
-      if (isMobile) {
-        console.log('Öffne URL in neuem Tab für mobiles Gerät...');
-        // Versuche zuerst mit window.open
-        const newWindow = window.open(url, '_blank');
-        
-        // Wenn window.open blockiert wurde oder fehlschlägt
-        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-          console.log('window.open fehlgeschlagen, versuche alternativen Ansatz...');
-          // Alternative Methode: Erstelle einen Link und klicke ihn
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('target', '_blank');
-          link.setAttribute('rel', 'noopener noreferrer');
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-      } else {
-        console.log('Starte Download für Desktop-Gerät...');
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = key.split('/').pop() || 'document.pdf';
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
     } catch (error) {
       console.error('Fehler beim Download:', error);
       setError('Fehler beim Herunterladen der Datei. Bitte versuchen Sie es später erneut.');
