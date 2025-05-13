@@ -37,7 +37,7 @@ router.get("/", async (req: Request, res: Response) => {
     // Zähle Gesamtanzahl
     const totalJobs = await Job.countDocuments(filter);
 
-    res.json({
+    return res.json({
       jobs,
       pagination: {
         total: totalJobs,
