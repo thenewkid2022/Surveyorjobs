@@ -27,8 +27,8 @@ export default function Navbar() {
             <Link href="/filter/kanton" className="btn btn-outline-primary w-100 w-lg-auto">
               Kanton wählen
             </Link>
-            <Link href="/suche-einen-job" className="btn btn-primary w-100 w-lg-auto">Suche einen Job</Link>
-            <Link href="/stellenanzeigen-aufgeben" className="btn btn-primary w-100 w-lg-auto">Stellenanzeigen aufgeben</Link>
+            <Link href="/suche-einen-job" className="btn btn-warning w-100 w-lg-auto">Suche einen Job</Link>
+            <Link href="/stellenanzeigen-aufgeben" className="btn btn-warning w-100 w-lg-auto">Stellenanzeigen aufgeben</Link>
           </div>
         </div>
       </div>
