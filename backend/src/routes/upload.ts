@@ -1,14 +1,28 @@
 import express, { Request, Response } from "express";
-import multer from "multer";
+import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import fs from "fs";
 import { getApiUrl } from "../utils/config";
+
+// Definiere den Multer File Typ
+interface MulterFile {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  destination: string;
+  filename: string;
+  path: string;
+  buffer: Buffer;
+  stream: any; // Hinzugefügt für Kompatibilität mit File Interface
+}
 
 const router = express.Router();
 
 // Konfiguration für den Upload
 const storage = multer.diskStorage({
-  destination: function (_req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) {
+  destination: function (_req: Request, _file: MulterFile, cb: (error: Error | null, destination: string) => void) {
     const uploadDir = path.join(__dirname, '../../uploads');
     // Erstelle das Upload-Verzeichnis, falls es nicht existiert
     if (!fs.existsSync(uploadDir)) {
@@ -16,7 +30,7 @@ const storage = multer.diskStorage({
     }
     cb(null, uploadDir);
   },
-  filename: function (_req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
+  filename: function (_req: Request, file: MulterFile, cb: (error: Error | null, filename: string) => void) {
     // Generiere einen eindeutigen Dateinamen
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, 'lebenslauf-' + uniqueSuffix + path.extname(file.originalname));
@@ -24,7 +38,7 @@ const storage = multer.diskStorage({
 });
 
 // Filter für PDF-Dateien
-const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (_req: Request, file: MulterFile, cb: FileFilterCallback) => {
   if (file.mimetype === 'application/pdf') {
     cb(null, true);
   } else {
@@ -41,8 +55,8 @@ const upload = multer({
 });
 
 // Erweitere den Request-Typ für multer
-interface MulterRequest extends Request {
-  file?: Express.Multer.File;
+interface MulterRequest extends Omit<Request, 'file'> {
+  file?: MulterFile;
 }
 
 // POST /api/upload
