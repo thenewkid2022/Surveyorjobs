@@ -44,8 +44,9 @@ export default function DownloadButton({ fileUrl, variant = 'download' }: Downlo
         // Safari-spezifische Download-Methode
         console.log('Verwende Safari-spezifische Download-Methode');
         const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', key); // Setze den Dateinamen
+        // Füge Content-Disposition Header über URL-Parameter hinzu
+        const urlWithDisposition = `${url}&response-content-disposition=attachment; filename="${encodeURIComponent(key)}"`;
+        link.href = urlWithDisposition;
         link.setAttribute('target', '_blank');
         link.setAttribute('rel', 'noopener,noreferrer');
         document.body.appendChild(link);
