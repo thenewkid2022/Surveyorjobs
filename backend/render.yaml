@@ -3,8 +3,10 @@ services:
     name: surveyjobs-backend
     env: node
     buildCommand: npm install && npm run build
-    startCommand: npm start
+    startCommand: NODE_ENV=production npm start
     envVars:
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=512"
       - key: MONGODB_URI
         sync: false
       - key: PORT

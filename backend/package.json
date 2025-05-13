@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node -r tsconfig-paths/register src/index.ts",
+    "start": "node --max-old-space-size=512 dist/index.js",
     "dev": "nodemon -r tsconfig-paths/register src/index.ts",
     "build": "tsc",
+    "postbuild": "cp -r src/uploads dist/ || true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

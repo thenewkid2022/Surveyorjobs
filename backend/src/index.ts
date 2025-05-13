@@ -69,7 +69,10 @@ app.head("/api/ping", (_, res) => {
 });
 
 // Server starten
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
+const PORT = parseInt(process.env.PORT || '10000', 10);
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server läuft auf Port ${PORT}`);
+  console.log(`Umgebung: ${process.env.NODE_ENV}`);
+  console.log(`Node Version: ${process.version}`);
+  console.log(`Arbeitsspeicher-Limit: ${process.env.NODE_OPTIONS}`);
 }); 
