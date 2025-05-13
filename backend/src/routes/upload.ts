@@ -1,4 +1,4 @@
-import express, { Request } from "express";
+import express, { Request, Response } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -46,7 +46,7 @@ interface MulterRequest extends Request {
 }
 
 // POST /api/upload
-router.post('/', upload.single('lebenslauf'), (req: MulterRequest, res): void => {
+router.post('/', upload.single('lebenslauf'), (req: MulterRequest, res: Response): void => {
   try {
     if (!req.file) {
       res.status(400).json({ error: 'Keine Datei hochgeladen' });

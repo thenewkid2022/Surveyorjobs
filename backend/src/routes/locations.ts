@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { ortschaftZuKanton } from '@shared/lib/kantone';
 
 const router = express.Router();
 
-router.get('/search', (req, res) => {
+router.get('/search', (req: Request, res: Response) => {
   try {
     const query = (req.query.q as string)?.toLowerCase() || '';
     

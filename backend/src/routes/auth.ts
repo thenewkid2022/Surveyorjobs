@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/User";
 import Stripe from "stripe";
@@ -17,7 +17,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 });
 
 // Registrierung
-router.post("/register", async (req, res) => {
+router.post("/register", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const existingUser = await User.findOne({ email });
@@ -33,7 +33,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Login
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email }) as IUser;
@@ -52,7 +52,7 @@ router.post("/login", async (req, res) => {
 });
 
 // Temporärer Token nach erfolgreicher Zahlung
-router.post("/temp-token", async (req, res) => {
+router.post("/temp-token", async (req: Request, res: Response) => {
   console.log("Temp-Token Anfrage erhalten:", req.body);
   const { paymentId } = req.body;
   

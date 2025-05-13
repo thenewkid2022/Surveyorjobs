@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import SucheEinenJob from "../models/suche-einen-job";
 import { authenticateJWT } from "../middleware/auth";
 import { ortschaftZuKanton } from "@shared/lib/kantone";
@@ -16,7 +16,7 @@ const kategorieMapping: { [key: string]: string } = {
 };
 
 // Alle Jobs abrufen
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 6;
@@ -73,7 +73,7 @@ router.get("/", async (req, res) => {
 });
 
 // Einzelnen Job abrufen
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const job = await SucheEinenJob.findById(req.params.id);
     if (!job) {
@@ -86,7 +86,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Neuen Job anlegen (authentifiziert)
-router.post("/", authenticateJWT, async (req, res) => {
+router.post("/", authenticateJWT, async (req: Request, res: Response) => {
   try {
     // Setze Ablaufdatum auf 30 Tage in der Zukunft
     const erstelltAm = new Date();
@@ -131,7 +131,7 @@ router.post("/", authenticateJWT, async (req, res) => {
 });
 
 // Job aktualisieren (authentifiziert)
-router.put("/:id", authenticateJWT, async (req, res) => {
+router.put("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
     const job = await SucheEinenJob.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!job) {
@@ -144,7 +144,7 @@ router.put("/:id", authenticateJWT, async (req, res) => {
 });
 
 // Job löschen (authentifiziert)
-router.delete("/:id", authenticateJWT, async (req, res) => {
+router.delete("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
     const job = await SucheEinenJob.findByIdAndDelete(req.params.id);
     if (!job) {

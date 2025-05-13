@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import StellenanzeigenAufgeben from "../models/stellenanzeigen-aufgeben";
 import { ortschaftZuKanton } from "@shared/lib/kantone";
 import { authenticateJWT } from "../middleware/auth";
@@ -7,7 +7,7 @@ import { berufe } from "@shared/lib/berufe";
 const router = express.Router();
 
 // Alle Stellenanzeigen abrufen mit Filterung und Pagination
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 6;
@@ -64,7 +64,7 @@ router.get("/", async (req, res) => {
 });
 
 // Einzelne Stellenanzeige abrufen
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const stellenanzeige = await StellenanzeigenAufgeben.findById(req.params.id);
     if (!stellenanzeige) {
@@ -78,7 +78,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Neue Stellenanzeige erstellen (authentifiziert)
-router.post("/", authenticateJWT, async (req, res) => {
+router.post("/", authenticateJWT, async (req: Request, res: Response) => {
   try {
     const data = req.body;
     
@@ -119,7 +119,7 @@ router.post("/", authenticateJWT, async (req, res) => {
 });
 
 // Stellenanzeige aktualisieren (authentifiziert)
-router.put("/:id", authenticateJWT, async (req, res) => {
+router.put("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
     const stellenanzeige = await StellenanzeigenAufgeben.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!stellenanzeige) {
@@ -132,7 +132,7 @@ router.put("/:id", authenticateJWT, async (req, res) => {
 });
 
 // Stellenanzeige löschen (authentifiziert)
-router.delete("/:id", authenticateJWT, async (req, res) => {
+router.delete("/:id", authenticateJWT, async (req: Request, res: Response) => {
   try {
     const stellenanzeige = await StellenanzeigenAufgeben.findByIdAndDelete(req.params.id);
     if (!stellenanzeige) {
