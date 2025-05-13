@@ -30,14 +30,8 @@ export default function DownloadButton({ fileUrl, variant = 'download' }: Downlo
       const { url } = await res.json();
       if (!url) throw new Error('Keine Download-URL erhalten');
 
-      // Erstelle einen Link und öffne ihn in einem neuen Tab
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('target', '_blank');
-      link.setAttribute('rel', 'noopener noreferrer');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Direktes Öffnen der URL in einem neuen Tab
+      window.open(url, '_blank', 'noopener,noreferrer');
       
     } catch (error) {
       console.error('Fehler beim Download:', error);
