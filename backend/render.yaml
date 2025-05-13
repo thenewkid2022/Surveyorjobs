@@ -7,7 +7,11 @@ services:
       rm -rf dist/
       npm run build
       echo "=== Build Output ==="
-      find dist -type f
+      ls -la dist/
+      if [ ! -f dist/index.js ]; then
+        echo "ERROR: dist/index.js wurde nicht erstellt!"
+        exit 1
+      fi
       echo "=== End Build Output ==="
     startCommand: NODE_ENV=production npm start
     envVars:
