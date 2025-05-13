@@ -19,9 +19,10 @@ export default function DownloadButton({ fileUrl, variant = 'download' }: Downlo
       setIsLoading(true);
       setError(null);
       
-      // Extrahiere den S3-Key aus der URL
-      const key = fileUrl.split('/').slice(-1)[0];
-      console.log('Starte Download-Prozess für Key:', key);
+      // Extrahiere den S3-Key aus der URL und behalte den uploads/ Pfad
+      const key = fileUrl.split('uploads/').pop() || '';
+      const fullKey = `uploads/${key}`;
+      console.log('Starte Download-Prozess für Key:', fullKey);
       
       // Prüfe ob es sich um Safari handelt
       const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -30,7 +31,7 @@ export default function DownloadButton({ fileUrl, variant = 'download' }: Downlo
       
       // Hole die pre-signed URL vom Backend
       console.log('Fordere pre-signed URL an...');
-      const response = await fetch(`${getApiUrl()}/api/upload/download-url?key=${encodeURIComponent(key)}`);
+      const response = await fetch(`${getApiUrl()}/api/upload/download-url?key=${encodeURIComponent(fullKey)}`);
       
       if (!response.ok) {
         throw new Error(`Fehler beim Abrufen der Download-URL: ${response.statusText}`);
