@@ -33,32 +33,59 @@ export default function Home() {
   const [jobs, setJobs] = useState<SucheEinenJob[]>([]);
   const [stellenanzeigen, setStellenanzeigen] = useState<Stellenanzeige[]>([]);
   const [loading, setLoading] = useState(true);
+  const [jobsPage, setJobsPage] = useState(1);
+  const [hasMoreJobs, setHasMoreJobs] = useState(true);
+  const [loadingMoreJobs, setLoadingMoreJobs] = useState(false);
+
+  const fetchJobs = async (pageNum: number, append: boolean = false) => {
+    try {
+      const jobsRes = await fetch(`${getApiUrl()}/api/suche-einen-job?page=${pageNum}&limit=6`);
+      if (jobsRes.ok) {
+        const jobsData = await jobsRes.json();
+        const newJobs = jobsData.jobs || [];
+        setJobs(prevJobs => append ? [...prevJobs, ...newJobs] : newJobs);
+        setHasMoreJobs(pageNum < jobsData.pagination.pages);
+      }
+    } catch (error) {
+      console.error("Fehler beim Laden der Jobs:", error);
+    } finally {
+      setLoadingMoreJobs(false);
+    }
+  };
+
+  const fetchStellenanzeigen = async () => {
+    try {
+      const stellenanzeigenRes = await fetch(`${getApiUrl()}/api/stellenanzeigen-aufgeben?limit=6`);
+      if (stellenanzeigenRes.ok) {
+        const stellenanzeigenData = await stellenanzeigenRes.json();
+        setStellenanzeigen(stellenanzeigenData.stellenanzeigen || []);
+      }
+    } catch (error) {
+      console.error("Fehler beim Laden der Stellenanzeigen:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const [jobsRes, stellenanzeigenRes] = await Promise.all([
-          fetch(`${getApiUrl()}/api/suche-einen-job`),
-          fetch(`${getApiUrl()}/api/stellenanzeigen-aufgeben`)
+        await Promise.all([
+          fetchJobs(1),
+          fetchStellenanzeigen()
         ]);
-
-        if (jobsRes.ok && stellenanzeigenRes.ok) {
-          const [jobsData, stellenanzeigenData] = await Promise.all([
-            jobsRes.json(),
-            stellenanzeigenRes.json()
-          ]);
-          setJobs(Array.isArray(jobsData) ? jobsData : jobsData.jobs || []);
-          setStellenanzeigen(Array.isArray(stellenanzeigenData) ? stellenanzeigenData : stellenanzeigenData.stellenanzeigen || []);
-        }
-      } catch (error) {
-        console.error("Fehler beim Laden der Daten:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
+
+  const handleLoadMoreJobs = () => {
+    const nextPage = jobsPage + 1;
+    setJobsPage(nextPage);
+    setLoadingMoreJobs(true);
+    fetchJobs(nextPage, true);
+  };
 
   if (loading) {
     return (
@@ -105,24 +132,44 @@ export default function Home() {
                   {jobs.length === 0 ? (
                     <div className="col-12 text-center text-muted">Keine Gesuche gefunden.</div>
                   ) : (
-                    jobs.map((job) => (
-                      <div key={job._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
-                        <div className="card h-100">
-                          <div className="card-body">
-                            <h5 className="card-title">{job.beruf}</h5>
-                            <h6 className="card-subtitle mb-2 text-muted">{job.unternehmen}</h6>
-                            <p className="card-text">
-                              <i className="bi bi-geo-alt"></i> {job.standort}<br />
-                              <i className="bi bi-briefcase"></i> {job.artDerStelle}<br />
-                              <i className="bi bi-clock-history"></i> {job.erfahrung}
-                            </p>
-                            <Link href={`/suche-einen-job/${job._id}`} className="btn btn-primary">
-                              Details anzeigen
-                            </Link>
+                    <>
+                      {jobs.map((job) => (
+                        <div key={job._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
+                          <div className="card h-100">
+                            <div className="card-body">
+                              <h5 className="card-title">{job.beruf}</h5>
+                              <h6 className="card-subtitle mb-2 text-muted">{job.unternehmen}</h6>
+                              <p className="card-text">
+                                <i className="bi bi-geo-alt"></i> {job.standort}<br />
+                                <i className="bi bi-briefcase"></i> {job.artDerStelle}<br />
+                                <i className="bi bi-clock-history"></i> {job.erfahrung}
+                              </p>
+                              <Link href={`/suche-einen-job/${job._id}`} className="btn btn-primary">
+                                Details anzeigen
+                              </Link>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))
+                      ))}
+                      {hasMoreJobs && (
+                        <div className="col-12 text-center mt-4">
+                          <button 
+                            className="btn btn-outline-primary"
+                            onClick={handleLoadMoreJobs}
+                            disabled={loadingMoreJobs}
+                          >
+                            {loadingMoreJobs ? (
+                              <>
+                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Lade...
+                              </>
+                            ) : (
+                              'Mehr laden'
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

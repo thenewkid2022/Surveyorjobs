@@ -23,27 +23,45 @@ export default function JobsPage() {
   const [selectedKategorie, setSelectedKategorie] = useState<string>("");
   const [selectedKanton, setSelectedKanton] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const fetchData = async (pageNum: number, append: boolean = false) => {
+    try {
+      const queryParams = new URLSearchParams();
+      if (selectedKategorie) queryParams.append('kategorie', selectedKategorie);
+      if (selectedKanton) queryParams.append('kanton', selectedKanton);
+      queryParams.append('page', pageNum.toString());
+      queryParams.append('limit', '6');
+
+      const jobsRes = await fetch(`${getApiUrl()}/api/jobs?${queryParams}`);
+      if (jobsRes.ok) {
+        const jobsData = await jobsRes.json();
+        const newJobs = jobsData.jobs || [];
+        setJobs(prevJobs => append ? [...prevJobs, ...newJobs] : newJobs);
+        setHasMore(pageNum < jobsData.pagination.pages);
+      }
+    } catch (error) {
+      console.error("Fehler beim Laden der Daten:", error);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const queryParams = new URLSearchParams();
-        if (selectedKategorie) queryParams.append('kategorie', selectedKategorie);
-        if (selectedKanton) queryParams.append('kanton', selectedKanton);
-
-        const jobsRes = await fetch(`${getApiUrl()}/api/suche-einen-job?${queryParams}`);
-        if (jobsRes.ok) {
-          const jobsData = await jobsRes.json();
-          setJobs(jobsData.jobs || []);
-        }
-      } catch (error) {
-        console.error("Fehler beim Laden der Daten:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    setLoading(true);
+    setPage(1);
+    fetchData(1);
   }, [selectedKategorie, selectedKanton]);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    setLoadingMore(true);
+    fetchData(nextPage, true);
+  };
 
   const handleKategorieChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedKategorie(e.target.value);
@@ -122,24 +140,44 @@ export default function JobsPage() {
           {jobs.length === 0 ? (
             <div className="col-12 text-center text-muted">Keine Stellenangebote gefunden.</div>
           ) : (
-            jobs.map((job) => (
-              <div key={job._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
-                <div className="card h-100">
-                  <div className="card-body">
-                    <h5 className="card-title">{job.titel}</h5>
-                    <p className="card-text">
-                      <i className="bi bi-geo-alt"></i> {job.standort}<br />
-                      {job.unternehmen && <><i className="bi bi-building"></i> {job.unternehmen}<br /></>}
-                      {job.artDerStelle && <><i className="bi bi-briefcase"></i> {job.artDerStelle}<br /></>}
-                      <i className="bi bi-calendar"></i> Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString('de-DE')}
-                    </p>
-                    <Link href={`/berufe/${job.kategorie}/${job._id}`} className="btn btn-primary">
-                      Details anzeigen
-                    </Link>
+            <>
+              {jobs.map((job) => (
+                <div key={job._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
+                  <div className="card h-100">
+                    <div className="card-body">
+                      <h5 className="card-title">{job.titel}</h5>
+                      <p className="card-text">
+                        <i className="bi bi-geo-alt"></i> {job.standort}<br />
+                        {job.unternehmen && <><i className="bi bi-building"></i> {job.unternehmen}<br /></>}
+                        {job.artDerStelle && <><i className="bi bi-briefcase"></i> {job.artDerStelle}<br /></>}
+                        <i className="bi bi-calendar"></i> Eingestellt am: {new Date(job.erstelltAm).toLocaleDateString('de-DE')}
+                      </p>
+                      <Link href={`/berufe/${job.kategorie}/${job._id}`} className="btn btn-primary">
+                        Details anzeigen
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+              {hasMore && (
+                <div className="col-12 text-center mt-4">
+                  <button 
+                    className="btn btn-outline-primary"
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                  >
+                    {loadingMore ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Lade...
+                      </>
+                    ) : (
+                      'Mehr laden'
+                    )}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

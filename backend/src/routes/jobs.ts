@@ -5,10 +5,47 @@ import { authenticateJWT } from "../middleware/auth";
 const router = express.Router();
 
 // Alle Jobs abrufen
-router.get("/", async (_req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
-    const jobs = await Job.find().sort({ erstelltAm: -1 });
-    return res.json(jobs);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 6;
+    const kategorie = req.query.kategorie as string;
+    const kanton = req.query.kanton as string;
+
+    // Erstelle Filter-Objekt
+    const filter: any = {
+      status: 'aktiv',
+      expiresAt: { $gt: new Date() }
+    };
+
+    if (kategorie) {
+      filter.kategorie = new RegExp(`^${kategorie}$`, 'i');
+    }
+
+    if (kanton) {
+      filter.standort = new RegExp(kanton, 'i');
+    }
+
+    // Hole Jobs mit Pagination
+    const jobs = await Job
+      .find(filter)
+      .sort({ erstelltAm: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
+
+    // Zähle Gesamtanzahl
+    const totalJobs = await Job.countDocuments(filter);
+
+    res.json({
+      jobs,
+      pagination: {
+        total: totalJobs,
+        page,
+        limit,
+        pages: Math.ceil(totalJobs / limit)
+      }
+    });
   } catch (error) {
     return res.status(500).json({ message: "Fehler beim Abrufen der Jobs", error });
   }
