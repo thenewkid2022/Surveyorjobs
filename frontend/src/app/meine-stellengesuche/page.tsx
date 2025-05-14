@@ -6,7 +6,7 @@ import { FaArrowLeft, FaPlus, FaBriefcase, FaMapMarkerAlt, FaCalendarAlt, FaUser
 import { IconBaseProps } from "react-icons";
 import Link from "next/link";
 import { getApiUrl } from "@/utils/api";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Stellengesuch {
   _id: string;
