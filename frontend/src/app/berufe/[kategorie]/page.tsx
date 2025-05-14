@@ -99,7 +99,7 @@ export default function BerufskategoriePage({
 
   return (
     <main className="bg-white min-vh-100 font-sans">
-      <div className="container py-5">
+      <div className="container-fluid py-5" style={{maxWidth: '1200px', margin: '0 auto'}}>
         <h1 className="display-5 fw-bold text-primary mb-4">{pageTitle}</h1>
 
         {/* Jobs Section */}

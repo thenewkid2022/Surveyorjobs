@@ -74,7 +74,7 @@ export default function JobsPage() {
 
   return (
     <main className="bg-white min-vh-100 font-sans">
-      <section className="container py-4">
+      <section className="container-fluid py-4" style={{maxWidth: '1200px', margin: '0 auto'}}>
         <h1 className="h2 fw-bold text-primary mb-4 text-center">Alle Stellenangebote</h1>
         <div className="row mb-4">
           <div className="col-12 col-md-6 mb-3 mb-md-0">

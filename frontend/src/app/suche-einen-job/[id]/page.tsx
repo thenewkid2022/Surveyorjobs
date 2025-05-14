@@ -60,7 +60,7 @@ export default async function Page({
 
   if (error || !sucheEinenJob) {
     return (
-      <div className="container py-5">
+      <div className="container-fluid py-5" style={{maxWidth: '700px', margin: '0 auto'}}>
         <div className="alert alert-danger" role="alert">
           {error || "Jobsuche nicht gefunden"}
         </div>
@@ -73,7 +73,7 @@ export default async function Page({
   }
 
   return (
-    <div className="container py-5">
+    <div className="container-fluid py-5" style={{maxWidth: '700px', margin: '0 auto'}}>
       <Link href="/" className="btn btn-outline-success mb-4">
         <FaArrowLeft {...{ style: { marginRight: "0.5rem" } } as IconBaseProps} />
         Zurück zur Übersicht

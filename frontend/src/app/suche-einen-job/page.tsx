@@ -510,7 +510,7 @@ export default function SucheEinenJob() {
   };
 
   return (
-    <main className="container py-5">
+    <main className="container-fluid py-5" style={{maxWidth: '900px', margin: '0 auto'}}>
       <div className="text-center mb-5">
         <h1 className="display-4 fw-bold mb-3 text-white">Jobsuche veröffentlichen</h1>
         <p className="lead text-white-50">

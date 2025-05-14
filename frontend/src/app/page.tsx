@@ -150,7 +150,7 @@ export default function Home() {
               titel: job.titel
             });
             return (
-              <div className="col-6 col-lg-3" key={job._id}>
+              <div className="col-12 col-md-6 col-lg-3" key={job._id}>
                 <JobCard
                   id={job._id}
                   titel={job.titel}
@@ -191,7 +191,7 @@ export default function Home() {
         <h2 className="h3 mb-4 text-primary">Aktuelle Stellengesuche</h2>
         <div className="row g-4">
           {stellengesuche.map((gesuch: Stellengesuch) => (
-            <div className="col-6 col-lg-3" key={gesuch._id}>
+            <div className="col-12 col-md-6 col-lg-3" key={gesuch._id}>
               <JobCard
                 id={gesuch._id}
                 beruf={gesuch.beruf}

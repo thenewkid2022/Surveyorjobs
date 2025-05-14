@@ -34,7 +34,30 @@ export default function JobCard({
 }: JobCardProps) {
   console.log('JobCard erstelltAm:', erstelltAm, 'Typ:', typeof erstelltAm);
   const link = kategorie ? `/${linkPrefix}/${kategorie}/${id}` : `/${linkPrefix}/${id}`;
-  const displayTitle = type === 'job' ? titel : (beruf || berufswunsch || position);
+  
+  // Funktion zum Bereinigen und Formatieren des Titels
+  const formatTitle = (title: string) => {
+    if (!title) return '';
+
+    // Entferne EFZ, FH, ETH (mit oder ohne Leerzeichen davor)
+    let cleanTitle = title.replace(/\s*(EFZ|FH|ETH)\b/gi, '');
+    cleanTitle = cleanTitle.replace(/\s*\/\s*$/, ''); // Schrägstrich am Ende entfernen
+    cleanTitle = cleanTitle.trim();
+
+    // Erster Buchstabe groß, Rest wie im Original (außer erstem Buchstaben)
+    if (cleanTitle.length > 0) {
+      cleanTitle = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
+    }
+
+    // Wenn der Titel nicht mit '/in' endet, hänge '/in' an
+    if (!/\/in$/i.test(cleanTitle)) {
+      cleanTitle += '/in';
+    }
+
+    return cleanTitle;
+  };
+
+  const displayTitle = type === 'job' ? formatTitle(titel || '') : formatTitle(beruf || berufswunsch || position || '');
 
   // Farbklassen zentral steuern
   const colorClass = type === 'job' ? 'primary' : 'success';
