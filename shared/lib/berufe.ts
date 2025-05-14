@@ -9,12 +9,12 @@ export const berufe: Beruf[] = [
   // Hochbau
   { id: 'maurer', titel: 'Maurer/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
   { id: 'betonbauer', titel: 'Beton- und Stahlbetonbauer/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
-  { id: 'trockenbauer', titel: 'Trockenbauer/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
   { id: 'zimmerer', titel: 'Zimmerer/Zimmermann/Zimmerin EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
-  { id: 'maler', titel: 'Maler/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
-  { id: 'fliesenleger', titel: 'Fliesenleger/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
-  { id: 'natursteinbearbeiter', titel: 'Natursteinbearbeiter/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
-  { id: 'bauhelfer-hochbau', titel: 'Bauhelfer/in Hochbau', kategorie: 'Hochbau' },
+  { id: 'natursteinbearbeiter', titel: 'Natursteinbearbeiter/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
+  { id: 'bauhelfer-hochbau', titel: 'Bauhelfer/in EBA', kategorie: 'Hochbau', ausbildung: 'EBA' },
+  { id: 'fassadenbauer', titel: 'Fassadenbauer/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
+  { id: 'holzbau-polier', titel: 'Holzbau-Polier/in HFP', kategorie: 'Hochbau', ausbildung: 'HFP' },
+  { id: 'beton-polier', titel: 'Beton- und Stahlbetonbau-Polier/in HFP', kategorie: 'Hochbau', ausbildung: 'HFP' },
 
   // Tiefbau
   { id: 'strassenbauer', titel: 'Strassenbauer/in EFZ', kategorie: 'Tiefbau', ausbildung: 'EFZ' },
@@ -22,7 +22,9 @@ export const berufe: Beruf[] = [
   { id: 'gleisbauer', titel: 'Gleisbauer/in EFZ', kategorie: 'Tiefbau', ausbildung: 'EFZ' },
   { id: 'grundbauer', titel: 'Grundbauer/in EFZ', kategorie: 'Tiefbau', ausbildung: 'EFZ' },
   { id: 'kanalbauer', titel: 'Kanalbauer/in EFZ', kategorie: 'Tiefbau', ausbildung: 'EFZ' },
-  { id: 'bauhelfer-tiefbau', titel: 'Bauhelfer/in Tiefbau', kategorie: 'Tiefbau' },
+  { id: 'bauhelfer-tiefbau', titel: 'Bauhelfer/in EBA', kategorie: 'Tiefbau', ausbildung: 'EBA' },
+  { id: 'strassenbau-polier', titel: 'Strassenbau-Polier/in HFP', kategorie: 'Tiefbau', ausbildung: 'HFP' },
+  { id: 'tiefbau-polier', titel: 'Tiefbau-Polier/in HFP', kategorie: 'Tiefbau', ausbildung: 'HFP' },
 
   // Ausbau
   { id: 'schreiner', titel: 'Schreiner/in EFZ', kategorie: 'Ausbau', ausbildung: 'EFZ' },
@@ -37,6 +39,9 @@ export const berufe: Beruf[] = [
   { id: 'bodenleger', titel: 'Bodenleger/in EFZ', kategorie: 'Ausbau', ausbildung: 'EFZ' },
   { id: 'anstreicher', titel: 'Anstreicher/in EFZ', kategorie: 'Ausbau', ausbildung: 'EFZ' },
   { id: 'gipser', titel: 'Gipser/in EFZ', kategorie: 'Ausbau', ausbildung: 'EFZ' },
+  { id: 'trockenbauer', titel: 'Trockenbauer/in EFZ', kategorie: 'Ausbau', ausbildung: 'EFZ' },
+  { id: 'maler', titel: 'Maler/in EFZ', kategorie: 'Ausbau', ausbildung: 'EFZ' },
+  { id: 'fliesenleger', titel: 'Fliesenleger/in EFZ', kategorie: 'Ausbau', ausbildung: 'EFZ' },
 
   // Planung & Technik
   { id: 'architekt', titel: 'Architekt/in FH/ETH', kategorie: 'Planung & Technik', ausbildung: 'FH/ETH' },
@@ -48,35 +53,25 @@ export const berufe: Beruf[] = [
   { id: 'bauoekonom', titel: 'Bauökonom/in FH', kategorie: 'Planung & Technik', ausbildung: 'FH' },
   { id: 'facility-manager', titel: 'Facility Manager/in FH', kategorie: 'Planung & Technik', ausbildung: 'FH' },
   { id: 'innenarchitekt', titel: 'Innenarchitekt/in FH', kategorie: 'Planung & Technik', ausbildung: 'FH' },
+  { id: 'bauadministrationsfachmann', titel: 'Bauadministrationsfachmann/-frau', kategorie: 'Planung & Technik' },
+  { id: 'bauoekonom-verwaltung', titel: 'Bauökonom/in', kategorie: 'Planung & Technik' },
+  { id: 'baukostenplaner', titel: 'Baukostenplaner/in FH', kategorie: 'Planung & Technik', ausbildung: 'FH' },
+  { id: 'bausachverstaendiger', titel: 'Bausachverständige/r', kategorie: 'Planung & Technik' },
 
   // Weitere Berufe
-  { id: 'baumaschinenmechaniker', titel: 'Baumaschinenmechaniker/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
+  { id: 'baumaschinenmechaniker', titel: 'Baumaschinenmechaniker/in EFZ', kategorie: 'Technik', ausbildung: 'EFZ' },
   { id: 'landschaftsgaertner', titel: 'Landschaftsgärtner/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
   { id: 'gartenbauer', titel: 'Gartenbauer/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
   { id: 'forstwart', titel: 'Forstwart/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
   { id: 'metallbauer', titel: 'Metallbauer/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
   { id: 'schlossereimechaniker', titel: 'Schlossereimechaniker/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
   { id: 'baufuehrer', titel: 'Bauführer/in', kategorie: 'Weitere Berufe' },
-  { id: 'polier', titel: 'Polier/in', kategorie: 'Weitere Berufe' },
   { id: 'bauvorarbeiter', titel: 'Bauvorarbeiter/in', kategorie: 'Weitere Berufe' },
   { id: 'kranfuehrer', titel: 'Kranführer/in', kategorie: 'Weitere Berufe' },
   { id: 'betontrennfachmann', titel: 'Betontrennfachmann/-frau', kategorie: 'Weitere Berufe' },
   { id: 'sprengfachmann', titel: 'Sprengfachmann/-frau', kategorie: 'Weitere Berufe' },
-
-  // Spezialisierte Berufe
-  { id: 'fassadenbauer', titel: 'Fassadenbauer/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
-  { id: 'holzbau-polier', titel: 'Holzbau-Polier/in HFP', kategorie: 'Weitere Berufe', ausbildung: 'HFP' },
-  { id: 'beton-polier', titel: 'Beton- und Stahlbetonbau-Polier/in HFP', kategorie: 'Weitere Berufe', ausbildung: 'HFP' },
-  { id: 'strassenbau-polier', titel: 'Strassenbau-Polier/in HFP', kategorie: 'Weitere Berufe', ausbildung: 'HFP' },
-  { id: 'tiefbau-polier', titel: 'Tiefbau-Polier/in HFP', kategorie: 'Weitere Berufe', ausbildung: 'HFP' },
   { id: 'bauwerktrenner', titel: 'Bauwerktrenner/in', kategorie: 'Weitere Berufe' },
-  { id: 'denkmalpfleger', titel: 'Denkmalpfleger/in', kategorie: 'Weitere Berufe' },
-
-  // Verwaltung
-  { id: 'bauadministrationsfachmann', titel: 'Bauadministrationsfachmann/-frau', kategorie: 'Weitere Berufe' },
-  { id: 'bauoekonom-verwaltung', titel: 'Bauökonom/in', kategorie: 'Weitere Berufe' },
-  { id: 'baukostenplaner', titel: 'Baukostenplaner/in FH', kategorie: 'Weitere Berufe', ausbildung: 'FH' },
-  { id: 'bausachverstaendiger', titel: 'Bausachverständige/r', kategorie: 'Weitere Berufe' }
+  { id: 'denkmalpfleger', titel: 'Denkmalpfleger/in', kategorie: 'Weitere Berufe' }
 ];
 
 export const kategorien = {
@@ -84,6 +79,7 @@ export const kategorien = {
   'Tiefbau': 'Tiefbau',
   'Ausbau': 'Ausbau',
   'Planung & Technik': 'Planung & Technik',
+  'Technik': 'Technik',
   'Weitere Berufe': 'Weitere Berufe'
 };
 
