@@ -1,4 +1,18 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
+
+export interface IJob extends Document {
+  titel: string;
+  standort: string;
+  beschreibung: string;
+  unternehmen: string;
+  artDerStelle: string;
+  kontaktEmail: string;
+  kontaktTelefon?: string;
+  erfahrung?: string;
+  erstelltAm: Date;
+  expiresAt: Date;
+  ersteller: mongoose.Types.ObjectId;
+}
 
 const JobSchema = new mongoose.Schema({
   titel: {
@@ -40,7 +54,12 @@ const JobSchema = new mongoose.Schema({
   expiresAt: {
     type: Date,
     required: true
+  },
+  ersteller: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 });
 
-export default mongoose.model("Job", JobSchema); 
+export default mongoose.model<IJob>("Job", JobSchema); 

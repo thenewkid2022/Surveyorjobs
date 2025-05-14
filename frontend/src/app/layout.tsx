@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import BootstrapClient from "./components/BootstrapClient";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,12 +25,14 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={`${inter.className} antialiased d-flex flex-column min-vh-100`}>
-        <Navbar />
-        <main className="flex-grow-1">
-          {children}
-        </main>
-        <BootstrapClient />
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-grow-1">
+            {children}
+          </main>
+          <BootstrapClient />
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

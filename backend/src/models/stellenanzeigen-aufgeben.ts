@@ -19,7 +19,16 @@ const StellenanzeigenAufgebenSchema = new mongoose.Schema({
   kontaktName: { type: String, required: true },
   kontaktEmail: { type: String, required: true },
   kontaktTelefon: { type: String },
-  status: { type: String, default: "aktiv" }
+  status: { 
+    type: String, 
+    enum: ['aktiv', 'inaktiv', 'besetzt'],
+    default: 'aktiv'
+  },
+  ersteller: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  }
 });
 
 export default mongoose.model("StellenanzeigenAufgeben", StellenanzeigenAufgebenSchema, "stellenanzeigen-aufgeben"); 

@@ -4,6 +4,7 @@ import { ortschaftZuKanton } from "@shared/lib/kantone";
 import { authenticateJWT } from "../middleware/auth";
 import { berufe } from "@shared/lib/berufe";
 import { withDB } from "../db/connection";
+import { AuthRequest } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -68,6 +69,46 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
+// Eigene Stellenanzeigen abrufen (authentifiziert)
+router.get("/meine", authenticateJWT, async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Nicht authentifiziert" });
+    }
+
+    const result = await withDB(async () => {
+      const stellenanzeigen = await StellenanzeigenAufgeben
+        .find({
+          ersteller: userId,
+          status: 'aktiv',
+          expiresAt: { $gt: new Date() }
+        })
+        .sort({ erstelltAm: -1 });
+
+      console.log('Gefundene Stellenanzeigen für Benutzer', userId, {
+        anzahl: stellenanzeigen.length,
+        stellenanzeigen: stellenanzeigen.map(s => ({
+          id: s._id,
+          titel: s.titel,
+          status: s.status,
+          expiresAt: s.expiresAt
+        }))
+      });
+
+      return {
+        stellenanzeigen,
+        total: stellenanzeigen.length
+      };
+    });
+
+    return res.json(result);
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Stellenanzeigen:', error);
+    return res.status(500).json({ message: "Fehler beim Abrufen der Stellenanzeigen", error });
+  }
+});
+
 // Einzelne Stellenanzeige abrufen
 router.get("/:id", async (req: Request, res: Response) => {
   try {
@@ -86,8 +127,13 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 // Neue Stellenanzeige erstellen (authentifiziert)
-router.post("/", authenticateJWT, async (req: Request, res: Response) => {
+router.post("/", authenticateJWT, async (req: AuthRequest, res: Response) => {
   try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Nicht authentifiziert" });
+    }
+
     const data = req.body;
     
     // Validierung der Pflichtfelder (ohne kategorie)
@@ -117,14 +163,24 @@ router.post("/", authenticateJWT, async (req: Request, res: Response) => {
     const stellenanzeige = await withDB(async () => {
       const newStellenanzeige = new StellenanzeigenAufgeben({
         ...data,
+        ersteller: userId,
         erstelltAm,
-        expiresAt
+        expiresAt,
+        status: 'aktiv'
       });
       return await newStellenanzeige.save();
     });
 
+    console.log('Neue Stellenanzeige erstellt:', {
+      id: stellenanzeige._id,
+      titel: stellenanzeige.titel,
+      ersteller: stellenanzeige.ersteller,
+      status: stellenanzeige.status
+    });
+
     return res.status(201).json(stellenanzeige);
   } catch (error) {
+    console.error('Fehler beim Erstellen der Stellenanzeige:', error);
     return res.status(500).json({ message: "Fehler beim Erstellen der Stellenanzeige", error });
   }
 });

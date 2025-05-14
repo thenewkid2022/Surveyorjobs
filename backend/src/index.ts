@@ -12,6 +12,8 @@ import paymentRouter from "./routes/payment";
 import authRouter from "./routes/auth";
 import uploadRouter from "./routes/upload";
 import locationsRouter from "./routes/locations";
+import dashboardRouter from "./routes/dashboard";
+import premiumRouter from "./routes/premium";
 
 const app = express();
 
@@ -59,6 +61,8 @@ app.use("/api/payment", paymentRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/locations", locationsRouter);
+app.use("/api/dashboard", dashboardRouter);
+app.use("/api/premium", premiumRouter);
 
 // Health Check
 app.get("/health", (_, res) => {

@@ -1,4 +1,28 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
+
+export interface ISucheEinenJob extends Document {
+  titel: string;
+  beruf: string;
+  standort: string;
+  beschreibung: string;
+  erfahrung: string;
+  ausbildung: string;
+  faehigkeiten: string[];
+  sprachen: string[];
+  mobilitaet: 'In der Region' | 'Schweizweit' | 'International';
+  artDerStelle: 'Vollzeit' | 'Teilzeit' | 'Befristet' | 'Projektarbeit';
+  verfuegbarAb: Date;
+  kontaktEmail: string;
+  kontaktTelefon?: string;
+  lebenslauf: string;
+  anschreiben?: string;
+  erstelltAm: Date;
+  expiresAt: Date;
+  status: 'aktiv' | 'inaktiv' | 'besetzt';
+  kategorie: 'Hochbau' | 'Tiefbau' | 'Ausbau' | 'Planung & Technik' | 'Weitere Berufe';
+  ersteller: mongoose.Types.ObjectId;
+  hervorgehoben: boolean;
+}
 
 const SucheEinenJobSchema = new mongoose.Schema({
   titel: {
@@ -86,7 +110,16 @@ const SucheEinenJobSchema = new mongoose.Schema({
         return validCategories.some(cat => cat.toLowerCase() === v.toLowerCase());
       }
     }
+  },
+  ersteller: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  hervorgehoben: {
+    type: Boolean,
+    default: false
   }
 });
 
-export default mongoose.model("SucheEinenJob", SucheEinenJobSchema, "suche-einen-job"); 
+export default mongoose.model<ISucheEinenJob>("SucheEinenJob", SucheEinenJobSchema, "suche-einen-job"); 

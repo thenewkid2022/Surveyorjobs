@@ -31,24 +31,38 @@
   :root {
     --background: #181a1b;
     --foreground: #ededed;
-    
     --bs-primary: #3b82f6;
     --bs-primary-rgb: 59, 130, 246;
     --bs-primary-hover: #2563eb;
-    
     --bs-secondary: #94a3b8;
     --bs-secondary-rgb: 148, 163, 184;
-    
     --bs-border: #334155;
     --bs-border-rgb: 51, 65, 85;
+    --bs-warning: #FFD600;
+    --bs-warning-rgb: 255, 214, 0;
   }
   body {
     background: var(--background);
     color: var(--foreground);
   }
   .dark-mode-navbar {
-    background-color: #23272b !important;
-    border-bottom: 1px solid var(--bs-border) !important;
+    background-color: #181a1b !important;
+    border-bottom: 1.5px solid var(--bs-border) !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .dark-mode-navbar .navbar-brand,
+  .dark-mode-navbar .nav-link,
+  .dark-mode-navbar .dropdown-toggle {
+    color: #ededed !important;
+  }
+  .dark-mode-navbar .nav-link.active,
+  .dark-mode-navbar .nav-link:focus,
+  .dark-mode-navbar .nav-link:hover {
+    color: var(--bs-primary) !important;
+    background: rgba(59,130,246,0.08);
+    border-radius: 0.3rem;
   }
   .dark-mode-navbar .navbar-toggler {
     border-color: var(--bs-border) !important;
@@ -67,101 +81,88 @@
     display: block;
     height: 3px;
     width: 100%;
-    background: #fff;
+    background: #ededed;
     margin: 5px 0;
     border-radius: 2px;
   }
+  .dark-mode-navbar .d-flex {
+    gap: 1.2rem !important;
+  }
+  .dark-mode-navbar .btn-warning {
+    background: var(--bs-warning) !important;
+    color: #181a1b !important;
+    border: none;
+    box-shadow: 0 2px 8px rgba(255,214,0,0.08);
+    font-weight: 600;
+  }
+  .dark-mode-navbar .btn-warning:hover {
+    background: #ffe066 !important;
+    color: #181a1b !important;
+  }
+  .dark-mode-navbar .btn-outline-primary,
   .dark-mode-btn {
-    border-color: var(--bs-primary) !important;
+    border-color: #90caf9 !important;
+    color: #90caf9 !important;
+    background: transparent !important;
+  }
+  .dark-mode-navbar .btn-outline-primary:hover,
+  .dark-mode-btn:hover {
+    background: #2563eb !important;
+    color: #fff !important;
+    border-color: #2563eb !important;
+  }
+  .dark-mode-navbar .dropdown-menu {
+    background: #23272b !important;
+    color: #ededed !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    border-radius: 0.5rem;
+    margin-top: 0.5rem !important;
+  }
+  .dark-mode-navbar .dropdown-item {
+    color: #ededed !important;
+    border-radius: 0.3rem;
+    padding: 0.6rem 1.2rem;
+  }
+  .dark-mode-navbar .dropdown-item:hover,
+  .dark-mode-navbar .dropdown-item:focus {
+    background: rgba(59,130,246,0.12) !important;
     color: var(--bs-primary) !important;
   }
-  .dark-mode-btn:hover {
-    background-color: var(--bs-primary) !important;
-    color: white !important;
+  .dark-mode-navbar .dropdown-item.text-danger {
+    color: #ff5252 !important;
   }
-  .card, .bg-white {
-    background-color: #23272b !important;
-    color: var(--foreground) !important;
+  .dark-mode-navbar .dropdown-divider {
+    border-top: 1px solid #334155 !important;
   }
-  .card .card-title,
-  .card .card-text,
-  .card .btn {
-    color: var(--foreground) !important;
-  }
-  .form-control, .form-select {
-    background-color: #23272b !important;
-    color: var(--foreground) !important;
-    border-color: var(--bs-border) !important;
-  }
-  .form-select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
-  }
-  .form-select option {
-    background-color: #23272b !important;
-    color: var(--foreground) !important;
-  }
-  .border-primary {
-    border-color: var(--bs-primary) !important;
-  }
+}
 
-  /* Stripe Element Styles für Dark Mode */
-  .StripeElement,
-  .StripeElement--focus,
-  .StripeElement--invalid,
-  .StripeElement--complete {
-    background-color: #23272b !important;
-    color: var(--foreground) !important;
-    border-color: var(--bs-border) !important;
-  }
-
-  .StripeElement--focus {
-    border-color: var(--bs-primary) !important;
-    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25) !important;
-  }
-
-  .StripeElement--invalid {
-    border-color: var(--bs-danger) !important;
-  }
-
-  /* Stripe Label Styles */
-  .StripeElement label {
-    color: var(--foreground) !important;
-  }
-
-  /* Stripe Input Styles */
-  .StripeElement input {
-    color: var(--foreground) !important;
-    background-color: #23272b !important;
-  }
-
-  /* Stripe Error Message */
-  .StripeElement--error {
-    color: var(--bs-danger) !important;
-  }
-
-  /* Stripe Card Element Container */
-  .StripeElement--card {
-    background-color: #23272b !important;
-    border-radius: 4px;
-    padding: 12px;
-    border: 1px solid var(--bs-border) !important;
-  }
-
-  /* Stripe Card Element Placeholder */
-  .StripeElement--card::placeholder {
-    color: var(--bs-secondary) !important;
-  }
+/* Verbesserte Abstände und Layout für Navbar auch im Lightmode */
+.dark-mode-navbar .d-flex {
+  gap: 1.2rem !important;
+}
+.dark-mode-navbar .btn,
+.dark-mode-navbar .dropdown-toggle {
+  border-radius: 0.4rem !important;
+  min-width: 120px;
+  text-align: center;
+}
+.dark-mode-navbar .dropdown-menu {
+  min-width: 180px;
 }
 
 .btn-primary {
   background-color: var(--bs-primary) !important;
   border-color: var(--bs-primary) !important;
   color: white !important;
+  box-shadow: 0 0 0 0 rgba(59,130,246,0.4);
+  transition: box-shadow 0.2s;
 }
 
-.btn-primary:hover {
+.btn-primary:hover, .btn-primary:focus {
   background-color: var(--bs-primary-hover) !important;
   border-color: var(--bs-primary-hover) !important;
+  box-shadow: 0 0 8px 2px rgba(59,130,246,0.25);
 }
 
 .btn-outline-primary {
@@ -274,4 +275,9 @@ body {
   .header-height {
     height: 340px;
   }
+}
+
+.container {
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
 }

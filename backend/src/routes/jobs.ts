@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import Job from "../models/Job";
-import { authenticateJWT } from "../middleware/auth";
+import User from "../models/User";
+import { authenticateJWT, AuthRequest } from "../middleware/auth";
 import { withDB } from "../db/connection";
 
 const router = express.Router();
@@ -73,7 +74,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 // Neuen Job anlegen (authentifiziert)
-router.post("/", authenticateJWT, async (req: Request, res: Response) => {
+router.post("/", authenticateJWT, async (req: AuthRequest, res: Response) => {
   try {
     const { 
       titel, 
@@ -86,11 +87,17 @@ router.post("/", authenticateJWT, async (req: Request, res: Response) => {
       erfahrung 
     } = req.body;
 
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Nicht authentifiziert" });
+    }
+
     // Setze Ablaufdatum auf 30 Tage in der Zukunft
     const erstelltAm = new Date();
     const expiresAt = new Date(erstelltAm.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-    const job = await withDB(async () => {
+    const result = await withDB(async () => {
+      // Erstelle den neuen Job
       const newJob = new Job({
         titel,
         standort,
@@ -101,12 +108,22 @@ router.post("/", authenticateJWT, async (req: Request, res: Response) => {
         kontaktTelefon,
         erfahrung,
         erstelltAm,
-        expiresAt
+        expiresAt,
+        ersteller: userId
       });
-      return await newJob.save();
+
+      // Speichere den Job
+      const savedJob = await newJob.save();
+
+      // Aktualisiere den Benutzer
+      await User.findByIdAndUpdate(userId, {
+        $push: { erstellteJobs: savedJob._id }
+      });
+
+      return savedJob;
     });
 
-    return res.status(201).json(job);
+    return res.status(201).json(result);
   } catch (error) {
     console.error("Fehler beim Anlegen des Jobs:", error);
     return res.status(500).json({ message: "Fehler beim Anlegen des Jobs", error });
@@ -114,9 +131,25 @@ router.post("/", authenticateJWT, async (req: Request, res: Response) => {
 });
 
 // Job aktualisieren (authentifiziert)
-router.put("/:id", authenticateJWT, async (req: Request, res: Response) => {
+router.put("/:id", authenticateJWT, async (req: AuthRequest, res: Response) => {
   try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Nicht authentifiziert" });
+    }
+
     const job = await withDB(async () => {
+      const existingJob = await Job.findById(req.params.id);
+      
+      if (!existingJob) {
+        return null;
+      }
+
+      // Prüfe, ob der Benutzer der Ersteller ist
+      if (existingJob.ersteller.toString() !== userId) {
+        throw new Error("Nicht autorisiert");
+      }
+
       return await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
     });
 
@@ -125,22 +158,52 @@ router.put("/:id", authenticateJWT, async (req: Request, res: Response) => {
     }
     return res.json(job);
   } catch (error) {
+    if (error instanceof Error && error.message === "Nicht autorisiert") {
+      return res.status(403).json({ message: "Nicht autorisiert" });
+    }
     return res.status(400).json({ message: "Fehler beim Aktualisieren des Jobs", error });
   }
 });
 
 // Job löschen (authentifiziert)
-router.delete("/:id", authenticateJWT, async (req: Request, res: Response) => {
+router.delete("/:id", authenticateJWT, async (req: AuthRequest, res: Response) => {
   try {
-    const job = await withDB(async () => {
-      return await Job.findByIdAndDelete(req.params.id);
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Nicht authentifiziert" });
+    }
+
+    const result = await withDB(async () => {
+      const job = await Job.findById(req.params.id);
+      
+      if (!job) {
+        return null;
+      }
+
+      // Prüfe, ob der Benutzer der Ersteller ist
+      if (job.ersteller.toString() !== userId) {
+        throw new Error("Nicht autorisiert");
+      }
+
+      // Lösche den Job
+      await job.deleteOne();
+
+      // Aktualisiere den Benutzer
+      await User.findByIdAndUpdate(userId, {
+        $pull: { erstellteJobs: job._id }
+      });
+
+      return { message: "Job erfolgreich gelöscht" };
     });
 
-    if (!job) {
+    if (!result) {
       return res.status(404).json({ message: "Job nicht gefunden" });
     }
-    return res.json({ message: "Job erfolgreich gelöscht" });
+    return res.json(result);
   } catch (error) {
+    if (error instanceof Error && error.message === "Nicht autorisiert") {
+      return res.status(403).json({ message: "Nicht autorisiert" });
+    }
     return res.status(500).json({ message: "Fehler beim Löschen des Jobs", error });
   }
 });
