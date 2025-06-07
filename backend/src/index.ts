@@ -14,6 +14,8 @@ import uploadRouter from "./routes/upload";
 import locationsRouter from "./routes/locations";
 import dashboardRouter from "./routes/dashboard";
 import premiumRouter from "./routes/premium";
+import cvAccessRouter from "./routes/cv-access";
+import analyticsRouter from "./routes/analytics";
 
 const app = express();
 
@@ -63,6 +65,8 @@ app.use("/api/upload", uploadRouter);
 app.use("/api/locations", locationsRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/premium", premiumRouter);
+app.use("/api/cv-access", cvAccessRouter);
+app.use("/api/analytics", analyticsRouter);
 
 // Health Check
 app.get("/health", (_, res) => {

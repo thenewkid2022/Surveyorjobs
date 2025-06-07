@@ -17,64 +17,37 @@ const kategorieMapping: { [key: string]: string } = {
   'weitere': 'Weitere Berufe'
 };
 
-// Alle Jobs abrufen
+// Alle Jobs abrufen (öffentlich)
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 6;
-    const kategorieKey = req.query.kategorie as string;
-    const kanton = req.query.kanton as string;
-
-    // Erstelle Filter-Objekt
-    const filter: any = {
-      status: 'aktiv',
-      expiresAt: { $gt: new Date() }
-    };
-
-    if (kategorieKey) {
-      // Übersetze den URL-Schlüssel in den vollständigen Kategorienamen
-      const kategorie = kategorieMapping[kategorieKey];
-      if (kategorie) {
-        // Case-insensitive Suche mit RegExp
-        filter.kategorie = new RegExp(`^${kategorie}$`, 'i');
-      }
-    }
-
-    if (kanton) {
-      // Finde alle Orte für den gewählten Kanton
-      const orteImKanton = Object.entries(ortschaftZuKanton)
-        .filter(([_, k]) => k === kanton)
-        .map(([ort, _]) => ort);
-      
-      // Verwende $in für exakte Übereinstimmungen
-      filter.standort = { $in: orteImKanton };
-    }
-
-    const result = await withDB(async () => {
-      // Hole Jobs mit Pagination
-      const jobs = await SucheEinenJob
-        .find(filter)
-        .sort({ erstelltAm: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit);
-
-      // Zähle Gesamtanzahl
-      const totalJobs = await SucheEinenJob.countDocuments(filter);
-
-      return {
-        jobs,
-        pagination: {
-          total: totalJobs,
-          page,
-          limit,
-          pages: Math.ceil(totalJobs / limit)
+    console.log("Abrufen aller 'Suche einen Job' Einträge");
+    
+    const jobs = await withDB(async () => {
+      // Für öffentliche Ansicht: Lebensläufe und Kontaktdaten ausblenden
+      // Nur Arbeitgeber mit bezahltem Paket können diese Daten sehen
+      return await SucheEinenJob.find(
+        { 
+          status: 'aktiv',
+          expiresAt: { $gt: new Date() }
+        },
+        {
+          // Sensible Daten ausblenden für öffentliche Ansicht
+          lebenslauf: 0,
+          kontaktEmail: 0, 
+          kontaktTelefon: 0,
+          anschreiben: 0
         }
-      };
+      ).sort({ erstelltAm: -1 });
     });
 
-    res.json(result);
+    console.log(`${jobs.length} 'Suche einen Job' Einträge gefunden`);
+    return res.json({
+      jobs,
+      message: "Kontaktdaten und Lebensläufe nur für Arbeitgeber mit bezahltem Paket sichtbar"
+    });
   } catch (error) {
-    res.status(500).json({ message: "Fehler beim Abrufen der Jobs", error });
+    console.error("Fehler beim Abrufen der 'Suche einen Job' Einträge:", error);
+    return res.status(500).json({ message: "Fehler beim Abrufen der Jobs", error });
   }
 });
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getApiUrl } from '@/utils/api';
-import { FaBriefcase, FaBookmark, FaSearch, FaUserEdit, FaCog, FaEnvelope, FaUser, FaPlus, FaQuestionCircle } from 'react-icons/fa';
+import { FaBriefcase, FaBookmark, FaSearch, FaUserEdit, FaCog, FaEnvelope, FaUser, FaPlus, FaQuestionCircle, FaChartLine } from 'react-icons/fa';
 import PremiumFeatures from '@/app/components/PremiumFeatures';
 
 interface DashboardStats {
@@ -185,11 +185,17 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Premium-Features */}
+          {/* Premium-Features / Arbeitgeber-Pakete */}
           <div className="col-12 col-lg-6">
-            <PremiumFeatures 
-              onUpgrade={() => router.push('/premium')}
-            />
+            {user.accountTyp === 'arbeitssuchender' ? (
+              <PremiumFeatures 
+                onUpgrade={() => router.push('/premium')}
+              />
+            ) : (
+              <PremiumFeatures 
+                onUpgrade={() => router.push('/stellenanzeigen-aufgeben')}
+              />
+            )}
           </div>
         </div>
 
@@ -209,12 +215,22 @@ export default function Dashboard() {
                 </div>
                 <div className="col-md-6">
                   <button 
-                    className="btn btn-primary w-100"
+                    className="btn btn-primary w-100 mb-3"
                     onClick={() => handleCardClick('/help')}
                   >
                     <FaQuestionCircle className="me-2" /> Hilfe & Support
                   </button>
                 </div>
+                {user?.accountTyp === 'arbeitgeber' && user?.premiumFeatures?.hasAnalytics && (
+                  <div className="col-md-6">
+                    <button 
+                      className="btn btn-success w-100"
+                      onClick={() => handleCardClick('/dashboard/analytics')}
+                    >
+                      <FaChartLine className="me-2" /> Analytics-Dashboard
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

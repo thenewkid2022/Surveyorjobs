@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getApiUrl } from '@/utils/api';
-import { FaCrown, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaLock, FaCrown, FaChartBar, FaCheck, FaTimes, FaArrowRight } from 'react-icons/fa';
 
 interface PremiumFeaturesProps {
-  onUpgrade?: () => void;
+  onUpgrade: () => void;
   showUpgradeButton?: boolean;
 }
 
@@ -27,7 +27,10 @@ export default function PremiumFeatures({ onUpgrade, showUpgradeButton = true }:
 
   useEffect(() => {
     const fetchPremiumStatus = async () => {
-      if (!token) return;
+      if (!token || !user) {
+        setIsLoading(false);
+        return;
+      }
 
       try {
         const response = await fetch(`${getApiUrl()}/api/premium/status`, {
@@ -36,12 +39,12 @@ export default function PremiumFeatures({ onUpgrade, showUpgradeButton = true }:
           }
         });
 
-        if (!response.ok) {
-          throw new Error('Fehler beim Laden des Premium-Status');
+        if (response.ok) {
+          const data = await response.json();
+          setPremiumStatus(data);
+        } else {
+          throw new Error('Fehler beim Laden der Premium-Status');
         }
-
-        const data = await response.json();
-        setPremiumStatus(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
       } finally {
@@ -50,50 +53,88 @@ export default function PremiumFeatures({ onUpgrade, showUpgradeButton = true }:
     };
 
     fetchPremiumStatus();
-  }, [token]);
+  }, [token, user]);
 
-  const isPremium = premiumStatus?.premiumFeatures?.premiumBis 
-    ? new Date(premiumStatus.premiumFeatures.premiumBis) > new Date()
-    : false;
+  if (!user) {
+    return null;
+  }
+
+  // Für Arbeitgeber: Weiterleitung zu integrierten Paketen
+  if (user.accountTyp === 'arbeitgeber') {
+    return (
+      <div className="card shadow-sm">
+        <div className="card-body p-4">
+          <div className="d-flex align-items-center mb-4">
+            <FaCrown className="text-warning me-2" size={24} />
+            <h2 className="h4 mb-0">Arbeitgeber-Pakete</h2>
+          </div>
+
+          <div className="mb-4">
+            <p className="text-muted">
+              Nutzen Sie unsere integrierten Pakete mit Stellenanzeigen und Lebenslauf-Zugriff.
+            </p>
+          </div>
+
+          <div className="mb-4">
+            <div className="d-flex align-items-center mb-3">
+              <FaCheck className="text-success me-2" />
+              <div>
+                <div className="fw-bold">Integrierte Pakete</div>
+                <div className="text-muted small">Jobs + CV-Zugriff ab CHF 99/Monat</div>
+              </div>
+            </div>
+            <div className="d-flex align-items-center mb-3">
+              <FaCheck className="text-success me-2" />
+              <div>
+                <div className="fw-bold">Flexible Limits</div>
+                <div className="text-muted small">Von 5 bis unbegrenzte Stellenanzeigen</div>
+              </div>
+            </div>
+            <div className="d-flex align-items-center mb-3">
+              <FaCheck className="text-success me-2" />
+              <div>
+                <div className="fw-bold">CV-Browser</div>
+                <div className="text-muted small">Zugriff auf qualifizierte Bewerbende</div>
+              </div>
+            </div>
+          </div>
+
+          {showUpgradeButton && (
+            <button
+              onClick={() => window.location.href = '/stellenanzeigen-aufgeben'}
+              className="btn btn-warning w-100"
+            >
+              <FaArrowRight className="me-2" />
+              Zu den Paketen
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Für Arbeitssuchende: Bestehende Premium-Features
+  const isPremium = premiumStatus?.premiumFeatures?.premiumBis && 
+                   new Date() <= new Date(premiumStatus.premiumFeatures.premiumBis);
 
   const getPremiumFeatures = () => {
-    if (user?.accountTyp === 'arbeitssuchender') {
-      return [
-        {
-          title: 'Lebenslauf hervorheben',
-          description: 'Ihr Lebenslauf wird in Suchergebnissen hervorgehoben',
-          active: premiumStatus?.premiumFeatures?.lebenslaufHervorgehoben || false
-        },
-        {
-          title: 'Premium-Profil',
-          description: 'Zugriff auf erweiterte Profilfunktionen',
-          active: isPremium
-        },
-        {
-          title: 'Direkter Kontakt',
-          description: 'Arbeitgeber können Sie direkt kontaktieren',
-          active: isPremium
-        }
-      ];
-    } else {
-      return [
-        {
-          title: 'Erweiterte Suche',
-          description: 'Zugriff auf erweiterte Suchfilter',
-          active: isPremium
-        },
-        {
-          title: 'Lebenslauf-Zugriff',
-          description: 'Zugriff auf alle Lebensläufe',
-          active: isPremium
-        },
-        {
-          title: 'Premium-Listings',
-          description: 'Ihre Stellenanzeigen werden hervorgehoben',
-          active: isPremium
-        }
-      ];
-    }
+    return [
+      {
+        title: 'Lebenslauf hervorheben',
+        description: 'Ihr Lebenslauf wird in Suchergebnissen hervorgehoben',
+        active: premiumStatus?.premiumFeatures?.lebenslaufHervorgehoben || false
+      },
+      {
+        title: 'Premium-Profil',
+        description: 'Zugriff auf erweiterte Profilfunktionen',
+        active: isPremium
+      },
+      {
+        title: 'Direkter Kontakt',
+        description: 'Arbeitgeber können Sie direkt kontaktieren',
+        active: isPremium
+      }
+    ];
   };
 
   if (isLoading) {
@@ -147,7 +188,7 @@ export default function PremiumFeatures({ onUpgrade, showUpgradeButton = true }:
             onClick={onUpgrade}
             className="btn btn-warning w-100"
           >
-            Jetzt upgraden
+            Premium für CHF 5/Monat
           </button>
         )}
       </div>

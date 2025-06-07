@@ -29,7 +29,7 @@ const packages: PricingPackage[] = [
     name: "Basic",
     price: 29,
     duration: 30,
-    features: ["Veröffentlichung in 24h", "1 Bild möglich"],
+    features: ["Veröffentlichung sofort"],
     newsletterInclusions: 1,
     images: 1,
     hasVideo: false,
@@ -40,7 +40,7 @@ const packages: PricingPackage[] = [
     name: "Plus",
     price: 39,
     duration: 60,
-    features: ["Veröffentlichung in 24h", "Bis zu 3 Bilder", "Social Media Posting"],
+    features: ["Veröffentlichung sofort"],
     newsletterInclusions: 2,
     images: 3,
     hasVideo: false,
@@ -51,7 +51,7 @@ const packages: PricingPackage[] = [
     name: "Premium",
     price: 49,
     duration: 90,
-    features: ["Veröffentlichung in 24h", "Bis zu 5 Bilder", "Video möglich", "Social Media Posting"],
+    features: ["Veröffentlichung sofort"],
     newsletterInclusions: 3,
     images: 5,
     hasVideo: true,
@@ -78,28 +78,43 @@ interface JobSucheFormData {
 }
 
 function PackageCard({ pkg, onSelect }: { pkg: PricingPackage, onSelect: (pkg: PricingPackage) => void }) {
+  const isPopular = pkg.id === 'plus';
+  
   return (
     <div className="col-md-4">
-      <div className="card h-100 shadow-sm border-0 bg-dark text-white">
-        <div className="card-body p-4">
-          <h3 className="card-title h4 mb-3 text-white">{pkg.name}</h3>
-          <div className="mb-4">
-            <span className="display-4 fw-bold text-white">CHF {pkg.price}</span>
-            <span className="text-white-50">/ {pkg.duration} Tage</span>
+      <div className={`card h-100 shadow-sm border-0 ${isPopular ? 'border border-success' : ''} position-relative`} 
+           style={{ backgroundColor: 'white', transition: 'all 0.2s ease' }}>
+        {isPopular && (
+          <div className="position-absolute top-0 start-50 translate-middle">
+            <span className="badge bg-success text-white px-3 py-2 rounded-pill fw-bold">
+              Empfohlen
+            </span>
           </div>
-          <ul className="list-unstyled mb-4">
+        )}
+        
+        <div className="card-body p-4 text-center">
+          <h3 className="card-title h4 mb-3 text-success fw-bold">{pkg.name}</h3>
+          
+          <div className="mb-4">
+            <div className="display-4 fw-bold text-success mb-1">CHF {pkg.price}</div>
+            <div className="text-muted fs-6">für {pkg.duration} Tage</div>
+          </div>
+          
+          <ul className="list-unstyled mb-4 text-start">
             {pkg.features.map((feature, index) => (
-              <li key={index} className="mb-2 text-white-50">
-                <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                {feature}
+              <li key={index} className="mb-2 d-flex align-items-start">
+                <i className="bi bi-check-circle-fill text-success me-2 mt-1 flex-shrink-0"></i>
+                <span className="text-dark">{feature}</span>
               </li>
             ))}
           </ul>
+          
           <button
             onClick={() => onSelect(pkg)}
-            className="btn btn-primary w-100"
+            className={`btn w-100 fw-bold ${isPopular ? 'btn-success' : 'btn-outline-success'}`}
+            style={{ borderRadius: '8px' }}
           >
-            Jetzt auswählen
+            {isPopular ? 'Jetzt starten' : 'Paket wählen'}
           </button>
         </div>
       </div>
@@ -483,42 +498,47 @@ export default function SucheEinenJob() {
   const handlePackageSelect = async (pkg: PricingPackage) => {
     setSelectedPackage(pkg);
     try {
+      console.log(`Jobsuche-Paket ausgewählt: ${pkg.name} - CHF ${pkg.price}`);
+      
       const response = await fetch(`${getApiUrl()}/api/payment/create-payment-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: pkg.price * 100,
           packageId: pkg.id,
           packageName: pkg.name,
-          type: 'suche-einen-job',
-          duration: pkg.duration
+          type: 'suche-einen-job'
+          // Preis wird automatisch vom Backend basierend auf packageId bestimmt
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Fehler beim Erstellen der Zahlungsabsicht');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Fehler beim Erstellen der Zahlungsabsicht');
       }
 
       const data = await response.json();
+      console.log(`Payment Intent erstellt: ${data.amount / 100} CHF`);
+      
       setClientSecret(data.clientSecret);
       setShowForm(true);
     } catch (error) {
       console.error('Fehler beim Erstellen des Payment Intents:', error);
+      alert(error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten');
     }
   };
 
   return (
-    <main className="container-fluid py-5" style={{maxWidth: '900px', margin: '0 auto'}}>
-      <div className="text-center mb-5">
-        <h1 className="display-4 fw-bold mb-3 text-white">Jobsuche veröffentlichen</h1>
-        <p className="lead text-white-50">
-          Wählen Sie ein Paket und veröffentlichen Sie Ihre Jobsuche
-        </p>
-      </div>
+    <main className="min-vh-100 bg-light">
+      <div className="container py-5">
+        <div className="text-center mb-5">
+          <h1 className="display-4 fw-bold mb-3 text-success">Stellengesuch erstellen</h1>
+          <p className="lead text-muted">
+            Erstellen Sie Ihr Stellengesuch und lassen Sie sich von Arbeitgebern finden
+          </p>
+        </div>
 
-      <div className="container px-4">
         {!showForm ? (
           <div className="row g-4 justify-content-center">
             {packages.map((pkg) => (
@@ -529,13 +549,10 @@ export default function SucheEinenJob() {
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <div className="row justify-content-center">
               <div className="col-lg-10">
-                <div className="card shadow-sm border-0 bg-dark">
+                <div className="card shadow-sm border-0">
                   <div className="card-body p-4">
-                    <h3 className="card-title h4 mb-4 text-white">Jobsuche erstellen</h3>
-                    <JobSucheFormular 
-                      setShowForm={setShowForm} 
-                      clientSecret={clientSecret}
-                    />
+                    <h3 className="card-title h4 mb-4 text-success">Stellengesuch erstellen</h3>
+                    <JobSucheFormular setShowForm={setShowForm} clientSecret={clientSecret} />
                   </div>
                 </div>
               </div>
@@ -543,19 +560,19 @@ export default function SucheEinenJob() {
           </Elements>
         ) : (
           <div className="text-center py-5">
-            <div className="spinner-border text-primary" role="status">
+            <div className="spinner-border text-success" role="status">
               <span className="visually-hidden">Lade Zahlungsdaten…</span>
             </div>
-            <p className="mt-3 text-white-50">Lade Zahlungsdaten…</p>
+            <p className="mt-3 text-muted">Lade Zahlungsdaten…</p>
           </div>
         )}
 
         <div className="text-center mt-5">
-          <div className="d-inline-flex align-items-center gap-3 text-white-50">
-            <i className="bi bi-shield-check"></i>
-            <span>✓ Keine automatische Verlängerung</span>
-            <i className="bi bi-shield-check"></i>
-            <span>✓ Keine versteckten Kosten</span>
+          <div className="d-inline-flex align-items-center gap-3 text-muted">
+            <i className="bi bi-shield-check text-success"></i>
+            <span>✓ Sicher und diskret</span>
+            <i className="bi bi-shield-check text-success"></i>
+            <span>✓ Direkter Kontakt zu Arbeitgebern</span>
           </div>
         </div>
       </div>

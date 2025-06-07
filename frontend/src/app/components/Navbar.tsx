@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { kantone } from "@shared/lib/kantone";
-import { FaCrown, FaPlus, FaUser, FaHome, FaUserEdit, FaCog, FaSignOutAlt, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
+import { FaCrown, FaPlus, FaUser, FaHome, FaUserEdit, FaCog, FaSignOutAlt, FaSignInAlt, FaUserPlus, FaBriefcase, FaClipboardList, FaUsers, FaSearch } from 'react-icons/fa';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,72 +43,116 @@ export default function Navbar() {
           </ul>
           
           <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 ms-auto">
-            {user?.accountTyp === 'arbeitgeber' && (
-              <Link 
-                href="/stellenanzeigen-aufgeben" 
-                className="btn btn-warning d-flex align-items-center justify-content-center gap-2 order-1 order-lg-1"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <FaPlus size={16} />
-                Stellenanzeige aufgeben
-              </Link>
-            )}
-            {user?.accountTyp === 'arbeitssuchender' && (
-              <Link 
-                href="/suche-einen-job" 
-                className="btn btn-warning d-flex align-items-center justify-content-center gap-2 order-1 order-lg-1"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <FaPlus size={16} />
-                Stellengesuch erstellen
-              </Link>
-            )}
+            {/* Beide Buttons sind immer sichtbar für bessere UX */}
+            <Link 
+              href="/stellenanzeigen-aufgeben" 
+              className="btn btn-warning d-flex align-items-center justify-content-center gap-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <FaBriefcase size={16} />
+              Stellenanzeige aufgeben
+            </Link>
+            
+            <Link 
+              href="/suche-einen-job" 
+              className="btn btn-success d-flex align-items-center justify-content-center gap-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <FaSearch size={16} />
+              Stellengesuch erstellen
+            </Link>
 
             {user ? (
-              <>
-                <Link 
-                  href="/premium" 
-                  className="btn btn-outline-warning d-flex align-items-center justify-content-center gap-2 order-2 order-lg-2"
-                  onClick={() => setIsMenuOpen(false)}
+              <div className="dropdown ms-lg-3">
+                <button
+                  className="btn btn-outline-secondary dropdown-toggle"
+                  type="button"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  onBlur={() => setTimeout(() => setIsDropdownOpen(false), 150)}
                 >
-                  <FaCrown size={16} />
-                  Premium
-                </Link>
-                <div className="dropdown order-3 order-lg-3">
-                  <button
-                    className="btn btn-outline-primary dropdown-toggle d-flex align-items-center justify-content-center gap-2"
-                    type="button"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  >
-                    <FaUser size={16} />
-                    {user.vorname} {user.nachname}
-                  </button>
-                  <div className={`dropdown-menu dropdown-menu-end ${isDropdownOpen ? 'show' : ''} ${isMenuOpen ? 'mt-2' : ''}`}>
-                    <Link href="/dashboard" className="dropdown-item d-flex align-items-center gap-2" onClick={() => setIsDropdownOpen(false)}>
-                      <FaHome size={16} />
-                      Dashboard
-                    </Link>
-                    <Link href="/profile" className="dropdown-item d-flex align-items-center gap-2" onClick={() => setIsDropdownOpen(false)}>
-                      <FaUserEdit size={16} />
-                      Profil
-                    </Link>
-                    <Link href="/settings" className="dropdown-item d-flex align-items-center gap-2" onClick={() => setIsDropdownOpen(false)}>
-                      <FaCog size={16} />
-                      Einstellungen
-                    </Link>
-                    <div className="dropdown-divider"></div>
-                    <button className="dropdown-item text-danger d-flex align-items-center gap-2" onClick={handleLogout}>
-                      <FaSignOutAlt size={16} />
-                      Abmelden
-                    </button>
-                  </div>
-                </div>
-              </>
+                  <FaUser className="me-1" />
+                  {user.vorname}
+                </button>
+                {isDropdownOpen && (
+                  <ul className="dropdown-menu dropdown-menu-end show">
+                    <li>
+                      <Link href="/dashboard" className="dropdown-item">
+                        <FaHome className="me-2" />
+                        Dashboard
+                      </Link>
+                    </li>
+                    {user.accountTyp === 'arbeitgeber' && (
+                      <>
+                        <li>
+                          <Link href="/stellenanzeigen-aufgeben" className="dropdown-item">
+                            <FaBriefcase className="me-2" />
+                            Stellenanzeige aufgeben
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/meine-stellenanzeigen" className="dropdown-item">
+                            <FaClipboardList className="me-2" />
+                            Meine Stellenanzeigen
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/cv-browser" className="dropdown-item">
+                            <FaUsers className="me-2" />
+                            CV-Browser
+                          </Link>
+                        </li>
+                      </>
+                    )}
+                    {user.accountTyp === 'arbeitssuchender' && (
+                      <>
+                        <li>
+                          <Link href="/suche-einen-job" className="dropdown-item">
+                            <FaSearch className="me-2" />
+                            Job suchen
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/meine-stellengesuche" className="dropdown-item">
+                            <FaClipboardList className="me-2" />
+                            Meine Stellengesuche
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/premium" className="dropdown-item">
+                            <FaCrown className="me-2" />
+                            Premium
+                          </Link>
+                        </li>
+                      </>
+                    )}
+                    <li>
+                      <Link href="/profile" className="dropdown-item">
+                        <FaUser className="me-2" />
+                        Profil
+                      </Link>
+                    </li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li>
+                      <Link href="/settings" className="dropdown-item">
+                        <FaCog className="me-2" />
+                        Einstellungen
+                      </Link>
+                    </li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li>
+                      <button onClick={handleLogout} className="dropdown-item">
+                        <FaSignOutAlt className="me-2" />
+                        Abmelden
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
             ) : (
               <>
                 <Link 
                   href="/login" 
-                  className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 order-2 order-lg-2"
+                  className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <FaSignInAlt size={16} />
@@ -116,7 +160,7 @@ export default function Navbar() {
                 </Link>
                 <Link 
                   href="/register" 
-                  className="btn btn-primary d-flex align-items-center justify-content-center gap-2 order-3 order-lg-3"
+                  className="btn btn-primary d-flex align-items-center justify-content-center gap-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <FaUserPlus size={16} />

@@ -28,6 +28,16 @@ export interface IUser extends Document {
     lebenslaufHervorgehoben: boolean;
     premiumBis?: Date;
     premiumTyp?: 'arbeitssuchender' | 'arbeitgeber';
+    currentPackageId?: string;
+    jobPostingLimit: number;
+    jobPostingCount: number;
+    cvAccessLimit: number;
+    cvAccessCount: number;
+    cvAccessResetDate?: Date;
+    hasAnalytics: boolean;
+    hasApiAccess: boolean;
+    hasPriorityListing: boolean;
+    anonymizedCVOnly: boolean;
   };
   comparePassword(candidatePassword: string): Promise<boolean>;
   generateEmailVerificationToken(): Promise<string>;
@@ -137,6 +147,46 @@ const UserSchema = new mongoose.Schema({
       type: String,
       enum: ['arbeitssuchender', 'arbeitgeber'],
       default: null
+    },
+    currentPackageId: {
+      type: String,
+      default: null
+    },
+    jobPostingLimit: {
+      type: Number,
+      default: 0
+    },
+    jobPostingCount: {
+      type: Number,
+      default: 0
+    },
+    cvAccessLimit: {
+      type: Number,
+      default: 0
+    },
+    cvAccessCount: {
+      type: Number,
+      default: 0
+    },
+    cvAccessResetDate: {
+      type: Date,
+      default: null
+    },
+    hasAnalytics: {
+      type: Boolean,
+      default: false
+    },
+    hasApiAccess: {
+      type: Boolean,
+      default: false
+    },
+    hasPriorityListing: {
+      type: Boolean,
+      default: false
+    },
+    anonymizedCVOnly: {
+      type: Boolean,
+      default: false
     }
   }
 });

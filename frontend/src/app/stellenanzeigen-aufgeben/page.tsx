@@ -23,41 +23,99 @@ interface PricingPackage {
   images: number;
   hasVideo: boolean;
   hasSocialMedia: boolean;
+  jobLimit: number;
+  cvAccessLimit: number;
+  anonymizedCVOnly?: boolean;
+  priorityListing?: boolean;
+  analytics?: boolean;
+  apiAccess?: boolean;
 }
 
 const packages: PricingPackage[] = [
   {
     id: "basic",
     name: "Basic",
-    price: 79,
+    price: 99,
     duration: 30,
-    features: ["Veröffentlichung in 24h", "1 Bild möglich", "Standard Sichtbarkeit"],
+    features: [
+      "1 Stellenanzeige",
+      "1 anonymisierter Lebenslauf",
+      "Standard-Sichtbarkeit",
+      "E-Mail Support"
+    ],
     newsletterInclusions: 1,
     images: 1,
     hasVideo: false,
-    hasSocialMedia: false
+    hasSocialMedia: false,
+    jobLimit: 1,
+    cvAccessLimit: 1,
+    anonymizedCVOnly: true
   },
   {
-    id: "plus",
-    name: "Plus",
-    price: 99,
-    duration: 60,
-    features: ["Veröffentlichung in 24h", "Bis zu 3 Bilder", "Social Media Posting", "Hervorgehobene Anzeige"],
+    id: "pro",
+    name: "Pro",
+    price: 249,
+    duration: 30,
+    features: [
+      "3 Stellenanzeigen",
+      "10 vollständige Lebensläufe",
+      "Hervorgehobene Anzeigen",
+      "Bewerber-Management",
+      "Priority Support"
+    ],
     newsletterInclusions: 2,
     images: 3,
     hasVideo: false,
-    hasSocialMedia: true
+    hasSocialMedia: true,
+    jobLimit: 3,
+    cvAccessLimit: 10,
+    anonymizedCVOnly: false,
+    priorityListing: true
   },
   {
-    id: "premium",
-    name: "Premium",
-    price: 139,
-    duration: 90,
-    features: ["Veröffentlichung in 24h", "Bis zu 5 Bilder", "Video möglich", "Social Media Posting", "Top-Anzeige", "Newsletter-Priorität"],
+    id: "enterprise",
+    name: "Enterprise",
+    price: 499,
+    duration: 30,
+    features: [
+      "10 Stellenanzeigen",
+      "50 vollständige Lebensläufe",
+      "Premium-Support",
+      "Analytics-Dashboard",
+      "Top-Platzierung"
+    ],
     newsletterInclusions: 3,
     images: 5,
     hasVideo: true,
-    hasSocialMedia: true
+    hasSocialMedia: true,
+    jobLimit: 10,
+    cvAccessLimit: 50,
+    anonymizedCVOnly: false,
+    priorityListing: true,
+    analytics: true
+  },
+  {
+    id: "unlimited",
+    name: "Unlimited",
+    price: 799,
+    duration: 30,
+    features: [
+      "Unbegrenzte Stellenanzeigen",
+      "Unbegrenzter Zugriff auf Lebensläufe",
+      "API-Zugang",
+      "Erweiterte Statistiken",
+      "Dedizierter Account Manager"
+    ],
+    newsletterInclusions: 5,
+    images: 10,
+    hasVideo: true,
+    hasSocialMedia: true,
+    jobLimit: -1,
+    cvAccessLimit: -1,
+    anonymizedCVOnly: false,
+    priorityListing: true,
+    analytics: true,
+    apiAccess: true
   }
 ];
 
@@ -74,28 +132,43 @@ interface StellenanzeigeFormData {
 
 // Optimiertes Design für die Paket-Karten
 function PackageCard({ pkg, onSelect }: { pkg: PricingPackage, onSelect: (pkg: PricingPackage) => void }) {
+  const isPopular = pkg.id === 'pro';
+  
   return (
     <div className="col-md-4">
-      <div className="card h-100 shadow-sm border-0 bg-dark text-white">
-        <div className="card-body p-4">
-          <h3 className="card-title h4 mb-3 text-white">{pkg.name}</h3>
-          <div className="mb-4">
-            <span className="display-4 fw-bold text-white">CHF {pkg.price}</span>
-            <span className="text-white-50">/ {pkg.duration} Tage</span>
+      <div className={`card h-100 shadow-sm border-0 ${isPopular ? 'border border-warning' : ''} position-relative`} 
+           style={{ backgroundColor: 'white', transition: 'all 0.2s ease' }}>
+        {isPopular && (
+          <div className="position-absolute top-0 start-50 translate-middle">
+            <span className="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
+              Beliebt
+            </span>
           </div>
-          <ul className="list-unstyled mb-4">
+        )}
+        
+        <div className="card-body p-4 text-center">
+          <h3 className="card-title h4 mb-3 text-primary fw-bold">{pkg.name}</h3>
+          
+          <div className="mb-4">
+            <div className="display-4 fw-bold text-primary mb-1">CHF {pkg.price}</div>
+            <div className="text-muted fs-6">pro {pkg.duration} Tage</div>
+          </div>
+          
+          <ul className="list-unstyled mb-4 text-start">
             {pkg.features.map((feature, index) => (
-              <li key={index} className="mb-2 text-white-50">
-                <i className="bi bi-check-circle-fill text-primary me-2"></i>
-                {feature}
+              <li key={index} className="mb-2 d-flex align-items-start">
+                <i className="bi bi-check-circle-fill text-success me-2 mt-1 flex-shrink-0"></i>
+                <span className="text-dark">{feature}</span>
               </li>
             ))}
           </ul>
+          
           <button
             onClick={() => onSelect(pkg)}
-            className="btn btn-primary w-100"
+            className={`btn w-100 fw-bold ${isPopular ? 'btn-warning' : 'btn-outline-primary'}`}
+            style={{ borderRadius: '8px' }}
           >
-            Jetzt auswählen
+            {isPopular ? 'Jetzt starten' : 'Paket wählen'}
           </button>
         </div>
       </div>
@@ -197,21 +270,21 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
       {error && (
-        <div className="alert alert-danger d-flex align-items-center bg-danger-subtle border-danger-subtle text-white" role="alert">
+        <div className="alert alert-danger d-flex align-items-center" role="alert">
           <i className="bi bi-exclamation-triangle-fill me-2"></i>
           <div>{error}</div>
         </div>
       )}
 
-      <div className="card shadow-sm border-0 mb-4 bg-dark">
+      <div className="card shadow-sm border-0 mb-4">
         <div className="card-body p-4">
-          <h4 className="card-title mb-4 text-white">Stellendetails</h4>
+          <h4 className="card-title mb-4 text-primary">Stellendetails</h4>
           
           <div className="mb-4 position-relative">
-            <label htmlFor="titel" className="form-label fw-medium text-white">Stellentitel *</label>
+            <label htmlFor="titel" className="form-label fw-medium">Stellentitel *</label>
             <input
               type="text"
-              className="form-control form-control-lg bg-dark text-white border-secondary"
+              className="form-control form-control-lg"
               id="titel"
               name="titel"
               value={formData.titel}
@@ -224,11 +297,11 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
               onBlur={() => setTimeout(() => setShowTitelSuggestions(false), 200)}
             />
             {showTitelSuggestions && titelSuggestions.length > 0 && (
-              <ul className="list-group position-absolute w-100 mt-1 shadow-sm rounded-3 bg-dark" style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
+              <ul className="list-group position-absolute w-100 mt-1 shadow-sm rounded-3" style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
                 {titelSuggestions.map((suggestion) => (
                   <li
                     key={suggestion}
-                    className="list-group-item list-group-item-action py-2 px-3 bg-dark text-white border-secondary"
+                    className="list-group-item list-group-item-action py-2 px-3"
                     onClick={() => handleTitelSuggestionClick(suggestion)}
                     style={{ cursor: 'pointer' }}
                   >
@@ -240,9 +313,9 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
           </div>
 
           <div className="mb-4">
-            <label htmlFor="beschreibung" className="form-label fw-medium text-white">Stellenbeschreibung *</label>
+            <label htmlFor="beschreibung" className="form-label fw-medium">Stellenbeschreibung *</label>
             <textarea
-              className="form-control bg-dark text-white border-secondary"
+              className="form-control"
               id="beschreibung"
               name="beschreibung"
               rows={6}
@@ -256,21 +329,21 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
 
           <div className="row">
             <div className="col-md-6 mb-4">
-              <label htmlFor="standort" className="form-label fw-medium text-white">Standort *</label>
+              <label htmlFor="standort" className="form-label fw-medium">Standort *</label>
               <LocationInput
                 value={formData.standort}
                 onChange={(value) => setFormData(prev => ({ ...prev, standort: value }))}
                 required
               />
-              <div className="form-text text-white-50">
+              <div className="form-text text-muted">
                 Bitte geben Sie einen Schweizer Ort ein. Der Kanton wird automatisch zugewiesen.
               </div>
             </div>
 
             <div className="col-md-6 mb-4">
-              <label htmlFor="artDerStelle" className="form-label fw-medium text-white">Anstellungsart *</label>
+              <label htmlFor="artDerStelle" className="form-label fw-medium">Anstellungsart *</label>
               <select 
-                className="form-select bg-dark text-white border-secondary"
+                className="form-select"
                 id="artDerStelle" 
                 name="artDerStelle" 
                 value={formData.artDerStelle} 
@@ -287,16 +360,16 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
         </div>
       </div>
 
-      <div className="card shadow-sm border-0 mb-4 bg-dark">
+      <div className="card shadow-sm border-0 mb-4">
         <div className="card-body p-4">
-          <h4 className="card-title mb-4 text-white">Kontaktdaten</h4>
+          <h4 className="card-title mb-4 text-primary">Kontaktdaten</h4>
           
           <div className="row">
             <div className="col-md-6 mb-4">
-              <label htmlFor="kontaktName" className="form-label fw-medium text-white">Ansprechperson *</label>
+              <label htmlFor="kontaktName" className="form-label fw-medium">Ansprechperson *</label>
               <input
                 type="text"
-                className="form-control bg-dark text-white border-secondary"
+                className="form-control"
                 id="kontaktName"
                 name="kontaktName"
                 value={formData.kontaktName}
@@ -307,10 +380,10 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
             </div>
 
             <div className="col-md-6 mb-4">
-              <label htmlFor="kontaktEmail" className="form-label fw-medium text-white">E-Mail *</label>
+              <label htmlFor="kontaktEmail" className="form-label fw-medium">E-Mail *</label>
               <input
                 type="email"
-                className="form-control bg-dark text-white border-secondary"
+                className="form-control"
                 id="kontaktEmail"
                 name="kontaktEmail"
                 value={formData.kontaktEmail}
@@ -322,10 +395,10 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
           </div>
 
           <div className="mb-4">
-            <label htmlFor="kontaktTelefon" className="form-label fw-medium text-white">Telefon (optional)</label>
+            <label htmlFor="kontaktTelefon" className="form-label fw-medium">Telefon (optional)</label>
             <input
               type="tel"
-              className="form-control bg-dark text-white border-secondary"
+              className="form-control"
               id="kontaktTelefon"
               name="kontaktTelefon"
               value={formData.kontaktTelefon}
@@ -336,9 +409,9 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
         </div>
       </div>
 
-      <div className="card shadow-sm border-0 mb-4 bg-dark">
+      <div className="card shadow-sm border-0 mb-4">
         <div className="card-body p-4">
-          <h4 className="card-title mb-4 text-white">Zahlungsinformationen</h4>
+          <h4 className="card-title mb-4 text-primary">Zahlungsinformationen</h4>
           <div className="payment-element-wrapper">
             <PaymentElement />
           </div>
@@ -348,7 +421,7 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
       <div className="d-flex justify-content-between align-items-center mt-4">
         <button 
           type="button" 
-          className="btn btn-outline-light px-4"
+          className="btn btn-outline-secondary px-4"
           onClick={() => setShowForm(false)}
         >
           <i className="bi bi-arrow-left me-2"></i>
@@ -381,42 +454,47 @@ export default function StellenanzeigeAufgeben() {
   const handlePackageSelect = async (pkg: PricingPackage) => {
     setSelectedPackage(pkg);
     try {
+      console.log(`Paket ausgewählt: ${pkg.name} - CHF ${pkg.price}`);
+      
       const response = await fetch(`${getApiUrl()}/api/payment/create-payment-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: pkg.price * 100,
           packageId: pkg.id,
           packageName: pkg.name,
-          type: 'stellenanzeigen-aufgeben',
-          duration: pkg.duration
+          type: 'stellenanzeigen-aufgeben'
+          // Preis wird automatisch vom Backend basierend auf packageId bestimmt
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Fehler beim Erstellen der Zahlungsabsicht');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Fehler beim Erstellen der Zahlungsabsicht');
       }
 
       const data = await response.json();
+      console.log(`Payment Intent erstellt: ${data.amount / 100} CHF`);
+      
       setClientSecret(data.clientSecret);
       setShowForm(true);
     } catch (error) {
       console.error('Fehler beim Erstellen des Payment Intents:', error);
+      alert(error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten');
     }
   };
 
   return (
-    <main className="container-fluid py-5" style={{maxWidth: '900px', margin: '0 auto'}}>
-      <div className="text-center mb-5">
-        <h1 className="display-4 fw-bold mb-3 text-white">Stellenanzeige aufgeben</h1>
-        <p className="lead text-white-50">
-          Wählen Sie ein Paket und veröffentlichen Sie Ihre Stellenanzeige in der Schweiz
-        </p>
-      </div>
+    <main className="min-vh-100 bg-light">
+      <div className="container py-5">
+        <div className="text-center mb-5">
+          <h1 className="display-4 fw-bold mb-3 text-primary">Stellenanzeige aufgeben</h1>
+          <p className="lead text-muted">
+            Wählen Sie ein Paket und veröffentlichen Sie Ihre Stellenanzeige in der Schweiz
+          </p>
+        </div>
 
-      <div className="container px-4">
         {!showForm ? (
           <div className="row g-4 justify-content-center">
             {packages.map((pkg) => (
@@ -427,9 +505,9 @@ export default function StellenanzeigeAufgeben() {
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <div className="row justify-content-center">
               <div className="col-lg-10">
-                <div className="card shadow-sm border-0 bg-dark">
+                <div className="card shadow-sm border-0">
                   <div className="card-body p-4">
-                    <h3 className="card-title h4 mb-4 text-white">Stellenanzeige erstellen</h3>
+                    <h3 className="card-title h4 mb-4 text-primary">Stellenanzeige erstellen</h3>
                     <StellenanzeigeFormular 
                       setShowForm={setShowForm} 
                       clientSecret={clientSecret} 
@@ -445,15 +523,15 @@ export default function StellenanzeigeAufgeben() {
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Lade Zahlungsdaten…</span>
             </div>
-            <p className="mt-3 text-white-50">Lade Zahlungsdaten…</p>
+            <p className="mt-3 text-muted">Lade Zahlungsdaten…</p>
           </div>
         )}
 
         <div className="text-center mt-5">
-          <div className="d-inline-flex align-items-center gap-3 text-body-secondary">
-            <i className="bi bi-shield-check"></i>
+          <div className="d-inline-flex align-items-center gap-3 text-muted">
+            <i className="bi bi-shield-check text-success"></i>
             <span>✓ Keine automatische Verlängerung</span>
-            <i className="bi bi-shield-check"></i>
+            <i className="bi bi-shield-check text-success"></i>
             <span>✓ Keine versteckten Kosten</span>
           </div>
         </div>

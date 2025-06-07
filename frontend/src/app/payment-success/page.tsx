@@ -104,6 +104,41 @@ export default function PaymentSuccess() {
           status: 'aktiv'
         };
 
+        // Für Stellenanzeigen-Aufgeben: Auch Package aktivieren
+        if (type === 'stellenanzeigen-aufgeben' && parsedData.packageId) {
+          // Zuerst Package aktivieren
+          return fetch(`${getApiUrl()}/api/payment/activate-package`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ 
+              packageId: parsedData.packageId,
+              paymentIntentId: paymentIntent 
+            })
+          })
+          .then(async res => {
+            if (!res.ok) {
+              const responseData = await res.json();
+              console.warn('Package-Aktivierung fehlgeschlagen:', responseData.message);
+              // Trotzdem fortfahren mit der Stellenanzeigen-Erstellung
+            }
+            return res;
+          })
+          .then(() => {
+            // Dann Stellenanzeige erstellen
+            return fetch(`${getApiUrl()}/api/stellenanzeigen-aufgeben`, {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(transformedData)
+            });
+          });
+        }
+
         // Endpunkt basierend auf Typ wählen
         const endpoint = type === 'stellenanzeigen-aufgeben' 
           ? '/api/stellenanzeigen-aufgeben'

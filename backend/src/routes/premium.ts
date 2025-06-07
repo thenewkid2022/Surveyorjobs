@@ -5,7 +5,7 @@ import { withDB } from "../db/connection";
 
 const router = express.Router();
 
-// Premium-Status abrufen
+// Premium-Status abrufen (nur für Arbeitssuchende)
 router.get("/status", authenticateJWT, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
@@ -14,11 +14,19 @@ router.get("/status", authenticateJWT, async (req: AuthRequest, res: Response) =
     }
 
     const user = await withDB(async () => {
-      return await User.findById(userId).select('premiumFeatures accountTyp');
+      return await User.findById(userId);
     });
 
     if (!user) {
       return res.status(404).json({ message: "Benutzer nicht gefunden" });
+    }
+
+    // Nur für Arbeitssuchende verfügbar
+    if (user.accountTyp !== 'arbeitssuchender') {
+      return res.status(403).json({ 
+        message: "Premium-Features nur für Arbeitssuchende verfügbar. Arbeitgeber nutzen bitte die integrierten Pakete.",
+        redirectTo: "/stellenanzeigen-aufgeben"
+      });
     }
 
     return res.json({
@@ -26,11 +34,11 @@ router.get("/status", authenticateJWT, async (req: AuthRequest, res: Response) =
       accountTyp: user.accountTyp
     });
   } catch (error) {
-    return res.status(500).json({ message: "Fehler beim Abrufen des Premium-Status", error });
+    return res.status(500).json({ message: "Fehler beim Abrufen der Premium-Daten", error });
   }
 });
 
-// Premium-Features aktivieren
+// Premium-Features aktivieren (nur für Arbeitssuchende)
 router.post("/aktivieren", authenticateJWT, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
@@ -38,22 +46,34 @@ router.post("/aktivieren", authenticateJWT, async (req: AuthRequest, res: Respon
       return res.status(401).json({ message: "Nicht authentifiziert" });
     }
 
-    const { premiumTyp, lebenslaufHervorgehoben } = req.body;
+    const { lebenslaufHervorgehoben } = req.body;
 
-    // Validiere Premium-Typ
-    if (!['arbeitssuchender', 'arbeitgeber'].includes(premiumTyp)) {
-      return res.status(400).json({ message: "Ungültiger Premium-Typ" });
+    // Hole aktuellen User
+    const user = await withDB(async () => {
+      return await User.findById(userId);
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "Benutzer nicht gefunden" });
+    }
+
+    // Nur für Arbeitssuchende verfügbar
+    if (user.accountTyp !== 'arbeitssuchender') {
+      return res.status(403).json({ 
+        message: "Premium-Features nur für Arbeitssuchende verfügbar. Arbeitgeber nutzen bitte die integrierten Pakete.",
+        redirectTo: "/stellenanzeigen-aufgeben"
+      });
     }
 
     // Setze Ablaufdatum auf 30 Tage in der Zukunft
     const premiumBis = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-    const user = await withDB(async () => {
+    const updatedUser = await withDB(async () => {
       return await User.findByIdAndUpdate(
         userId,
         {
           $set: {
-            'premiumFeatures.premiumTyp': premiumTyp,
+            'premiumFeatures.premiumTyp': 'arbeitssuchender',
             'premiumFeatures.premiumBis': premiumBis,
             'premiumFeatures.lebenslaufHervorgehoben': lebenslaufHervorgehoben || false
           }
@@ -62,13 +82,13 @@ router.post("/aktivieren", authenticateJWT, async (req: AuthRequest, res: Respon
       );
     });
 
-    if (!user) {
+    if (!updatedUser) {
       return res.status(404).json({ message: "Benutzer nicht gefunden" });
     }
 
     return res.json({
-      message: "Premium-Features erfolgreich aktiviert",
-      premiumFeatures: user.premiumFeatures
+      message: "Premium-Features für Arbeitssuchende erfolgreich aktiviert",
+      premiumFeatures: updatedUser.premiumFeatures
     });
   } catch (error) {
     return res.status(500).json({ message: "Fehler beim Aktivieren der Premium-Features", error });
