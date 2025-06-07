@@ -10,11 +10,18 @@ export default function Impressum() {
         
         <div className="card shadow-sm mb-4">
           <div className="card-body">
-            <h2 className="h4 mb-3">Angaben gemäß § 5 TMG</h2>
+            <h2 className="h4 mb-3">Angaben gemäss Art. 3 Abs. 1 lit. s UWG</h2>
             <p>
-              SurveyorJobs<br />
-              Musterstraße 123<br />
-              12345 Musterstadt
+              <strong>Firmenname:</strong><br />
+              SurveyorJobs<br /><br />
+              
+              <strong>Betreiber:</strong><br />
+              Max Mustermann<br /><br />
+              
+              <strong>Adresse:</strong><br />
+              Musterstrasse 123<br />
+              CH-1234 Musterstadt<br />
+              Schweiz
             </p>
           </div>
         </div>
@@ -23,41 +30,33 @@ export default function Impressum() {
           <div className="card-body">
             <h2 className="h4 mb-3">Kontakt</h2>
             <p>
-              Telefon: +49 (0) 123 456789<br />
-              E-Mail: info@surveyorjobs.de
+              <strong>Telefon:</strong> +41 123 456 789<br />
+              <strong>E-Mail:</strong> info@surveyorjobs.ch
             </p>
           </div>
         </div>
 
         <div className="card shadow-sm mb-4">
           <div className="card-body">
-            <h2 className="h4 mb-3">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+            <h2 className="h4 mb-3">Handelsregister und Mehrwertsteuer</h2>
             <p>
-              Max Mustermann<br />
-              Musterstraße 123<br />
-              12345 Musterstadt
+              <strong>Handelsregisternummer:</strong> CHE-XXX.XXX.XXX (Platzhalter)<br />
+              <strong>Mehrwertsteuernummer:</strong> CHE-XXX.XXX.XXX MWST (Platzhalter)
+            </p>
+            <p className="text-muted small">
+              Die definitiven Nummern werden nach der Registrierung ergänzt.
             </p>
           </div>
         </div>
 
         <div className="card shadow-sm mb-4">
           <div className="card-body">
-            <h2 className="h4 mb-3">EU-Streitschlichtung</h2>
+            <h2 className="h4 mb-3">Haftungsausschluss</h2>
             <p>
-              Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: 
-              <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer" className="ms-1">
-                https://ec.europa.eu/consumers/odr/
-              </a>
-            </p>
-          </div>
-        </div>
-
-        <div className="card shadow-sm mb-4">
-          <div className="card-body">
-            <h2 className="h4 mb-3">Verbraucherstreitbeilegung/Universalschlichtungsstelle</h2>
-            <p>
-              Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer 
-              Verbraucherschlichtungsstelle teilzunehmen.
+              Die Inhalte unserer Seiten wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit, 
+              Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. 
+              Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den allgemeinen 
+              Gesetzen verantwortlich.
             </p>
           </div>
         </div>

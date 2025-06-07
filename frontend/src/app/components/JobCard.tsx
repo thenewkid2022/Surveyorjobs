@@ -59,8 +59,8 @@ export default function JobCard({
 
   const displayTitle = type === 'job' ? formatTitle(titel || '') : formatTitle(beruf || berufswunsch || position || '');
 
-  // Farbklassen zentral steuern
-  const colorClass = type === 'job' ? 'primary' : 'success';
+  // Farbklassen zentral steuern - professioneller
+  const colorClass = type === 'job' ? 'brand-primary' : 'success';
 
   // Datum formatieren
   const formattedDate = erstelltAm ? new Date(erstelltAm).toLocaleDateString("de-DE", {
@@ -87,32 +87,32 @@ export default function JobCard({
           {/* Standort - immer sichtbar */}
           <p className="mb-2">
             <FaMapMarkerAlt className={`text-${colorClass} me-2`} />
-            <span className="text-secondary">{standort}</span>
+            <span className="text-muted">{standort}</span>
           </p>
 
           {/* Unternehmen - wenn vorhanden */}
           {type === 'job' && unternehmen && (
             <p className="mb-2">
               <FaBuilding className={`text-${colorClass} me-2`} />
-              <span className="text-secondary">{unternehmen}</span>
+              <span className="text-muted">{unternehmen}</span>
             </p>
           )}
 
           {/* Art der Stelle - immer sichtbar */}
           <p className="mb-2">
             <FaBriefcase className={`text-${colorClass} me-2`} />
-            <span className="text-secondary">{artDerStelle}</span>
+            <span className="text-muted">{artDerStelle}</span>
           </p>
 
           {/* Eingestelltes Datum - immer sichtbar */}
           <p className="mb-3 text-muted small">
             <FaCalendarAlt className={`text-${colorClass} me-2`} />
-            <span className="text-secondary">Eingestellt am: {formattedDate}</span>
+            <span className="text-muted">Eingestellt am: {formattedDate}</span>
           </p>
         </div>
 
-        {/* Details Button - immer am unteren Rand */}
-        <Link href={link} className={`btn btn-${colorClass} w-100 mt-auto`}>
+        {/* Details Button - farblich je nach Typ unterschieden */}
+        <Link href={link} className={`btn ${type === 'job' ? 'btn-brand-primary' : 'btn-success'} w-100 mt-auto`}>
           Details anzeigen
         </Link>
       </div>

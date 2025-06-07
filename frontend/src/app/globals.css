@@ -6,25 +6,44 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  --bs-primary: #2563eb;
-  --bs-primary-rgb: 37, 99, 235;
-  --bs-primary-hover: #1d4ed8;
+  /* Professionelle Primärfarben */
+  --bs-primary: #1e40af;
+  --bs-primary-rgb: 30, 64, 175;
+  --bs-primary-hover: #1e3a8a;
   
-  --bs-secondary: #64748b;
-  --bs-secondary-rgb: 100, 116, 139;
+  /* Gedämpfte Sekundärfarben */
+  --bs-secondary: #475569;
+  --bs-secondary-rgb: 71, 85, 105;
+  --bs-secondary-light: #94a3b8;
   
-  --bs-success: #22c55e;
-  --bs-success-rgb: 34, 197, 94;
-  --bs-success-hover: #16a34a;
+  /* Baubranche Akzentfarben */
+  --construction-orange: #ea580c;
+  --construction-orange-rgb: 234, 88, 12;
+  --construction-orange-hover: #dc2626;
   
+  /* Professionelle Erfolgsfarben */
+  --bs-success: #059669;
+  --bs-success-rgb: 5, 150, 105;
+  --bs-success-hover: #047857;
+  
+  /* Warnung bleibt für Sichtbarkeit */
   --bs-warning: #f59e0b;
   --bs-warning-rgb: 245, 158, 11;
   
-  --bs-danger: #ef4444;
-  --bs-danger-rgb: 239, 68, 68;
+  /* Gedämpfte Gefahrenfarbe */
+  --bs-danger: #dc2626;
+  --bs-danger-rgb: 220, 38, 38;
   
+  /* Neutrale Farben für Professionalität */
   --bs-border: #e2e8f0;
   --bs-border-rgb: 226, 232, 240;
+  --neutral-50: #f8fafc;
+  --neutral-100: #f1f5f9;
+  --neutral-200: #e2e8f0;
+  --neutral-500: #64748b;
+  --neutral-700: #334155;
+  --neutral-800: #1e293b;
+  --neutral-900: #0f172a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -151,29 +170,79 @@
   min-width: 180px;
 }
 
+/* Professionelle Navbar Stile */
+.navbar {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--neutral-200) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+}
+
+.nav-link {
+  color: var(--neutral-900) !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: var(--construction-orange) !important;
+}
+
+/* Primäre CTAs verwenden jetzt Orange für mehr Aufmerksamkeit */
 .btn-primary {
-  background-color: var(--bs-primary) !important;
-  border-color: var(--bs-primary) !important;
+  background-color: var(--construction-orange) !important;
+  border-color: var(--construction-orange) !important;
   color: white !important;
-  box-shadow: 0 0 0 0 rgba(59,130,246,0.4);
-  transition: box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(234, 88, 12, 0.2);
+  transition: all 0.2s ease;
+  font-weight: 600;
+  border-radius: 8px !important;
 }
 
 .btn-primary:hover, .btn-primary:focus {
-  background-color: var(--bs-primary-hover) !important;
-  border-color: var(--bs-primary-hover) !important;
-  box-shadow: 0 0 8px 2px rgba(59,130,246,0.25);
+  background-color: var(--construction-orange-hover) !important;
+  border-color: var(--construction-orange-hover) !important;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+  transform: translateY(-1px);
 }
 
-.btn-outline-primary {
-  color: var(--bs-primary) !important;
+/* Sekundäre Buttons verwenden das professionelle Blau */
+.btn-secondary {
+  background-color: var(--bs-primary) !important;
   border-color: var(--bs-primary) !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+  transition: all 0.2s ease;
+  font-weight: 500;
+  border-radius: 8px !important;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+  background-color: var(--bs-primary-hover) !important;
+  border-color: var(--bs-primary-hover) !important;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+}
+
+/* Professionelle Outline Buttons */
+.btn-outline-primary {
+  color: var(--neutral-800) !important;
+  border-color: var(--neutral-300) !important;
+  background-color: transparent !important;
+  font-weight: 600;
+  border-radius: 8px !important;
+  transition: all 0.2s ease;
 }
 
 .btn-outline-primary:hover {
   background-color: var(--bs-primary) !important;
   border-color: var(--bs-primary) !important;
   color: white !important;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.25);
 }
 
 .btn-success {
@@ -221,11 +290,17 @@
   color: white !important;
 }
 
-.text-primary { color: var(--bs-primary) !important; }
-.text-secondary { color: var(--bs-secondary) !important; }
+/* Professionelle Text-Hierarchie */
+.text-primary { color: var(--neutral-900) !important; }
+.text-secondary { color: var(--neutral-800) !important; }
+.text-muted { color: var(--neutral-600) !important; }
 .text-success { color: var(--bs-success) !important; }
 .text-warning { color: var(--bs-warning) !important; }
 .text-danger { color: var(--bs-danger) !important; }
+
+/* Spezielle Hervorhebungsfarben */
+.text-brand-primary { color: var(--bs-primary) !important; }
+.text-brand-orange { color: var(--construction-orange) !important; }
 
 .bg-primary { background-color: var(--bs-primary) !important; }
 .bg-secondary { background-color: var(--bs-secondary) !important; }
@@ -241,8 +316,117 @@
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--neutral-900);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Verbesserte Typografie-Hierarchie */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--neutral-900);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+
+/* Verbesserte Card-Stile */
+.card {
+  border: 1px solid var(--neutral-200);
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.card-title {
+  font-weight: 600;
+  color: var(--neutral-900);
+}
+
+/* Gradient Header Background für bessere Lesbarkeit */
+.bg-gradient-light {
+  background: linear-gradient(135deg, var(--neutral-50) 0%, var(--neutral-100) 100%);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+/* Konsistente Button-Stile für alle JobCards */
+.btn-brand-primary {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: white !important;
+  font-weight: 500;
+  border-radius: 8px !important;
+  transition: all 0.2s ease;
+}
+
+.btn-brand-primary:hover {
+  background-color: var(--bs-primary-hover) !important;
+  border-color: var(--bs-primary-hover) !important;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Detailseiten - weißer Hintergrund sicherstellen */
+.detail-page-wrapper {
+  background-color: white !important;
+  min-height: 100vh;
+}
+
+/* Icon-Farben für Konsistenz */
+.icon-primary {
+  color: var(--bs-primary) !important;
+}
+
+.icon-success {
+  color: var(--bs-success) !important;
+}
+
+.icon-brand-orange {
+  color: var(--construction-orange) !important;
+}
+
+/* FARBKONSISTENZ FÜR DETAILSEITEN */
+/* Spezielle Klassen für Detailseiten */
+.detail-job-primary {
+  color: var(--bs-primary) !important; /* Blau für Stellenangebote */
+}
+
+.detail-job-success {
+  color: var(--bs-success) !important; /* Grün für Stellengesuche */
+}
+
+/* Überschreibe text-primary auf Detailseiten für korrekte Farben */
+.detail-page-wrapper .text-primary {
+  color: var(--bs-primary) !important; /* Blau statt schwarz für Stellenangebote */
+}
+
+.detail-page-wrapper.stellengesuch .text-primary {
+  color: var(--bs-success) !important; /* Grün für Stellengesuche */
+}
+
+/* Card-Header Farben auf Detailseiten */
+.detail-page-wrapper .card-header {
+  background-color: var(--neutral-50) !important;
+  border-bottom: 1px solid var(--neutral-200) !important;
+}
+
+.detail-page-wrapper .card-header h1,
+.detail-page-wrapper .card-header h2 {
+  color: var(--bs-primary) !important; /* Stellenangebote blau */
+}
+
+.detail-page-wrapper.stellengesuch .card-header h1,
+.detail-page-wrapper.stellengesuch .card-header h2 {
+  color: var(--bs-success) !important; /* Stellengesuche grün */
 }
 
 /* Utility Classes */
@@ -280,4 +464,136 @@ body {
 .container {
   padding-top: 2rem !important;
   padding-bottom: 2rem !important;
+}
+
+/* LIGHT MODE OVERRIDE - Diese Regeln ans Ende der globals.css hinzufügen */
+
+/* Light Mode: Überschreibe dark-mode-navbar Regeln für bessere Lesbarkeit */
+@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+  .dark-mode-navbar .nav-link {
+    color: var(--neutral-900) !important;
+    font-weight: 600 !important;
+  }
+  
+  .dark-mode-navbar .nav-link:hover,
+  .dark-mode-navbar .nav-link:focus {
+    color: var(--construction-orange) !important;
+    background: rgba(234, 88, 12, 0.08) !important;
+  }
+  
+  .dark-mode-navbar .navbar-brand {
+    color: var(--construction-orange) !important;
+  }
+}
+
+/* Zusätzlich: Direkte Navbar Überschreibung ohne Media Query */
+.navbar.dark-mode-navbar {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.navbar.dark-mode-navbar .nav-link {
+  color: #0f172a !important; /* neutral-900 direkt als Hex-Wert */
+  font-weight: 600 !important;
+}
+
+.navbar.dark-mode-navbar .nav-link:hover,
+.navbar.dark-mode-navbar .nav-link:focus {
+  color: #ea580c !important; /* construction-orange direkt als Hex-Wert */
+  background: rgba(234, 88, 12, 0.08) !important;
+  border-radius: 0.3rem;
+}
+
+.navbar.dark-mode-navbar .navbar-brand {
+  color: #ea580c !important; /* construction-orange direkt als Hex-Wert */
+}
+
+/* ZUSÄTZLICHE LIGHT MODE BUTTON FIXES */
+
+/* Light Mode: Korrigiere btn-outline-primary in der Navbar */
+.navbar.dark-mode-navbar .btn-outline-primary {
+  color: var(--neutral-800) !important; /* Dunkle Schrift statt hellblau */
+  border-color: var(--neutral-300) !important;
+  background-color: transparent !important;
+}
+
+.navbar.dark-mode-navbar .btn-outline-primary:hover {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: white !important;
+}
+
+/* Light Mode: Korrigiere btn-outline-warning in der Navbar */
+.navbar.dark-mode-navbar .btn-outline-warning {
+  color: var(--bs-warning) !important;
+  border-color: var(--bs-warning) !important;
+  background-color: transparent !important;
+}
+
+.navbar.dark-mode-navbar .btn-outline-warning:hover {
+  background-color: var(--bs-warning) !important;
+  border-color: var(--bs-warning) !important;
+  color: white !important;
+}
+
+/* Light Mode: btn-warning sollte schon korrekt sein, aber sicherheitshalber */
+.navbar.dark-mode-navbar .btn-warning {
+  background-color: var(--bs-warning) !important;
+  border-color: var(--bs-warning) !important;
+  color: #0f172a !important; /* Dunkle Schrift auf gelbem Grund */
+}
+
+.navbar.dark-mode-navbar .btn-warning:hover {
+  background-color: #eab308 !important;
+  border-color: #eab308 !important;
+  color: #0f172a !important;
+}
+
+/* FARBKONSISTENZ FÜR DETAILSEITEN */
+
+/* Spezielle Klassen für Detailseiten */
+.detail-job-primary {
+  color: var(--bs-primary) !important; /* Blau für Stellenangebote */
+}
+
+.detail-job-success {
+  color: var(--bs-success) !important; /* Grün für Stellengesuche */
+}
+
+/* Überschreibe text-primary auf Detailseiten für Stellenangebote */
+.detail-page-wrapper .text-primary {
+  color: var(--bs-primary) !important; /* Blau statt schwarz */
+}
+
+/* Spezielle Klasse für Stellengesuche auf Detailseiten */
+.detail-page-wrapper .text-success {
+  color: var(--bs-success) !important; /* Grün */
+}
+
+/* Border-Farben für Cards auf Detailseiten */
+.detail-page-wrapper .border-primary {
+  border-color: var(--bs-primary) !important;
+}
+
+.detail-page-wrapper .border-success {
+  border-color: var(--bs-success) !important;
+}
+
+/* DRINGENDE FARBKORREKTUREN FÜR DETAILSEITEN */
+
+/* Stellenangebote sollen BLAU sein, nicht schwarz */
+.detail-page-wrapper .text-primary,
+.card .text-primary {
+  color: var(--bs-primary) !important; /* Blau statt schwarz */
+}
+
+/* Stellengesuche sollen GRÜN sein */
+.detail-page-wrapper .text-success,
+.card .text-success {
+  color: var(--bs-success) !important; /* Grün */
+}
+
+/* Icon-Farben korrigieren */
+.detail-page-wrapper [style*="color: #0d6efd"],
+.detail-page-wrapper [style*="color: #198754"] {
+  color: inherit !important;
 }

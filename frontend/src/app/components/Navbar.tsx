@@ -19,7 +19,7 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg sticky-top shadow-sm dark-mode-navbar">
       <div className="container">
-        <Link href="/" className="navbar-brand fw-bold text-primary">BauJobs</Link>
+        <Link href="/" className="navbar-brand fw-bold text-brand-orange">BauJobs</Link>
         <button
           className="navbar-toggler"
           type="button"

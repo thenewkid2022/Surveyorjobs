@@ -73,11 +73,12 @@ export default async function Page({
   }
 
   return (
-    <div className="container-fluid py-5" style={{maxWidth: '700px', margin: '0 auto'}}>
-      <Link href="/" className="btn btn-outline-success mb-4">
-        <FaArrowLeft {...{ style: { marginRight: "0.5rem" } } as IconBaseProps} />
-        Zurück zur Übersicht
-      </Link>
+    <div className="detail-page-wrapper stellengesuch">
+      <div className="container-fluid py-5" style={{maxWidth: '700px', margin: '0 auto'}}>
+        <Link href="/" className="btn btn-outline-success mb-4">
+          <FaArrowLeft {...{ style: { marginRight: "0.5rem" } } as IconBaseProps} />
+          Zurück zur Übersicht
+        </Link>
 
       <div className="card shadow-sm border-primary">
         <div className="card-body">
@@ -203,6 +204,7 @@ export default async function Page({
             </small>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

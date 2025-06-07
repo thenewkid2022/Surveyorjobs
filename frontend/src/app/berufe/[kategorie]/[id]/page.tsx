@@ -51,18 +51,19 @@ export default async function Page({
   }
 
   return (
-    <div className="container-fluid py-5" style={{maxWidth: '900px', margin: '0 auto'}}>
-      <Link href={`/berufe/${resolvedParams.kategorie}`} className="btn btn-outline-primary mb-4">
-        <FaArrowLeft {...{ style: { marginRight: "0.5rem" } } as IconBaseProps} />
-        Zurück zur Übersicht
-      </Link>
+    <div className="detail-page-wrapper">
+      <div className="container-fluid py-5" style={{maxWidth: '900px', margin: '0 auto'}}>
+        <Link href="/" className="btn btn-outline-primary mb-4">
+          <FaArrowLeft {...{ style: { marginRight: "0.5rem" } } as IconBaseProps} />
+          Zurück zur Übersicht
+        </Link>
 
       <div className="card shadow-sm border-primary">
         <div className="card-body">
           {entry.type === 'job' ? (
             // Stellenangebot anzeigen
             <>
-              <h1 className="card-title h2 mb-4 text-primary">{entry.data.titel}</h1>
+              <h1 className="card-title h2 mb-4 detail-job-primary">{entry.data.titel}</h1>
               
               {/* Unternehmen und Kategorie */}
               {entry.data.unternehmen && (
@@ -150,7 +151,7 @@ export default async function Page({
           ) : (
             // Stellengesuch anzeigen
             <>
-              <h1 className="card-title h2 mb-4 text-success">{entry.data.berufswunsch || entry.data.position}</h1>
+              <h1 className="card-title h2 mb-4 detail-job-success">{entry.data.berufswunsch || entry.data.position}</h1>
               
               {/* Beruf und Ausbildung */}
               <div className="mb-3">
@@ -226,6 +227,7 @@ export default async function Page({
             </>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

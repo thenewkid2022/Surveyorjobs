@@ -122,12 +122,12 @@ export default function Home() {
 
   return (
     <main className="bg-white min-vh-100 font-sans">
-      {/* Moderner Header ohne Bild */}
-      <header className="w-100 mb-4 py-5 bg-light dark:bg-[#181a1b] border-bottom border-secondary text-center">
+      {/* Professioneller Header mit besserer Lesbarkeit */}
+      <header className="w-100 mb-4 py-5 bg-gradient-light text-center">
         <div className="container d-flex flex-column align-items-center justify-content-center" style={{minHeight: 220}}>
-          <FaHardHat size={56} className="mb-3 text-warning shadow-text" />
+          <FaHardHat size={56} className="mb-3 text-brand-orange" />
           <h1 className="display-4 fw-bold mb-3 text-primary">Baujobs finden</h1>
-          <p className="lead fs-5 mb-4 text-secondary" style={{maxWidth: 600}}>
+          <p className="lead fs-5 mb-4 text-secondary" style={{maxWidth: 600, fontWeight: 500}}>
             Das moderne Jobboard für die Baubranche. Finde gezielt deinen nächsten Job als Bauarbeiter, Polier, Bauingenieur oder in anderen Bauberufen – einfach, schnell und ohne Umwege.
           </p>
           <Link href="/filter/berufsfeld" className="btn btn-primary btn-lg shadow-sm">
@@ -138,7 +138,7 @@ export default function Home() {
 
       {/* Stellenanzeigen Section */}
       <section className="container py-5">
-        <h2 className="h3 mb-4 text-primary">Aktuelle Stellenangebote</h2>
+        <h2 className="h3 mb-4 text-brand-primary">Aktuelle Stellenangebote</h2>
         <div className="row g-4">
           {stellenanzeigen.map((job: Job) => {
             console.log('Übergebe an JobCard:', {
@@ -185,7 +185,7 @@ export default function Home() {
 
       {/* Stellengesuche Section */}
       <section className="container py-5">
-        <h2 className="h3 mb-4 text-primary">Aktuelle Stellengesuche</h2>
+        <h2 className="h3 mb-4 text-success">Aktuelle Stellengesuche</h2>
         <div className="row g-4">
           {stellengesuche.map((gesuch: Stellengesuch) => (
             <div className="col-12 col-md-6 col-lg-3" key={gesuch._id}>
