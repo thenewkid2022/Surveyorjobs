@@ -187,7 +187,7 @@ export default function Dashboard() {
 
           {/* Premium-Features / Arbeitgeber-Pakete */}
           <div className="col-12 col-lg-6">
-            {user.accountTyp === 'arbeitssuchender' ? (
+            {user?.accountTyp === 'arbeitssuchender' ? (
               <PremiumFeatures 
                 onUpgrade={() => router.push('/premium')}
               />
