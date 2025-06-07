@@ -14,6 +14,20 @@ interface User {
   profilbild?: string;
   accountTyp: 'arbeitgeber' | 'arbeitssuchender';
   emailVerifiziert: boolean;
+  premiumFeatures?: {
+    currentPackageId?: string;
+    premiumTyp?: string;
+    premiumBis?: string;
+    jobPostingLimit?: number;
+    jobPostingCount?: number;
+    cvAccessLimit?: number;
+    cvAccessCount?: number;
+    cvAccessResetDate?: string;
+    hasAnalytics?: boolean;
+    hasApiAccess?: boolean;
+    hasPriorityListing?: boolean;
+    anonymizedCVOnly?: boolean;
+  };
 }
 
 interface AuthContextType {
