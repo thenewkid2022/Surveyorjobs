@@ -202,7 +202,7 @@ export default function CVBrowser() {
                             <button 
                               className="btn btn-primary btn-sm flex-fill"
                               onClick={() => viewFullResume(resume._id)}
-                              disabled={accessInfo && accessInfo.used >= accessInfo.limit && accessInfo.limit !== -1}
+                              disabled={Boolean(accessInfo && accessInfo.used >= accessInfo.limit && accessInfo.limit !== -1)}
                             >
                               <FaEye className="me-1" />
                               Vollständig
