@@ -1,5 +1,8 @@
 import { FaMapMarkerAlt, FaBuilding, FaUser, FaEnvelope, FaPhone, FaTimes } from "react-icons/fa";
 import { Job } from "@/types/job";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAnalytics } from "@/utils/analytics";
+import { useEffect } from "react";
 
 interface JobDetailModalProps {
   job: Job | null;
@@ -8,6 +11,23 @@ interface JobDetailModalProps {
 }
 
 export default function JobDetailModal({ job, isOpen, onClose }: JobDetailModalProps) {
+  const { user } = useAuth();
+  const { trackJobView, trackApplicationStarted } = useAnalytics(user?.id);
+
+  // Track job view when modal opens (für alle Benutzer, wird dem Job-Besitzer zugeordnet)
+  useEffect(() => {
+    if (isOpen && job) {
+      trackJobView(job._id);
+    }
+  }, [isOpen, job, trackJobView]);
+
+  const handleApplicationClick = (email: string) => {
+    if (job) {
+      trackApplicationStarted(job._id);
+    }
+    window.location.href = `mailto:${email}`;
+  };
+
   if (!isOpen || !job) return null;
 
   return (
@@ -122,13 +142,13 @@ export default function JobDetailModal({ job, isOpen, onClose }: JobDetailModalP
               Schließen
             </button>
             {job.kontaktEmail && (
-              <a 
-                href={`mailto:${job.kontaktEmail}`} 
+              <button 
+                onClick={() => handleApplicationClick(job.kontaktEmail!)}
                 className="btn btn-primary"
               >
                 <FaEnvelope className="me-1" />
                 Bewerben
-              </a>
+              </button>
             )}
           </div>
         </div>

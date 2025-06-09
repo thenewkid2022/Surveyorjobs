@@ -1,12 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import { kategorien } from "@shared/lib/berufe";
 import { getApiUrl } from "@/utils/api";
+import { useAnalytics } from '@/utils/analytics';
+import { useAuth } from '@/contexts/AuthContext';
 import { FaMapMarkerAlt, FaBuilding, FaEye, FaEnvelope } from "react-icons/fa";
 import JobDetailModal from "@/app/components/JobDetailModal";
 import { Job } from "@/types/job";
 
 export default function JobsPage() {
+  const router = useRouter();
+  const { user } = useAuth();
+  const { trackApplicationStarted } = useAnalytics(user?.id);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [selectedKategorie, setSelectedKategorie] = useState<string>("");
@@ -15,6 +21,7 @@ export default function JobsPage() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [error, setError] = useState('');
 
   const fetchData = async (pageNum: number, append: boolean = false) => {
     try {
@@ -66,6 +73,11 @@ export default function JobsPage() {
 
   const closeJobModal = () => {
     setSelectedJob(null);
+  };
+
+  const handleApplicationClick = (job: Job) => {
+    trackApplicationStarted(job._id);
+    window.location.href = `mailto:${job.kontaktEmail}`;
   };
 
   if (loading) {
@@ -179,7 +191,7 @@ export default function JobsPage() {
                         {job.kontaktEmail && (
                           <button 
                             className="btn btn-success btn-sm"
-                            onClick={() => window.location.href = `mailto:${job.kontaktEmail}`}
+                            onClick={() => handleApplicationClick(job)}
                           >
                             <FaEnvelope className="me-1" />
                             Bewerben

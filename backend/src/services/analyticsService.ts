@@ -1,5 +1,51 @@
 import { AnalyticsEvent, AnalyticsAggregated, IAnalyticsEvent } from '../models/Analytics';
 import { withDB } from '../db/connection';
+import StellenanzeigenAufgeben from '../models/stellenanzeigen-aufgeben';
+
+// Event tracking für Job-bezogene Events (ermittelt automatisch den Job-Besitzer)
+export async function trackJobEvent(
+  eventType: 'job_view' | 'application_started' | 'application_completed',
+  jobId: string,
+  options: {
+    userAgent?: string;
+    referrer?: string;
+    region?: string;
+  } = {}
+) {
+  try {
+    await withDB(async () => {
+      // Job-Besitzer ermitteln
+      const job = await StellenanzeigenAufgeben.findById(jobId);
+      if (!job) {
+        console.warn(`Analytics: Job ${jobId} nicht gefunden`);
+        return;
+      }
+
+      const employerId = job.ersteller.toString();
+      
+      // Device-Type aus User-Agent ermitteln
+      const deviceType = getDeviceType(options.userAgent);
+      
+      const event = new AnalyticsEvent({
+        eventType,
+        jobId,
+        employerId,
+        timestamp: new Date(),
+        metadata: {
+          userAgent: options.userAgent,
+          referrer: options.referrer,
+          region: options.region,
+          deviceType
+        }
+      });
+
+      await event.save();
+      console.log(`Analytics Job Event tracked: ${eventType} for job ${jobId} -> employer ${employerId}`);
+    });
+  } catch (error) {
+    console.error('Fehler beim Tracking von Job Analytics Event:', error);
+  }
+}
 
 // Event tracking (DSGVO-konform)
 export async function trackEvent(
@@ -93,7 +139,7 @@ export async function getAnalyticsData(
               $sum: { $cond: [{ $eq: ['$eventType', 'job_view'] }, 1, 0] }
             },
             applications: {
-              $sum: { $cond: [{ $eq: ['$eventType', 'application_completed'] }, 1, 0] }
+              $sum: { $cond: [{ $eq: ['$eventType', 'application_started'] }, 1, 0] }
             }
           }
         },
@@ -149,16 +195,16 @@ export async function getAnalyticsData(
 
       // Conversion Rate berechnen
       const totalJobViews = totalStats.find(s => s._id === 'job_view')?.count || 0;
-      const totalApplications = totalStats.find(s => s._id === 'application_completed')?.count || 0;
-      const conversionRate = totalJobViews > 0 ? (totalApplications / totalJobViews) * 100 : 0;
+      const totalApplicationsStarted = totalStats.find(s => s._id === 'application_started')?.count || 0;
+      const conversionRate = totalJobViews > 0 ? (totalApplicationsStarted / totalJobViews) * 100 : 0;
 
       return {
         summary: {
           totalJobViews,
           totalCVViews: totalStats.find(s => s._id === 'cv_view')?.count || 0,
           totalCVClicks: totalStats.find(s => s._id === 'cv_click')?.count || 0,
-          totalApplicationsStarted: totalStats.find(s => s._id === 'application_started')?.count || 0,
-          totalApplicationsCompleted: totalApplications,
+          totalApplicationsStarted: totalApplicationsStarted,
+          totalApplicationsCompleted: totalStats.find(s => s._id === 'application_completed')?.count || 0,
           conversionRate: Math.round(conversionRate * 100) / 100
         },
         jobPerformance: jobStats.map((job: any) => ({

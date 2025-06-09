@@ -16,7 +16,8 @@ import {
   FaDesktop,
   FaTabletAlt,
   FaArrowUp,
-  FaArrowDown
+  FaArrowDown,
+  FaEnvelope
 } from 'react-icons/fa';
 
 interface AnalyticsData {
@@ -275,50 +276,65 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        {/* Zusammenfassung */}
+        {/* Job-Performance Hauptmetriken */}
         <div className="row g-4 mb-5">
-          <div className="col-md-6 col-lg-4">
+          <div className="col-12">
+            <h2 className="h4 mb-4 text-primary">📊 Job-Performance</h2>
+          </div>
+          <div className="col-md-4">
             <div className="card h-100 shadow-sm border-0">
               <div className="card-body text-center">
                 <FaEye className="text-primary mb-3" size={32} />
                 <h3 className="fw-bold text-primary">{formatNumber(data.summary.totalJobViews)}</h3>
                 <p className="text-muted mb-0">Anzeigen-Aufrufe</p>
+                <small className="text-muted">Wie oft Ihre Jobs angeschaut werden</small>
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-lg-4">
-            <div className="card h-100 shadow-sm border-0">
-              <div className="card-body text-center">
-                <FaFileAlt className="text-success mb-3" size={32} />
-                <h3 className="fw-bold text-success">{formatNumber(data.summary.totalCVViews)}</h3>
-                <p className="text-muted mb-0">Lebenslauf-Aufrufe</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6 col-lg-4">
-            <div className="card h-100 shadow-sm border-0">
-              <div className="card-body text-center">
-                <FaMousePointer className="text-warning mb-3" size={32} />
-                <h3 className="fw-bold text-warning">{formatNumber(data.summary.totalCVClicks)}</h3>
-                <p className="text-muted mb-0">Lebenslauf-Klicks</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6 col-lg-4">
+          <div className="col-md-4">
             <div className="card h-100 shadow-sm border-0">
               <div className="card-body text-center">
                 <FaUsers className="text-info mb-3" size={32} />
-                <h3 className="fw-bold text-info">{formatNumber(data.summary.totalApplicationsCompleted)}</h3>
-                <p className="text-muted mb-0">Bewerbungen</p>
+                <h3 className="fw-bold text-info">{formatNumber(data.summary.totalApplicationsStarted)}</h3>
+                <p className="text-muted mb-0">Bewerbungen gestartet</p>
+                <small className="text-muted">Klicks auf "Bewerben" bei Ihren Jobs</small>
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-lg-4">
+          <div className="col-md-4">
             <div className="card h-100 shadow-sm border-0">
               <div className="card-body text-center">
                 <FaChartLine className="text-success mb-3" size={32} />
                 <h3 className="fw-bold text-success">{formatPercentage(data.summary.conversionRate)}</h3>
                 <p className="text-muted mb-0">Conversion Rate</p>
+                <small className="text-muted">Bewerbungen / Aufrufe</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Meine Aktivität */}
+        <div className="row g-4 mb-5">
+          <div className="col-12">
+            <h2 className="h4 mb-4 text-secondary">👤 Meine Aktivität</h2>
+          </div>
+          <div className="col-md-6">
+            <div className="card h-100 shadow-sm border-0">
+              <div className="card-body text-center">
+                <FaFileAlt className="text-secondary mb-3" size={28} />
+                <h4 className="fw-bold text-secondary">{formatNumber(data.summary.totalCVViews)}</h4>
+                <p className="text-muted mb-0">CVs angeschaut</p>
+                <small className="text-muted">Ihre Aktivität im CV-Browser</small>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card h-100 shadow-sm border-0">
+              <div className="card-body text-center">
+                <FaEnvelope className="text-secondary mb-3" size={28} />
+                <h4 className="fw-bold text-secondary">{formatNumber(data.summary.totalCVClicks)}</h4>
+                <p className="text-muted mb-0">Kandidaten kontaktiert</p>
+                <small className="text-muted">Kontakt-Klicks bei CVs</small>
               </div>
             </div>
           </div>
@@ -338,7 +354,7 @@ export default function AnalyticsPage() {
                       <tr>
                         <th>Stellenanzeige</th>
                         <th>Aufrufe</th>
-                        <th>Bewerbungen</th>
+                        <th>Bewerbungen gestartet</th>
                         <th>Conversion Rate</th>
                         <th>Trend</th>
                       </tr>

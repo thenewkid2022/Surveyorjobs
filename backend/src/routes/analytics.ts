@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { authenticateJWT, AuthRequest } from "../middleware/auth";
-import { getAnalyticsData, trackEvent } from "../services/analyticsService";
+import { getAnalyticsData, trackEvent, trackJobEvent } from "../services/analyticsService";
 import User from "../models/User";
 import { withDB } from "../db/connection";
 
@@ -95,7 +95,44 @@ router.get("/dashboard", authenticateJWT, requireAnalyticsAccess, async (req: Au
   }
 });
 
-// Event-Tracking Endpoint (für Frontend-Tracking)
+// Job-Event-Tracking Endpoint (für Bewerber-Aktivitäten)
+router.post("/track-job", async (req: Request, res: Response) => {
+  try {
+    const { eventType, jobId } = req.body;
+
+    if (!eventType || !jobId) {
+      return res.status(400).json({ message: "eventType und jobId sind erforderlich" });
+    }
+
+    // Validiere Event-Typ
+    const validEventTypes = ['job_view', 'application_started', 'application_completed'];
+    if (!validEventTypes.includes(eventType)) {
+      return res.status(400).json({ message: "Ungültiger Event-Typ für Job-Tracking" });
+    }
+
+    // DSGVO: Keine IP-Adresse speichern, nur Region ermitteln
+    const userAgent = req.headers['user-agent'];
+    const referrer = req.headers.referer;
+    
+    // Region aus Accept-Language Header (falls verfügbar)
+    const acceptLanguage = req.headers['accept-language'];
+    const region = acceptLanguage ? acceptLanguage.split(',')[0].split('-')[1] : undefined;
+
+    await trackJobEvent(eventType, jobId, {
+      userAgent,
+      referrer,
+      region
+    });
+
+    return res.json({ success: true, message: "Job-Event erfolgreich getrackt" });
+
+  } catch (error) {
+    console.error("Fehler beim Tracking des Job-Events:", error);
+    return res.status(500).json({ message: "Fehler beim Job-Event-Tracking" });
+  }
+});
+
+// Event-Tracking Endpoint (für Arbeitgeber-eigene Aktivitäten wie CV-Views)
 router.post("/track", async (req: Request, res: Response) => {
   try {
     const { eventType, employerId, jobId, cvId } = req.body;

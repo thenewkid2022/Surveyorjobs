@@ -462,12 +462,6 @@ h3 { font-size: 1.75rem; }
   text-transform: capitalize !important;
 }
 
-/* Großschreibung für alle Beruf/Kategorie/etc. Felder in Detailkarten und Modals */
-.card .card-body span,
-.modal-content span {
-  text-transform: capitalize !important;
-}
-
 /* Mobile-optimierte Modals */
 .modal-fullscreen-sm-down {
   border-radius: 0 !important;
@@ -499,6 +493,14 @@ h3 { font-size: 1.75rem; }
     font-size: 1.5rem !important;
   }
 }
+
+/* Großschreibung für alle Beruf/Kategorie/etc. Felder in Detailkarten und Modals */
+.card .card-body span,
+.modal-content span {
+  text-transform: capitalize !important;
+}
+
+
 
 /* Utility Classes */
 .shadow-text {

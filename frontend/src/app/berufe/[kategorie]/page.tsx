@@ -1,5 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAnalytics } from '@/utils/analytics';
 import { FaMapMarkerAlt, FaBuilding, FaUser, FaEye, FaEnvelope, FaGraduationCap } from "react-icons/fa";
 import { getApiUrl } from "@/utils/api";
 import { kantone, kantonNamen } from "@shared/lib/kantone";
@@ -19,6 +22,16 @@ interface Stellengesuch {
   artDerStelle?: string;
   erfahrung?: string;
   kategorie?: string;
+  ausbildung?: string;
+  faehigkeiten?: string[];
+  sprachen?: string[];
+  mobilitaet?: string;
+  verfuegbarAb?: string;
+  kontaktEmail?: string;
+  kontaktTelefon?: string;
+  lebenslauf?: string;
+  anschreiben?: string;
+  status?: string;
 }
 
 const kategorieTitel: { [key: string]: string } = {
@@ -36,10 +49,13 @@ export default function BerufskategoriePage({
   params: { kategorie: string },
   searchParams: { kanton?: string }
 }) {
+  const router = useRouter();
+  const { user } = useAuth();
+  const { trackApplicationStarted } = useAnalytics(user?.id);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [stellengesuche, setStellengesuche] = useState<Stellengesuch[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [selectedJobSearch, setSelectedJobSearch] = useState<Stellengesuch | null>(null);
+  const [selectedJobSearch, setSelectedJobSearch] = useState<any | null>(null);
   const [jobsLoading, setJobsLoading] = useState(true);
   const [jobsError, setJobsError] = useState<string | null>(null);
   const [gesucheLoading, setGesucheLoading] = useState(true);
@@ -112,12 +128,37 @@ export default function BerufskategoriePage({
     setSelectedJob(null);
   };
 
-  const openJobSearchModal = (jobSearch: Stellengesuch) => {
-    setSelectedJobSearch(jobSearch);
+  const openJobSearchModal = (gesuch: Stellengesuch) => {
+    // Konvertiere Stellengesuch zu JobSearchData Format
+    const jobSearchData = {
+      _id: gesuch._id,
+      beruf: gesuch.beruf || gesuch.berufswunsch || "Stellengesuch",
+      standort: gesuch.standort || "Ort nicht angegeben",
+      beschreibung: gesuch.beschreibung || "Stellengesuch verfügbar",
+      erfahrung: gesuch.erfahrung || "Keine Angabe",
+      ausbildung: gesuch.ausbildung || "Keine Angabe",
+      faehigkeiten: gesuch.faehigkeiten || [],
+      sprachen: gesuch.sprachen || [],
+      mobilitaet: gesuch.mobilitaet || "Keine Angabe",
+      artDerStelle: gesuch.artDerStelle || "Vollzeit",
+      verfuegbarAb: gesuch.verfuegbarAb || new Date().toISOString(),
+      kontaktEmail: gesuch.kontaktEmail,
+      kontaktTelefon: gesuch.kontaktTelefon,
+      lebenslauf: gesuch.lebenslauf,
+      anschreiben: gesuch.anschreiben,
+      erstelltAm: gesuch.erstelltAm,
+      status: gesuch.status || "aktiv"
+    };
+    setSelectedJobSearch(jobSearchData);
   };
 
   const closeJobSearchModal = () => {
     setSelectedJobSearch(null);
+  };
+
+  const handleApplicationClick = (job: Job) => {
+    trackApplicationStarted(job._id);
+    window.location.href = `mailto:${job.kontaktEmail}`;
   };
 
   // Anpassung des Titels, wenn ein Kanton ausgewählt ist
@@ -192,7 +233,7 @@ export default function BerufskategoriePage({
                       {job.kontaktEmail && (
                         <button 
                           className="btn btn-success btn-sm"
-                          onClick={() => window.location.href = `mailto:${job.kontaktEmail}`}
+                          onClick={() => handleApplicationClick(job)}
                         >
                           <FaEnvelope className="me-1" />
                           Bewerben

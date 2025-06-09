@@ -1,11 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FaHardHat, FaMapMarkerAlt, FaBuilding, FaEye, FaEnvelope, FaGraduationCap } from "react-icons/fa";
+import { FaHardHat, FaMapMarkerAlt, FaBuilding, FaEye, FaEnvelope, FaGraduationCap, FaUser, FaBriefcase, FaSearch } from "react-icons/fa";
 import Link from "next/link";
 import { getApiUrl } from "@/utils/api";
 import JobDetailModal from "@/app/components/JobDetailModal";
 import JobSearchDetailModal from "@/app/components/JobSearchDetailModal";
 import { Job } from "@/types/job";
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAnalytics } from '@/utils/analytics';
 
 interface Stellengesuch {
   _id: string;
@@ -18,6 +21,17 @@ interface Stellengesuch {
   artDerStelle: string;
   erfahrung?: string;
   kategorie?: string;
+  // Zusätzliche Properties für Kompatibilität mit JobSearchData
+  ausbildung?: string;
+  faehigkeiten?: string[];
+  sprachen?: string[];
+  mobilitaet?: string;
+  verfuegbarAb?: string;
+  kontaktEmail?: string;
+  kontaktTelefon?: string;
+  lebenslauf?: string;
+  anschreiben?: string;
+  status?: string;
 }
 
 interface Stellenanzeige {
@@ -35,10 +49,13 @@ interface Stellenanzeige {
 }
 
 export default function Home() {
+  const router = useRouter();
+  const { user } = useAuth();
+  const { trackApplicationStarted } = useAnalytics(user?.id);
   const [stellenanzeigen, setStellenanzeigen] = useState<Job[]>([]);
   const [stellengesuche, setStellengesuche] = useState<Stellengesuch[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [selectedJobSearch, setSelectedJobSearch] = useState<Stellengesuch | null>(null);
+  const [selectedJobSearch, setSelectedJobSearch] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [stellenanzeigenPage, setStellenanzeigenPage] = useState(1);
   const [stellengesuchePage, setStellengesuchePage] = useState(1);
@@ -117,12 +134,37 @@ export default function Home() {
     setSelectedJob(null);
   };
 
-  const openJobSearchModal = (jobSearch: Stellengesuch) => {
-    setSelectedJobSearch(jobSearch);
+  const openJobSearchModal = (gesuch: Stellengesuch) => {
+    // Konvertiere Stellengesuch zu JobSearchData Format
+    const jobSearchData = {
+      _id: gesuch._id,
+      beruf: gesuch.beruf || "Stellengesuch",
+      standort: gesuch.standort || "Ort nicht angegeben",
+      beschreibung: gesuch.beschreibung || "Stellengesuch verfügbar",
+      erfahrung: gesuch.erfahrung || "Keine Angabe",
+      ausbildung: gesuch.ausbildung || "Keine Angabe",
+      faehigkeiten: gesuch.faehigkeiten || [],
+      sprachen: gesuch.sprachen || [],
+      mobilitaet: gesuch.mobilitaet || "Keine Angabe",
+      artDerStelle: gesuch.artDerStelle || "Vollzeit",
+      verfuegbarAb: gesuch.verfuegbarAb || new Date().toISOString(),
+      kontaktEmail: gesuch.kontaktEmail,
+      kontaktTelefon: gesuch.kontaktTelefon,
+      lebenslauf: gesuch.lebenslauf,
+      anschreiben: gesuch.anschreiben,
+      erstelltAm: gesuch.erstelltAm,
+      status: gesuch.status || "aktiv"
+    };
+    setSelectedJobSearch(jobSearchData);
   };
 
   const closeJobSearchModal = () => {
     setSelectedJobSearch(null);
+  };
+
+  const handleApplicationClick = (job: Job) => {
+    trackApplicationStarted(job._id);
+    window.location.href = `mailto:${job.kontaktEmail}`;
   };
 
   if (loading) {
@@ -198,7 +240,7 @@ export default function Home() {
                     {job.kontaktEmail && (
                       <button 
                         className="btn btn-success btn-sm"
-                        onClick={() => window.location.href = `mailto:${job.kontaktEmail}`}
+                        onClick={() => handleApplicationClick(job)}
                       >
                         <FaEnvelope className="me-1" />
                         Bewerben

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getApiUrl } from '@/utils/api';
+import { useAnalytics } from '@/utils/analytics';
 import CVAccessGate from '@/app/components/CVAccessGate';
 import DownloadButton from '@/app/components/DownloadButton';
-import { FaUser, FaMapMarkerAlt, FaCalendarAlt, FaGraduationCap, FaDownload, FaEye } from 'react-icons/fa';
+import { FaUser, FaMapMarkerAlt, FaCalendarAlt, FaGraduationCap, FaDownload, FaEye, FaLanguage } from 'react-icons/fa';
 
 interface Resume {
   _id: string;
@@ -39,7 +41,9 @@ interface AccessInfo {
 }
 
 export default function CVBrowser() {
+  const router = useRouter();
   const { user, token } = useAuth();
+  const { trackCVView, trackCVClick } = useAnalytics(user?.id);
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -81,6 +85,11 @@ export default function CVBrowser() {
 
   const viewFullResume = async (resumeId: string) => {
     try {
+      // Track CV view event (nur für Arbeitgeber)
+      if (user?.accountTyp === 'arbeitgeber') {
+        trackCVView(resumeId);
+      }
+
       const response = await fetch(`${getApiUrl()}/api/cv-access/resume/${resumeId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -98,6 +107,14 @@ export default function CVBrowser() {
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
     }
+  };
+
+  const handleContactClick = (email: string, resumeId: string) => {
+    // Track CV click event (nur für Arbeitgeber)
+    if (user?.accountTyp === 'arbeitgeber') {
+      trackCVClick(resumeId);
+    }
+    window.location.href = `mailto:${email}`;
   };
 
   if (!user || user.accountTyp !== 'arbeitgeber') {
@@ -211,7 +228,7 @@ export default function CVBrowser() {
                             {resume.kontaktEmail && (
                               <button 
                                 className="btn btn-success btn-sm"
-                                onClick={() => window.location.href = `mailto:${resume.kontaktEmail}`}
+                                onClick={() => handleContactClick(resume.kontaktEmail!, resume._id)}
                               >
                                 Kontakt
                               </button>
@@ -333,7 +350,7 @@ export default function CVBrowser() {
                     <button 
                       type="button" 
                       className="btn btn-primary"
-                      onClick={() => window.location.href = `mailto:${selectedResume.kontaktEmail}`}
+                      onClick={() => handleContactClick(selectedResume.kontaktEmail!, selectedResume._id)}
                     >
                       Kontaktieren
                     </button>
