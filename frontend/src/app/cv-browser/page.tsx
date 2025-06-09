@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getApiUrl } from '@/utils/api';
 import CVAccessGate from '@/app/components/CVAccessGate';
+import DownloadButton from '@/app/components/DownloadButton';
 import { FaUser, FaMapMarkerAlt, FaCalendarAlt, FaGraduationCap, FaDownload, FaEye } from 'react-icons/fa';
 
 interface Resume {
@@ -315,15 +316,7 @@ export default function CVBrowser() {
                     <div className="mb-3">
                       <strong>Lebenslauf:</strong>
                       <div className="mt-2">
-                        <a 
-                          href={selectedResume.lebenslauf} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="btn btn-outline-primary"
-                        >
-                          <FaDownload className="me-2" />
-                          PDF herunterladen
-                        </a>
+                        <DownloadButton fileUrl={selectedResume.lebenslauf} />
                       </div>
                     </div>
                   )}
