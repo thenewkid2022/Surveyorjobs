@@ -130,7 +130,8 @@ router.post("/login", authLimiter, async (req: Request, res: Response) => {
         vorname: user.vorname,
         nachname: user.nachname,
         accountTyp: user.accountTyp,
-        emailVerifiziert: user.emailVerifiziert
+        emailVerifiziert: user.emailVerifiziert,
+        premiumFeatures: user.premiumFeatures
       }
     });
   } catch (error) {
