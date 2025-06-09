@@ -36,7 +36,7 @@ const requireAnalyticsAccess = async (req: AuthRequest, res: Response, next: any
     }
 
     req.user = { ...req.user, employer: user };
-    next();
+    return next();
   } catch (error) {
     console.error("Fehler bei Analytics-Zugriffsprüfung:", error);
     return res.status(500).json({ message: "Fehler bei der Zugriffsprüfung" });

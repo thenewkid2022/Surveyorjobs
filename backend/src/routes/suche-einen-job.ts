@@ -22,14 +22,40 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     console.log("Abrufen aller 'Suche einen Job' Einträge");
     
+    // Parameter aus der Query extrahieren
+    const kategorie = req.query.kategorie as string;
+    const kanton = req.query.kanton as string;
+    
+    // Erstelle Filter-Objekt
+    const filter: any = {
+      status: 'aktiv',
+      expiresAt: { $gt: new Date() }
+    };
+
+    if (kategorie) {
+      // Mapping von URL-Schlüsseln zu Datenbank-Werten
+      const mappedKategorie = kategorieMapping[kategorie] || kategorie;
+      filter.kategorie = mappedKategorie;
+      console.log(`Filtere nach Kategorie: ${kategorie} -> ${mappedKategorie}`);
+    }
+
+    if (kanton) {
+      // Finde alle Orte für den gewählten Kanton
+      const orteImKanton = Object.entries(ortschaftZuKanton)
+        .filter(([_, k]) => k === kanton)
+        .map(([ort, _]) => ort);
+      
+      filter.standort = { $in: orteImKanton };
+      console.log(`Filtere nach Kanton: ${kanton}, Orte: ${orteImKanton.length}`);
+    }
+
+    console.log('Verwendeter Filter:', filter);
+    
     const jobs = await withDB(async () => {
       // Für öffentliche Ansicht: Lebensläufe und Kontaktdaten ausblenden
       // Nur Arbeitgeber mit bezahltem Paket können diese Daten sehen
       return await SucheEinenJob.find(
-        { 
-          status: 'aktiv',
-          expiresAt: { $gt: new Date() }
-        },
+        filter,
         {
           // Sensible Daten ausblenden für öffentliche Ansicht
           lebenslauf: 0,
@@ -40,7 +66,7 @@ router.get("/", async (req: Request, res: Response) => {
       ).sort({ erstelltAm: -1 });
     });
 
-    console.log(`${jobs.length} 'Suche einen Job' Einträge gefunden`);
+    console.log(`${jobs.length} 'Suche einen Job' Einträge gefunden (nach Filterung)`);
     return res.json({
       jobs,
       message: "Kontaktdaten und Lebensläufe nur für Arbeitgeber mit bezahltem Paket sichtbar"

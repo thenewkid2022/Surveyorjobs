@@ -137,11 +137,16 @@
     box-shadow: 0 4px 24px rgba(0,0,0,0.25);
     border-radius: 0.5rem;
     margin-top: 0.5rem !important;
+    min-width: 220px !important;
+    white-space: nowrap;
   }
   .dark-mode-navbar .dropdown-item {
     color: #ededed !important;
     border-radius: 0.3rem;
     padding: 0.6rem 1.2rem;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .dark-mode-navbar .dropdown-item:hover,
   .dark-mode-navbar .dropdown-item:focus {
@@ -630,4 +635,85 @@ h3 { font-size: 1.75rem; }
 .navbar.dark-mode-navbar .dropdown-item:hover {
   background-color: #f1f5f9 !important;
   color: #ea580c !important;
+}
+
+/* Verbessertes Dropdown-Menü für bessere Textdarstellung */
+.dark-mode-navbar .dropdown-menu {
+  min-width: 220px !important;
+  white-space: nowrap;
+}
+
+.dropdown-menu {
+  min-width: 220px !important;
+  white-space: nowrap;
+}
+
+.dropdown-item {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* DROPDOWN MENÜ FIX - Höchste Spezifität */
+.navbar.dark-mode-navbar .dropdown .dropdown-menu {
+  min-width: 250px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+.navbar.dark-mode-navbar .dropdown .dropdown-menu .dropdown-item {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  padding: 0.6rem 1.2rem !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Allgemeine Dropdown-Regel für alle anderen Dropdowns */
+.dropdown-menu {
+  min-width: 250px !important;
+}
+
+.dropdown-item {
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+/* FORCE LIGHT MODE für Login/Register/Auth Seiten */
+body {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.card {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.form-control {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+.form-label {
+  color: #0f172a !important;
+}
+
+.alert {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.alert-success {
+  background-color: #dcfce7 !important;
+  color: #166534 !important;
+  border-color: #bbf7d0 !important;
+}
+
+.alert-danger {
+  background-color: #fef2f2 !important;
+  color: #dc2626 !important;
+  border-color: #fecaca !important;
 }

@@ -57,7 +57,7 @@ router.get("/resumes", authenticateJWT, async (req: AuthRequest, res: Response) 
       : {}; // Vollständige Daten
 
     const resumes = await withDB(async () => {
-      return await SucheEinenJob.find(query, projection)
+      return await SucheEinenJob.find(query, projection as any)
         .sort({ erstelltAm: -1 })
         .limit(50)
         .populate('ersteller', 'vorname nachname');

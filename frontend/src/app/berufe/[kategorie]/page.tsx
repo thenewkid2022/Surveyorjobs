@@ -77,8 +77,19 @@ export default function BerufskategoriePage({
           gesucheRes.json()
         ]);
         
+        console.log('🔍 Frontend DEBUG - API Response:', {
+          stellenanzeigen: jobsData.stellenanzeigen?.length || 0,
+          stellengesuche: gesucheData.jobs?.length || 0,
+          kategorie: params.kategorie
+        });
+
         setJobs(jobsData.stellenanzeigen || []);
         setStellengesuche(gesucheData.jobs || []);
+
+        console.log('🔍 Frontend DEBUG - State nach Update:', {
+          jobsLength: (jobsData.stellenanzeigen || []).length,
+          gesucheLength: (gesucheData.jobs || []).length
+        });
       } catch (error) {
         console.error("Fehler beim Laden der Daten:", error);
         setJobsError(error instanceof Error ? error.message : "Fehler beim Laden der Stellenangebote");

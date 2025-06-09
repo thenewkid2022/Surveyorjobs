@@ -74,9 +74,18 @@ export default function Navbar() {
                   {user.vorname}
                 </button>
                 {isDropdownOpen && (
-                  <ul className="dropdown-menu dropdown-menu-end show">
+                  <ul 
+                    className="dropdown-menu dropdown-menu-end show" 
+                    style={{ 
+                      minWidth: '280px', 
+                      whiteSpace: 'nowrap',
+                      width: 'max-content',
+                      maxWidth: '400px',
+                      overflow: 'visible'
+                    }}
+                  >
                     <li>
-                      <Link href="/dashboard" className="dropdown-item">
+                      <Link href="/dashboard" className="dropdown-item" style={{ whiteSpace: 'nowrap' }}>
                         <FaHome className="me-2" />
                         Dashboard
                       </Link>
@@ -86,13 +95,13 @@ export default function Navbar() {
                         <li>
                           <Link href="/stellenanzeigen-aufgeben" className="dropdown-item">
                             <FaBriefcase className="me-2" />
-                            Stellenanzeige aufgeben
+                            Inserat aufgeben
                           </Link>
                         </li>
                         <li>
                           <Link href="/meine-stellenanzeigen" className="dropdown-item">
                             <FaClipboardList className="me-2" />
-                            Meine Stellenanzeigen
+                            Meine Inserate
                           </Link>
                         </li>
                         <li>
@@ -114,7 +123,7 @@ export default function Navbar() {
                         <li>
                           <Link href="/meine-stellengesuche" className="dropdown-item">
                             <FaClipboardList className="me-2" />
-                            Meine Stellengesuche
+                            Meine Gesuche
                           </Link>
                         </li>
                         <li>
@@ -126,21 +135,21 @@ export default function Navbar() {
                       </>
                     )}
                     <li>
-                      <Link href="/profile" className="dropdown-item">
+                      <Link href="/profile" className="dropdown-item" style={{ whiteSpace: 'nowrap' }}>
                         <FaUser className="me-2" />
                         Profil
                       </Link>
                     </li>
                     <li><hr className="dropdown-divider" /></li>
                     <li>
-                      <Link href="/settings" className="dropdown-item">
+                      <Link href="/settings" className="dropdown-item" style={{ whiteSpace: 'nowrap' }}>
                         <FaCog className="me-2" />
                         Einstellungen
                       </Link>
                     </li>
                     <li><hr className="dropdown-divider" /></li>
                     <li>
-                      <button onClick={handleLogout} className="dropdown-item">
+                      <button onClick={handleLogout} className="dropdown-item" style={{ whiteSpace: 'nowrap' }}>
                         <FaSignOutAlt className="me-2" />
                         Abmelden
                       </button>

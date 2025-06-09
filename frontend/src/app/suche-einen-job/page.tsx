@@ -7,6 +7,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { berufe } from "@shared/lib/berufe";
 import { getApiUrl } from '@/utils/api';
 import LocationInput from "@/app/components/LocationInput";
+import { useAuth } from '@/contexts/AuthContext';
 
 // Stripe Promise initialisieren
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -491,9 +492,37 @@ function JobSucheFormular({ setShowForm, clientSecret }: { setShowForm: (show: b
 }
 
 export default function SucheEinenJob() {
+  const router = useRouter();
+  const { user, token, isLoading } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [clientSecret, setClientSecret] = useState<string>("");
   const [selectedPackage, setSelectedPackage] = useState<PricingPackage | null>(null);
+
+  useEffect(() => {
+    if (!isLoading && !token) {
+      router.push('/login');
+      return;
+    }
+  }, [token, isLoading, router]);
+
+  // Zeige Loading-Spinner während der Auth-Prüfung
+  if (isLoading) {
+    return (
+      <main className="min-vh-100 bg-light d-flex justify-content-center align-items-center">
+        <div className="text-center">
+          <div className="spinner-border text-success" role="status">
+            <span className="visually-hidden">Lade...</span>
+          </div>
+          <p className="mt-3 text-muted">Überprüfe Anmeldestatus...</p>
+        </div>
+      </main>
+    );
+  }
+
+  // Wenn nicht angemeldet, zeige nichts (Weiterleitung läuft)
+  if (!token) {
+    return null;
+  }
 
   const handlePackageSelect = async (pkg: PricingPackage) => {
     setSelectedPackage(pkg);

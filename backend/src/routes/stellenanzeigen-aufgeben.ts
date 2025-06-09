@@ -15,6 +15,7 @@ router.get("/", async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 6;
     const kategorie = req.query.kategorie as string;
     const kanton = req.query.kanton as string;
+    console.log('🔍 DEBUG - Filter Parameter:', { kategorie, kanton, page, limit });
 
     // Erstelle Filter-Objekt
     const filter: any = {
@@ -23,13 +24,17 @@ router.get("/", async (req: Request, res: Response) => {
     };
 
     if (kategorie) {
-      // Suche nach Stellenanzeigen, deren Titel Berufe aus der gewählten Kategorie enthält
-      const berufeInKategorie = berufe.filter(b => b.kategorie === kategorie);
-      const berufsTitel = berufeInKategorie.map(b => b.titel);
-      
-      filter.titel = {
-        $regex: new RegExp(`(${berufsTitel.join('|')})`, 'i')
+      // Mapping von URL-Schlüsseln zu Datenbank-Werten
+      const kategorieMapping: { [key: string]: string } = {
+        'hochbau': 'Hochbau',
+        'tiefbau': 'Tiefbau', 
+        'ausbau': 'Ausbau',
+        'planung': 'Planung & Technik',
+        'weitere': 'Weitere Berufe'
       };
+      
+      const mappedKategorie = kategorieMapping[kategorie] || kategorie;
+      filter.kategorie = mappedKategorie;
     }
 
     if (kanton) {

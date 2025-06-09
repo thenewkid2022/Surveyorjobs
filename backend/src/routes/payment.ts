@@ -73,7 +73,7 @@ router.post("/create-payment-intent", async (req: Request, res: Response) => {
 
     // Bestimme den korrekten Preis basierend auf Paket und Typ
     let amount = 1000; // Standard-Fallback
-    let packageConfig = null;
+    let packageConfig: any = null;
 
     if (type === 'stellenanzeigen-aufgeben') {
       // Arbeitgeber-Pakete

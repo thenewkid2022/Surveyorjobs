@@ -10,7 +10,7 @@ export const berufe: Beruf[] = [
   { id: 'maurer', titel: 'Maurer/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
   { id: 'betonbauer', titel: 'Beton- und Stahlbetonbauer/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
   { id: 'zimmerer', titel: 'Zimmerer/Zimmermann/Zimmerin EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
-  { id: 'natursteinbearbeiter', titel: 'Natursteinbearbeiter/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
+  { id: 'natursteinbearbeiter', titel: 'Natursteinbearbeiter/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
   { id: 'bauhelfer-hochbau', titel: 'Bauhelfer/in EBA', kategorie: 'Hochbau', ausbildung: 'EBA' },
   { id: 'fassadenbauer', titel: 'Fassadenbauer/in EFZ', kategorie: 'Hochbau', ausbildung: 'EFZ' },
   { id: 'holzbau-polier', titel: 'Holzbau-Polier/in HFP', kategorie: 'Hochbau', ausbildung: 'HFP' },
@@ -59,7 +59,7 @@ export const berufe: Beruf[] = [
   { id: 'bausachverstaendiger', titel: 'Bausachverständige/r', kategorie: 'Planung & Technik' },
 
   // Weitere Berufe
-  { id: 'baumaschinenmechaniker', titel: 'Baumaschinenmechaniker/in EFZ', kategorie: 'Technik', ausbildung: 'EFZ' },
+  { id: 'baumaschinenmechaniker', titel: 'Baumaschinenmechaniker/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
   { id: 'landschaftsgaertner', titel: 'Landschaftsgärtner/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
   { id: 'gartenbauer', titel: 'Gartenbauer/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
   { id: 'forstwart', titel: 'Forstwart/in EFZ', kategorie: 'Weitere Berufe', ausbildung: 'EFZ' },
@@ -79,7 +79,6 @@ export const kategorien = {
   'Tiefbau': 'Tiefbau',
   'Ausbau': 'Ausbau',
   'Planung & Technik': 'Planung & Technik',
-  'Technik': 'Technik',
   'Weitere Berufe': 'Weitere Berufe'
 };
 

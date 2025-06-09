@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { kategorien } from "@shared/lib/berufe";
+import { kategorien, berufe } from "@shared/lib/berufe";
 
 // Mapping von Kategorie-Werten zu URL-Schlüsseln
 const kategorieToUrlKey: { [key: string]: string } = {
@@ -15,6 +15,15 @@ const kategorieToUrlKey: { [key: string]: string } = {
 export default function BerufsfeldFilterPage() {
   const router = useRouter();
   const [selectedKategorie, setSelectedKategorie] = useState<string>("");
+
+  // DEBUG: Überprüfe alle einzigartigen Kategorien aus dem berufe-Array
+  const uniqueKategorienFromBerufe = [...new Set(berufe.map(b => b.kategorie))];
+  console.log('🔍 DEBUG - Eindeutige Kategorien aus berufe-Array:', uniqueKategorienFromBerufe);
+  
+  // DEBUG: Schaue direkt in das importierte kategorien-Objekt
+  console.log('🔍 DEBUG - kategorien direkt importiert:', kategorien);
+  console.log('🔍 DEBUG - typeof kategorien:', typeof kategorien);
+  console.log('🔍 DEBUG - kategorien keys:', Object.keys(kategorien));
 
   const handleApply = () => {
     if (selectedKategorie) {
@@ -31,21 +40,24 @@ export default function BerufsfeldFilterPage() {
       <div className="container py-5">
         <h1 className="display-5 fw-bold text-primary mb-4">Berufsfeld auswählen</h1>
         <div className="row g-4">
-          {Object.entries(kategorien).map(([key, titel]) => (
-            <div className="col-12 col-md-4" key={key}>
-              <button
-                className="btn btn-outline-primary w-100 py-3"
-                onClick={() => {
-                  const urlKey = kategorieToUrlKey[titel];
-                  if (urlKey) {
-                    router.push(`/berufe/${urlKey}`);
-                  }
-                }}
-              >
-                {titel}
-              </button>
-            </div>
-          ))}
+          {Object.entries(kategorien).map(([key, titel]) => {
+            console.log('🔍 DEBUG - Rendering Button:', { key, titel });
+            return (
+              <div className="col-12 col-md-4" key={key}>
+                <button
+                  className="btn btn-outline-primary w-100 py-3"
+                  onClick={() => {
+                    const urlKey = kategorieToUrlKey[titel];
+                    if (urlKey) {
+                      router.push(`/berufe/${urlKey}`);
+                    }
+                  }}
+                >
+                  {titel}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
     </main>

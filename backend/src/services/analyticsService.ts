@@ -1,6 +1,5 @@
 import { AnalyticsEvent, AnalyticsAggregated, IAnalyticsEvent } from '../models/Analytics';
 import { withDB } from '../db/connection';
-import StellenanzeigenAufgeben from '../models/stellenanzeigen-aufgeben';
 
 // Event tracking (DSGVO-konform)
 export async function trackEvent(

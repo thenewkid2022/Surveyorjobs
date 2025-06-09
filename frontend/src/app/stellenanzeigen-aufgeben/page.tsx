@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -10,6 +10,7 @@ import LocationInput from '@/app/components/LocationInput';
 import { berufe } from "@shared/lib/berufe";
 import { getKantonForOrt } from "@shared/lib/kantone";
 import { FaUserTie } from "react-icons/fa";
+import { useAuth } from '@/contexts/AuthContext';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -447,9 +448,37 @@ function StellenanzeigeFormular({ setShowForm, clientSecret, selectedPackage }: 
 }
 
 export default function StellenanzeigeAufgeben() {
+  const router = useRouter();
+  const { user, token, isLoading } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [clientSecret, setClientSecret] = useState<string>("");
   const [selectedPackage, setSelectedPackage] = useState<PricingPackage | null>(null);
+
+  useEffect(() => {
+    if (!isLoading && !token) {
+      router.push('/login');
+      return;
+    }
+  }, [token, isLoading, router]);
+
+  // Zeige Loading-Spinner während der Auth-Prüfung
+  if (isLoading) {
+    return (
+      <main className="min-vh-100 bg-light d-flex justify-content-center align-items-center">
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Lade...</span>
+          </div>
+          <p className="mt-3 text-muted">Überprüfe Anmeldestatus...</p>
+        </div>
+      </main>
+    );
+  }
+
+  // Wenn nicht angemeldet, zeige nichts (Weiterleitung läuft)
+  if (!token) {
+    return null;
+  }
 
   const handlePackageSelect = async (pkg: PricingPackage) => {
     setSelectedPackage(pkg);
