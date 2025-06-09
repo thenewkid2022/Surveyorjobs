@@ -489,12 +489,12 @@ export default function StellenanzeigeAufgeben() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           packageId: pkg.id,
           packageName: pkg.name,
           type: 'stellenanzeigen-aufgeben'
-          // Preis wird automatisch vom Backend basierend auf packageId bestimmt
         }),
       });
 
