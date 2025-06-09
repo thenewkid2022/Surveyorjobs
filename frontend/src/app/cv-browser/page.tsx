@@ -230,15 +230,15 @@ export default function CVBrowser() {
         {/* Modal für vollständigen Lebenslauf */}
         {selectedResume && (
           <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-            <div className="modal-dialog modal-lg">
+            <div className="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen-sm-down">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">
+                  <h1 className="modal-title">
                     {selectedResume.ersteller ? 
                       `${selectedResume.ersteller.vorname} ${selectedResume.ersteller.nachname}` :
                       selectedResume.beruf
                     }
-                  </h5>
+                  </h1>
                   <button 
                     type="button" 
                     className="btn-close" 

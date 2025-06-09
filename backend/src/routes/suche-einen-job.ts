@@ -161,17 +161,29 @@ router.get("/meine", authenticateJWT, async (req: AuthRequest, res: Response) =>
   }
 });
 
-// Einzelnen Job abrufen
+// Einzelnen Job abrufen (öffentlich - OHNE Kontaktdaten)
 router.get("/:id", async (req: Request, res: Response) => {
   try {
     const job = await withDB(async () => {
-      return await SucheEinenJob.findById(req.params.id);
+      // Für öffentliche Detail-Ansicht: Kontaktdaten und Lebenslauf ausblenden
+      // Nur der CV-Browser für bezahlte Arbeitgeber zeigt diese Daten
+      return await SucheEinenJob.findById(req.params.id, {
+        // Sensible Daten ausblenden für öffentliche Ansicht
+        lebenslauf: 0,
+        kontaktEmail: 0, 
+        kontaktTelefon: 0,
+        anschreiben: 0
+      });
     });
 
     if (!job) {
       return res.status(404).json({ message: "Job nicht gefunden" });
     }
-    return res.json(job);
+    
+    return res.json({
+      ...job.toJSON(),
+      message: "Kontaktdaten und Lebenslauf nur für Arbeitgeber mit bezahltem Paket im CV-Browser sichtbar"
+    });
   } catch (error) {
     return res.status(500).json({ message: "Fehler beim Abrufen des Jobs", error });
   }

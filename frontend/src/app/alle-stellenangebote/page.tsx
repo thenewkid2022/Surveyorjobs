@@ -1,14 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { kategorien } from "@shared/lib/berufe";
-import Link from "next/link";
 import { getApiUrl } from "@/utils/api";
-import { FaMapMarkerAlt, FaBuilding } from "react-icons/fa";
-import JobCard from "@/app/components/JobCard";
+import { FaMapMarkerAlt, FaBuilding, FaEye, FaEnvelope } from "react-icons/fa";
+import JobDetailModal from "@/app/components/JobDetailModal";
 import { Job } from "@/types/job";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [selectedKategorie, setSelectedKategorie] = useState<string>("");
   const [selectedKanton, setSelectedKanton] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -58,6 +58,14 @@ export default function JobsPage() {
 
   const handleKantonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedKanton(e.target.value);
+  };
+
+  const openJobModal = (job: Job) => {
+    setSelectedJob(job);
+  };
+
+  const closeJobModal = () => {
+    setSelectedJob(null);
   };
 
   if (loading) {
@@ -131,18 +139,55 @@ export default function JobsPage() {
           ) : (
             <>
               {jobs.map((job) => (
-                <div key={job._id} className="col-12 col-md-6 col-lg-4 col-xl-3">
-                  <JobCard
-                    id={job._id}
-                    titel={job.titel}
-                    standort={job.standort}
-                    unternehmen={job.unternehmen}
-                    artDerStelle={job.artDerStelle}
-                    erstelltAm={job.erstelltAm}
-                    kategorie={job.kategorie}
-                    linkPrefix="berufe"
-                    type="job"
-                  />
+                <div key={job._id} className="col-md-6 col-lg-4 mb-4">
+                  <div className="card h-100 shadow-sm">
+                    <div className="card-body">
+                      <h5 className="card-title">{job.titel}</h5>
+                      
+                      {job.unternehmen && (
+                        <div className="mb-2">
+                          <FaBuilding className="me-2 text-muted" size={14} />
+                          <small className="text-muted">{job.unternehmen}</small>
+                        </div>
+                      )}
+
+                      <div className="mb-2">
+                        <FaMapMarkerAlt className="me-2 text-muted" size={14} />
+                        <small className="text-muted">{job.standort}</small>
+                      </div>
+
+                      {job.kategorie && (
+                        <div className="mb-2">
+                          <small className="badge bg-light text-dark">{job.kategorie}</small>
+                        </div>
+                      )}
+
+                      <div className="mb-3">
+                        <p className="card-text text-muted small">
+                          {job.beschreibung.substring(0, 100)}...
+                        </p>
+                      </div>
+
+                      <div className="d-flex gap-2">
+                        <button 
+                          className="btn btn-primary btn-sm flex-fill"
+                          onClick={() => openJobModal(job)}
+                        >
+                          <FaEye className="me-1" />
+                          Details
+                        </button>
+                        {job.kontaktEmail && (
+                          <button 
+                            className="btn btn-success btn-sm"
+                            onClick={() => window.location.href = `mailto:${job.kontaktEmail}`}
+                          >
+                            <FaEnvelope className="me-1" />
+                            Bewerben
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
               {hasMore && (
@@ -166,6 +211,13 @@ export default function JobsPage() {
             </>
           )}
         </div>
+
+        {/* Job Detail Modal */}
+        <JobDetailModal
+          job={selectedJob}
+          isOpen={!!selectedJob}
+          onClose={closeJobModal}
+        />
       </section>
     </main>
   );

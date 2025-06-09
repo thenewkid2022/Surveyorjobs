@@ -34,20 +34,13 @@ interface JobSearchData {
 export default function Page({
   params,
 }: {
-  params: Promise<{ id: string; kategorie: string }>;
+  params: { id: string; kategorie: string };
 }) {
-  const [resolvedParams, setResolvedParams] = useState<{ id: string; kategorie: string } | null>(null);
   const [entry, setEntry] = useState<{ type: 'job'; data: Job } | { type: 'gesuch'; data: JobSearchData } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    params.then(setResolvedParams);
-  }, [params]);
-
-  useEffect(() => {
-    if (!resolvedParams) return;
-
     const getEntry = async (id: string) => {
       try {
         // Versuche zuerst als Stellenangebot
@@ -71,7 +64,7 @@ export default function Page({
       }
     };
 
-    getEntry(resolvedParams.id)
+    getEntry(params.id)
       .then(result => {
         if (result) {
           setEntry(result);
@@ -84,7 +77,7 @@ export default function Page({
         setError('Fehler beim Laden des Eintrags');
       })
       .finally(() => setLoading(false));
-  }, [resolvedParams]);
+  }, [params.id]);
 
   if (loading) {
     return (
@@ -98,13 +91,13 @@ export default function Page({
     );
   }
 
-  if (error || !entry || !resolvedParams) {
+  if (error || !entry) {
     return (
       <div className="container-fluid py-5" style={{maxWidth: '900px', margin: '0 auto'}}>
         <div className="alert alert-danger" role="alert">
           {error || 'Eintrag nicht gefunden'}
         </div>
-        <Link href={`/berufe/${resolvedParams?.kategorie || ''}`} className="btn btn-secondary">
+        <Link href={`/berufe/${params.kategorie}`} className="btn btn-secondary">
           <FaArrowLeft {...{ style: { marginRight: "0.5rem" } } as IconBaseProps} />
           Zurück zur Übersicht
         </Link>
@@ -115,7 +108,7 @@ export default function Page({
   return (
     <div className="detail-page-wrapper">
       <div className="container-fluid py-5" style={{maxWidth: '900px', margin: '0 auto'}}>
-        <Link href={`/berufe/${resolvedParams.kategorie}`} className="btn btn-outline-secondary mb-4">
+        <Link href={`/berufe/${params.kategorie}`} className="btn btn-outline-secondary mb-4">
           <FaArrowLeft {...{ style: { marginRight: "0.5rem" } } as IconBaseProps} />
           Zurück zur Übersicht
         </Link>

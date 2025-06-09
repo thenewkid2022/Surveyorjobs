@@ -399,39 +399,105 @@ h3 { font-size: 1.75rem; }
   color: var(--construction-orange) !important;
 }
 
-/* FARBKONSISTENZ FÜR DETAILSEITEN */
-/* Spezielle Klassen für Detailseiten */
-.detail-job-primary {
-  color: var(--bs-primary) !important; /* Blau für Stellenangebote */
+/* EINZIGE GLOBALE REGEL FÜR ALLE DETAILKARTEN */
+/* Alle Titel in Cards sollen einheitlich groß und dunkel sein */
+.card .card-title,
+.card h1,
+.card h2,
+.card h3,
+.card h4,
+.card h5 {
+  color: var(--neutral-900) !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
 }
 
-.detail-job-success {
-  color: var(--bs-success) !important; /* Grün für Stellengesuche */
+/* Haupttitel - Responsive Größen (noch kleiner) */
+.card h1,
+.card .card-title {
+  font-size: 1.375rem !important; /* Noch kleiner für Mobile */
 }
 
-/* Überschreibe text-primary auf Detailseiten für korrekte Farben */
-.detail-page-wrapper .text-primary {
-  color: var(--bs-primary) !important; /* Blau statt schwarz für Stellenangebote */
+/* Untertitel */
+.card h2,
+.card h3 {
+  font-size: 1.125rem !important;
 }
 
-.detail-page-wrapper.stellengesuch .text-primary {
-  color: var(--bs-success) !important; /* Grün für Stellengesuche */
+/* Kleinere Titel */
+.card h4,
+.card h5 {
+  font-size: 1rem !important;
 }
 
-/* Card-Header Farben auf Detailseiten */
-.detail-page-wrapper .card-header {
-  background-color: var(--neutral-50) !important;
-  border-bottom: 1px solid var(--neutral-200) !important;
+/* Desktop: Größere Titel */
+@media (min-width: 768px) {
+  .card h1,
+  .card .card-title {
+    font-size: 1.5rem !important; /* Auch auf Desktop kleiner */
+  }
+  
+  .card h2,
+  .card h3 {
+    font-size: 1.25rem !important;
+  }
+  
+  .card h4,
+  .card h5 {
+    font-size: 1.125rem !important;
+  }
 }
 
-.detail-page-wrapper .card-header h1,
-.detail-page-wrapper .card-header h2 {
-  color: var(--bs-primary) !important; /* Stellenangebote blau */
+/* CSS für automatische Großschreibung der ersten Buchstaben */
+.card h1,
+.card .card-title,
+.card h2,
+.card h3,
+.modal-content h1,
+.modal-content .modal-title,
+.modal-content h2,
+.modal-content h3,
+.modal-content h4,
+.modal-content h5 {
+  text-transform: capitalize !important;
 }
 
-.detail-page-wrapper.stellengesuch .card-header h1,
-.detail-page-wrapper.stellengesuch .card-header h2 {
-  color: var(--bs-success) !important; /* Stellengesuche grün */
+/* Großschreibung für alle Beruf/Kategorie/etc. Felder in Detailkarten und Modals */
+.card .card-body span,
+.modal-content span {
+  text-transform: capitalize !important;
+}
+
+/* Mobile-optimierte Modals */
+.modal-fullscreen-sm-down {
+  border-radius: 0 !important;
+}
+
+@media (max-width: 575.98px) {
+  .modal-fullscreen-sm-down .modal-content {
+    border-radius: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+  }
+  
+  .modal-fullscreen-sm-down .modal-body {
+    overflow-y: auto !important;
+    max-height: calc(100vh - 140px) !important;
+  }
+}
+
+/* Modal Titel einheitlich mit Cards */
+.modal-content .modal-title {
+  color: var(--neutral-900) !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  font-size: 1.375rem !important;
+}
+
+@media (min-width: 768px) {
+  .modal-content .modal-title {
+    font-size: 1.5rem !important;
+  }
 }
 
 /* Utility Classes */
@@ -553,49 +619,7 @@ h3 { font-size: 1.75rem; }
   color: #0f172a !important;
 }
 
-/* FARBKONSISTENZ FÜR DETAILSEITEN */
 
-/* Spezielle Klassen für Detailseiten */
-.detail-job-primary {
-  color: var(--bs-primary) !important; /* Blau für Stellenangebote */
-}
-
-.detail-job-success {
-  color: var(--bs-success) !important; /* Grün für Stellengesuche */
-}
-
-/* Überschreibe text-primary auf Detailseiten für Stellenangebote */
-.detail-page-wrapper .text-primary {
-  color: var(--bs-primary) !important; /* Blau statt schwarz */
-}
-
-/* Spezielle Klasse für Stellengesuche auf Detailseiten */
-.detail-page-wrapper .text-success {
-  color: var(--bs-success) !important; /* Grün */
-}
-
-/* Border-Farben für Cards auf Detailseiten */
-.detail-page-wrapper .border-primary {
-  border-color: var(--bs-primary) !important;
-}
-
-.detail-page-wrapper .border-success {
-  border-color: var(--bs-success) !important;
-}
-
-/* DRINGENDE FARBKORREKTUREN FÜR DETAILSEITEN */
-
-/* Stellenangebote sollen BLAU sein, nicht schwarz */
-.detail-page-wrapper .text-primary,
-.card .text-primary {
-  color: var(--bs-primary) !important; /* Blau statt schwarz */
-}
-
-/* Stellengesuche sollen GRÜN sein */
-.detail-page-wrapper .text-success,
-.card .text-success {
-  color: var(--bs-success) !important; /* Grün */
-}
 
 /* Icon-Farben korrigieren */
 .detail-page-wrapper [style*="color: #0d6efd"],

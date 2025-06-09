@@ -31,20 +31,13 @@ interface SucheEinenJob {
 export default function Page({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const [sucheEinenJob, setSucheEinenJob] = useState<SucheEinenJob | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    params.then(setResolvedParams);
-  }, [params]);
-
-  useEffect(() => {
-    if (!resolvedParams) return;
-
     const getSucheEinenJob = async (id: string): Promise<SucheEinenJob> => {
       try {
         const response = await fetch(`${getApiUrl()}/api/suche-einen-job/${id}`, { 
@@ -62,14 +55,14 @@ export default function Page({
       }
     };
 
-    getSucheEinenJob(resolvedParams.id)
+    getSucheEinenJob(params.id)
       .then(setSucheEinenJob)
       .catch(err => {
         setError("Jobsuche konnte nicht geladen werden");
         console.error(err);
       })
       .finally(() => setLoading(false));
-  }, [resolvedParams]);
+  }, [params.id]);
 
   if (loading) {
     return (
@@ -98,7 +91,7 @@ export default function Page({
   }
 
   return (
-    <div className="detail-page-wrapper stellengesuch">
+    <div className="detail-page-wrapper">
       <div className="container-fluid py-5" style={{maxWidth: '700px', margin: '0 auto'}}>
         <Link href="/" className="btn btn-outline-secondary mb-4">
           <FaArrowLeft {...{ style: { marginRight: "0.5rem" } } as IconBaseProps} />

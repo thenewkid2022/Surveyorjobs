@@ -1,11 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { FaMapMarkerAlt, FaBuilding, FaUser } from "react-icons/fa";
-import { IconBaseProps } from "react-icons";
-import Link from "next/link";
+import { FaMapMarkerAlt, FaBuilding, FaUser, FaEye, FaEnvelope, FaGraduationCap } from "react-icons/fa";
 import { getApiUrl } from "@/utils/api";
 import { kantone, kantonNamen } from "@shared/lib/kantone";
-import JobCard from "../../components/JobCard";
+import JobDetailModal from "../../components/JobDetailModal";
+import JobSearchDetailModal from "../../components/JobSearchDetailModal";
 import { Job } from "@/types/job";
 
 interface Stellengesuch {
@@ -39,6 +38,8 @@ export default function BerufskategoriePage({
 }) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [stellengesuche, setStellengesuche] = useState<Stellengesuch[]>([]);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [selectedJobSearch, setSelectedJobSearch] = useState<Stellengesuch | null>(null);
   const [jobsLoading, setJobsLoading] = useState(true);
   const [jobsError, setJobsError] = useState<string | null>(null);
   const [gesucheLoading, setGesucheLoading] = useState(true);
@@ -103,6 +104,22 @@ export default function BerufskategoriePage({
     fetchData();
   }, [params.kategorie, searchParams.kanton]);
 
+  const openJobModal = (job: Job) => {
+    setSelectedJob(job);
+  };
+
+  const closeJobModal = () => {
+    setSelectedJob(null);
+  };
+
+  const openJobSearchModal = (jobSearch: Stellengesuch) => {
+    setSelectedJobSearch(jobSearch);
+  };
+
+  const closeJobSearchModal = () => {
+    setSelectedJobSearch(null);
+  };
+
   // Anpassung des Titels, wenn ein Kanton ausgewählt ist
   const pageTitle = searchParams.kanton 
     ? `${kategorieTitel[params.kategorie] || 'Alle Berufe'} in ${kantonNamen[searchParams.kanton as keyof typeof kantonNamen]}`
@@ -135,18 +152,55 @@ export default function BerufskategoriePage({
           )}
           <div className="row g-4">
             {jobs.map((job) => (
-              <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={job._id}>
-                <JobCard
-                  id={job._id}
-                  titel={job.titel}
-                  standort={job.standort}
-                  unternehmen={job.unternehmen}
-                  artDerStelle={job.artDerStelle}
-                  erstelltAm={job.erstelltAm}
-                  kategorie={params.kategorie}
-                  linkPrefix="berufe"
-                  type="job"
-                />
+              <div key={job._id} className="col-md-6 col-lg-4 mb-4">
+                <div className="card h-100 shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title">{job.titel}</h5>
+                    
+                    {job.unternehmen && (
+                      <div className="mb-2">
+                        <FaBuilding className="me-2 text-muted" size={14} />
+                        <small className="text-muted">{job.unternehmen}</small>
+                      </div>
+                    )}
+
+                    <div className="mb-2">
+                      <FaMapMarkerAlt className="me-2 text-muted" size={14} />
+                      <small className="text-muted">{job.standort}</small>
+                    </div>
+
+                    {job.kategorie && (
+                      <div className="mb-2">
+                        <small className="badge bg-primary text-white">{job.kategorie}</small>
+                      </div>
+                    )}
+
+                    <div className="mb-3">
+                      <p className="card-text text-muted small">
+                        {job.beschreibung.substring(0, 100)}...
+                      </p>
+                    </div>
+
+                    <div className="d-flex gap-2">
+                      <button 
+                        className="btn btn-primary btn-sm flex-fill"
+                        onClick={() => openJobModal(job)}
+                      >
+                        <FaEye className="me-1" />
+                        Details
+                      </button>
+                      {job.kontaktEmail && (
+                        <button 
+                          className="btn btn-success btn-sm"
+                          onClick={() => window.location.href = `mailto:${job.kontaktEmail}`}
+                        >
+                          <FaEnvelope className="me-1" />
+                          Bewerben
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -174,21 +228,62 @@ export default function BerufskategoriePage({
           )}
           <div className="row g-4">
             {stellengesuche.map((gesuch) => (
-              <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={gesuch._id}>
-                <JobCard
-                  id={gesuch._id}
-                  beruf={gesuch.berufswunsch || gesuch.beruf || ""}
-                  standort={gesuch.standort || ""}
-                  artDerStelle={gesuch.artDerStelle || "Vollzeit"}
-                  erstelltAm={gesuch.erstelltAm}
-                  kategorie={params.kategorie}
-                  linkPrefix="berufe"
-                  type="search"
-                />
+              <div key={gesuch._id} className="col-md-6 col-lg-4 mb-4">
+                <div className="card h-100 shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title">{gesuch.berufswunsch || gesuch.beruf || "Stellengesuch"}</h5>
+                    
+                    <div className="mb-2">
+                      <FaMapMarkerAlt className="me-2 text-muted" size={14} />
+                      <small className="text-muted">{gesuch.standort || "Ort nicht angegeben"}</small>
+                    </div>
+
+                    {gesuch.erfahrung && (
+                      <div className="mb-2">
+                        <FaGraduationCap className="me-2 text-muted" size={14} />
+                        <small className="text-muted">{gesuch.erfahrung}</small>
+                      </div>
+                    )}
+
+                    <div className="mb-2">
+                      <small className="badge bg-success text-white">{gesuch.artDerStelle || "Vollzeit"}</small>
+                    </div>
+
+                    <div className="mb-3">
+                      <p className="card-text text-muted small">
+                        {gesuch.beschreibung ? gesuch.beschreibung.substring(0, 100) + "..." : "Stellengesuch verfügbar"}
+                      </p>
+                    </div>
+
+                    <div className="d-flex gap-2">
+                      <button 
+                        className="btn btn-success btn-sm flex-fill"
+                        onClick={() => openJobSearchModal(gesuch)}
+                      >
+                        <FaEye className="me-1" />
+                        Details
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </section>
+
+        {/* Modals */}
+        <JobDetailModal
+          job={selectedJob}
+          isOpen={!!selectedJob}
+          onClose={closeJobModal}
+        />
+        
+        <JobSearchDetailModal
+          jobSearch={selectedJobSearch}
+          isOpen={!!selectedJobSearch}
+          onClose={closeJobSearchModal}
+          showFullContact={false}
+        />
       </div>
     </main>
   );
