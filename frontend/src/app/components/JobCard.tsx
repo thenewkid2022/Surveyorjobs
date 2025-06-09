@@ -59,9 +59,6 @@ export default function JobCard({
 
   const displayTitle = type === 'job' ? formatTitle(titel || '') : formatTitle(beruf || berufswunsch || position || '');
 
-  // Farbklassen zentral steuern - professioneller
-  const colorClass = type === 'job' ? 'brand-primary' : 'success';
-
   // Datum formatieren
   const formattedDate = erstelltAm ? new Date(erstelltAm).toLocaleDateString("de-DE", {
     year: 'numeric',
@@ -78,41 +75,41 @@ export default function JobCard({
   });
 
   return (
-    <div className={`card h-100 border-${colorClass} bg-white ${className}`}>
+    <div className={`card h-100 shadow-sm bg-white ${className}`}>
       <div className="card-body d-flex flex-column">
         {/* Titel - immer sichtbar */}
-        <h5 className={`card-title text-${colorClass} mb-3`}>{displayTitle || 'Kein Titel verfügbar'}</h5>
+        <h5 className="card-title text-dark mb-3">{displayTitle || 'Kein Titel verfügbar'}</h5>
         
         <div className="card-text flex-grow-1">
           {/* Standort - immer sichtbar */}
           <p className="mb-2">
-            <FaMapMarkerAlt className={`text-${colorClass} me-2`} />
+            <FaMapMarkerAlt className="text-muted me-2" />
             <span className="text-muted">{standort}</span>
           </p>
 
           {/* Unternehmen - wenn vorhanden */}
           {type === 'job' && unternehmen && (
             <p className="mb-2">
-              <FaBuilding className={`text-${colorClass} me-2`} />
+              <FaBuilding className="text-muted me-2" />
               <span className="text-muted">{unternehmen}</span>
             </p>
           )}
 
           {/* Art der Stelle - immer sichtbar */}
           <p className="mb-2">
-            <FaBriefcase className={`text-${colorClass} me-2`} />
+            <FaBriefcase className="text-muted me-2" />
             <span className="text-muted">{artDerStelle}</span>
           </p>
 
           {/* Eingestelltes Datum - immer sichtbar */}
           <p className="mb-3 text-muted small">
-            <FaCalendarAlt className={`text-${colorClass} me-2`} />
+            <FaCalendarAlt className="text-muted me-2" />
             <span className="text-muted">Eingestellt am: {formattedDate}</span>
           </p>
         </div>
 
-        {/* Details Button - farblich je nach Typ unterschieden */}
-        <Link href={link} className={`btn ${type === 'job' ? 'btn-brand-primary' : 'btn-success'} w-100 mt-auto`}>
+        {/* Details Button - einheitlich neutral */}
+        <Link href={link} className="btn btn-dark w-100 mt-auto">
           Details anzeigen
         </Link>
       </div>
