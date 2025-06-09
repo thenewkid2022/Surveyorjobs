@@ -158,4 +158,46 @@ Dieses Projekt ist unter der MIT-Lizenz lizenziert - siehe [LICENSE](LICENSE) f�
 - [Bootstrap](https://getbootstrap.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [MongoDB](https://www.mongodb.com/)
-- [Express.js](https://expressjs.com/) 
+- [Express.js](https://expressjs.com/)
+
+## 🆕 Cookie-Management & Analytics
+
+### Cookie-Banner & Einwilligung
+- **DSGVO-konformer Cookie-Banner** beim ersten Besuch
+- **Granulare Cookie-Kontrolle**: Notwendige, Funktionale, Analyse- und Marketing-Cookies
+- **Cookie-Einstellungen** über Footer-Link verfügbar
+- **Automatische Consent-Erneuerung** nach 12 Monaten
+
+### Google Analytics Integration
+- **Conditional Loading**: Lädt nur bei erteilter Einwilligung
+- **IP-Anonymisierung** aktiviert
+- **Consent Mode API** für datenschutzkonforme Implementierung
+- **Event-Tracking** für Job-Views, Bewerbungen etc.
+
+### Konfiguration
+
+1. **Google Analytics 4 einrichten**:
+   ```bash
+   # In frontend/.env.local
+   NEXT_PUBLIC_GA_MEASUREMENT_ID=GA-XXXXXXXXX-X
+   ```
+
+2. **Cookie-Kategorien**:
+   - ✅ **Notwendig**: Session, CSRF, Login (immer aktiv)
+   - 🎛️ **Funktional**: Spracheinstellungen, Filter-Präferenzen  
+   - 📊 **Analytics**: Google Analytics (nur mit Einwilligung)
+   - 📈 **Marketing**: Derzeit nicht verwendet
+
+3. **Implementierte Komponenten**:
+   - `CookieContext` - Cookie-State-Management
+   - `CookieBanner` - Banner mit Einstellungen
+   - `GoogleAnalytics` - GA4 mit Consent Mode
+   - `CookieSettings` - Footer-Link für Einstellungen
+
+### Rechtliche Compliance
+
+- **Schweizer nDSG** konform
+- **DSGVO/GDPR** konform
+- **Cookie-Richtlinie** vollständig implementiert
+- **Opt-in/Opt-out** Mechanismen
+- **Datenübertragung in USA** mit SCCs dokumentiert 

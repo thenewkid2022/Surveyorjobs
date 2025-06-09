@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FaEnvelope, FaPhone, FaLinkedin, FaFacebook, FaTwitter } from "react-icons/fa";
+import CookieSettings from "./CookieSettings";
 
 export default function Footer() {
   return (
@@ -76,6 +77,9 @@ export default function Footer() {
                 <Link href="/cookie-richtlinie" className="text-decoration-none text-secondary">
                   Cookie-Richtlinie
                 </Link>
+              </li>
+              <li className="mb-2">
+                <CookieSettings />
               </li>
             </ul>
           </div>

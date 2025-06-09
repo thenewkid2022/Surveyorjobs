@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cookie-Banner Test</title>
+    <script>
+        function testCookieBanner() {
+            console.log('🧪 COOKIE-BANNER TESTS');
+            console.log('=====================');
+            
+            // 1. Ersten Besuch simulieren
+            console.log('1. ⚡ Ersten Besuch simulieren...');
+            localStorage.removeItem('cookie-preferences');
+            localStorage.removeItem('cookie-consent-date');
+            
+            setTimeout(() => {
+                console.log('2. 🔄 Seite wird neu geladen...');
+                window.location.href = 'http://localhost:3000';
+            }, 1000);
+        }
+        
+        function checkAnalytics() {
+            console.log('🧪 GOOGLE ANALYTICS TESTS');
+            console.log('========================');
+            
+            console.log('GA verfügbar:', !!window.gtag ? '✅' : '❌');
+            console.log('DataLayer:', window.dataLayer ? '✅ (' + window.dataLayer.length + ' Events)' : '❌');
+            
+            const prefs = JSON.parse(localStorage.getItem('cookie-preferences') || '{}');
+            console.log('Analytics-Cookies:', prefs.analytics ? '✅ Akzeptiert' : '❌ Nicht akzeptiert');
+            
+            if (window.gtag && prefs.analytics) {
+                console.log('🎯 Test-Event senden...');
+                gtag('event', 'test_cookie_implementation', {
+                    event_category: 'testing',
+                    event_label: 'cookie_banner_test'
+                });
+                console.log('✅ Test-Event gesendet!');
+            }
+        }
+        
+        function showTestResults() {
+            console.log('🏁 TEST-ERGEBNISSE');
+            console.log('==================');
+            
+            const hasPrefs = localStorage.getItem('cookie-preferences');
+            const hasConsent = localStorage.getItem('cookie-consent-date');
+            
+            console.log('Cookie-Präferenzen gespeichert:', hasPrefs ? '✅' : '❌');
+            console.log('Consent-Datum gespeichert:', hasConsent ? '✅' : '❌');
+            
+            if (hasPrefs) {
+                const prefs = JSON.parse(hasPrefs);
+                console.log('  - Notwendig:', prefs.necessary ? '✅' : '❌');
+                console.log('  - Funktional:', prefs.functional ? '✅' : '❌'); 
+                console.log('  - Analytics:', prefs.analytics ? '✅' : '❌');
+                console.log('  - Marketing:', prefs.marketing ? '✅' : '❌');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>🍪 Cookie-Banner Test</h1>
+    <p>Öffnen Sie die Browser-Konsole und führen Sie die Tests aus:</p>
+    <div style="margin: 20px 0;">
+        <button onclick="testCookieBanner()" style="padding: 10px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer;">
+            🧪 Cookie-Banner testen
+        </button>
+        <button onclick="checkAnalytics()" style="padding: 10px; margin: 5px; background: #28a745; color: white; border: none; cursor: pointer;">
+            📊 Analytics prüfen
+        </button>
+        <button onclick="showTestResults()" style="padding: 10px; margin: 5px; background: #ffc107; color: black; border: none; cursor: pointer;">
+            📋 Test-Ergebnisse anzeigen
+        </button>
+    </div>
+    
+    <p><a href="http://localhost:3000" target="_blank">🚀 Zur Website wechseln</a></p>
+    
+    <h2>🎯 Test-Checkliste:</h2>
+    <ol>
+        <li>✅ Server läuft: <code>npm run dev</code></li>
+        <li>✅ Build erfolgreich: <code>npm run build</code></li>  
+        <li>✅ GA-ID konfiguriert: <code>G-C2SJQM1DSN</code></li>
+        <li>✅ Komponenten geladen: CookieProvider, CookieBanner, GoogleAnalytics</li>
+        <li>🧪 Cookie-Banner testen (siehe Buttons oben)</li>
+    </ol>
+    
+    <h2>📊 Erwartete Ergebnisse:</h2>
+    <ul>
+        <li><strong>Erster Besuch:</strong> Cookie-Banner erscheint am unteren Bildschirmrand</li>
+        <li><strong>"Alle akzeptieren":</strong> Google Analytics lädt, gtag-Funktion verfügbar</li>
+        <li><strong>"Nur notwendige":</strong> Keine Google Analytics, nur interne Analytics</li>
+        <li><strong>"Einstellungen":</strong> Modal mit granularer Cookie-Kontrolle</li>
+        <li><strong>Footer-Link:</strong> "Cookie-Einstellungen" öffnet Banner erneut</li>
+    </ul>
+    
+    <h2>🔧 Debug-Befehle für Browser-Konsole:</h2>
+    <pre style="background: #f4f4f4; padding: 10px; border-radius: 5px;">
+// Cookie-Status prüfen:
+console.log('Cookie-Präferenzen:', localStorage.getItem('cookie-preferences'));
+console.log('Consent-Datum:', localStorage.getItem('cookie-consent-date'));
+
+// Google Analytics Status:
+console.log('GA verfügbar:', !!window.gtag);
+console.log('Data Layer:', window.dataLayer);
+
+// Ersten Besuch simulieren:
+localStorage.removeItem('cookie-preferences');
+localStorage.removeItem('cookie-consent-date');
+location.reload();
+    </pre>
+</body>
+</html> 

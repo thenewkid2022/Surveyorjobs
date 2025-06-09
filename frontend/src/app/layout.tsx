@@ -6,6 +6,9 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import BootstrapClient from "./components/BootstrapClient";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CookieProvider } from "@/contexts/CookieContext";
+import CookieBanner from "./components/CookieBanner";
+import GoogleAnalytics from "./components/GoogleAnalytics";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,17 +25,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
   return (
     <html lang="de">
       <body className={`${inter.className} antialiased d-flex flex-column min-vh-100`}>
-        <AuthProvider>
-          <Navbar />
-          <main className="flex-grow-1">
-            {children}
-          </main>
-          <BootstrapClient />
-          <Footer />
-        </AuthProvider>
+        <CookieProvider>
+          <AuthProvider>
+            <Navbar />
+            <main className="flex-grow-1">
+              {children}
+            </main>
+            <BootstrapClient />
+            <Footer />
+            <CookieBanner />
+            {gaId && <GoogleAnalytics gaId={gaId} />}
+          </AuthProvider>
+        </CookieProvider>
       </body>
     </html>
   );
