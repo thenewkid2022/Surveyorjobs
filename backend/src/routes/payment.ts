@@ -62,9 +62,14 @@ const packageConfigs: { [key: string]: any } = {
   }
 };
 
-router.post("/create-payment-intent", async (req: Request, res: Response) => {
+router.post("/create-payment-intent", authenticateJWT, async (req: AuthRequest, res: Response) => {
   try {
     const { packageId, packageName, type } = req.body;
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Nicht authentifiziert" });
+    }
     
     // Validierung des Typs
     if (type !== 'stellenanzeigen-aufgeben' && type !== 'suche-einen-job') {
@@ -99,7 +104,8 @@ router.post("/create-payment-intent", async (req: Request, res: Response) => {
         packageId,
         packageName,
         type,
-        priceChf: (amount / 100).toString()
+        priceChf: (amount / 100).toString(),
+        userId: userId.toString()
       },
     });
 

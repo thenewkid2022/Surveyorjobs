@@ -336,17 +336,35 @@ router.post("/temp-token", async (req: Request, res: Response) => {
 
     if (paymentIntent.status === 'succeeded') {
       console.log("Zahlung erfolgreich, generiere Token");
+      
+      // Hole userId aus Payment Intent Metadaten
+      const userId = paymentIntent.metadata?.userId;
+      if (!userId) {
+        console.error("Keine userId in Payment Intent Metadaten");
+        return res.status(400).json({ message: "Keine userId in Payment Intent gefunden" });
+      }
+
+      // Hole Benutzer aus Datenbank für Token-Generierung
+      const user = await withDB(async () => {
+        return await User.findById(userId);
+      });
+
+      if (!user) {
+        console.error("Benutzer nicht gefunden:", userId);
+        return res.status(404).json({ message: "Benutzer nicht gefunden" });
+      }
+
+      // Generiere echten User-Token (wie beim Login)
       const token = jwt.sign(
         { 
-          paymentId,
-          purpose: 'publish',
-          type: 'temp',
-          metadata: paymentIntent.metadata // Speichere Metadaten im Token
+          userId: user._id,
+          email: user.email,
+          accountTyp: user.accountTyp
         }, 
         process.env.JWT_SECRET,
         { expiresIn: '1h' }
       );
-      console.log("Token erfolgreich generiert");
+      console.log("Token erfolgreich generiert für Benutzer:", user.email);
       return res.json({ token });
     } else {
       console.error("Zahlung nicht erfolgreich:", paymentIntent.status);
