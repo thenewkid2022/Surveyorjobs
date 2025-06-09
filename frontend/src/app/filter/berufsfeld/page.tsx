@@ -17,7 +17,7 @@ export default function BerufsfeldFilterPage() {
   const [selectedKategorie, setSelectedKategorie] = useState<string>("");
 
   // DEBUG: Überprüfe alle einzigartigen Kategorien aus dem berufe-Array
-  const uniqueKategorienFromBerufe = [...new Set(berufe.map(b => b.kategorie))];
+  const uniqueKategorienFromBerufe = Array.from(new Set(berufe.map(b => b.kategorie)));
   console.log('🔍 DEBUG - Eindeutige Kategorien aus berufe-Array:', uniqueKategorienFromBerufe);
   
   // DEBUG: Schaue direkt in das importierte kategorien-Objekt
