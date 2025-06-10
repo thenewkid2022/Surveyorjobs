@@ -24,7 +24,8 @@ export default function Navbar() {
           className="navbar-toggler"
           type="button"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle navigation"
+          aria-label="Navigation öffnen"
+          aria-expanded={isMenuOpen}
         >
           <span className="navbar-toggler-icon"></span>
         </button>

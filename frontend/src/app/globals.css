@@ -472,11 +472,38 @@ h3 { font-size: 1.75rem; }
     border-radius: 0 !important;
     height: 100vh !important;
     max-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   
   .modal-fullscreen-sm-down .modal-body {
     overflow-y: auto !important;
-    max-height: calc(100vh - 140px) !important;
+    flex: 1 !important;
+    max-height: none !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  .modal-fullscreen-sm-down .modal-footer {
+    flex-shrink: 0 !important;
+    border-top: 1px solid rgba(0,0,0,0.125) !important;
+    background-color: white !important;
+    padding: 1rem !important;
+    margin-top: auto !important;
+  }
+  
+  .modal-fullscreen-sm-down .modal-header {
+    flex-shrink: 0 !important;
+    border-bottom: 1px solid rgba(0,0,0,0.125) !important;
+    background-color: white !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1020 !important;
+  }
+  
+  .modal-fullscreen-sm-down .modal-footer .btn {
+    font-size: 1rem !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 0.375rem !important;
   }
 }
 
@@ -742,4 +769,131 @@ body {
   background-color: #fef2f2 !important;
   color: #dc2626 !important;
   border-color: #fecaca !important;
+}
+
+/* MOBILE NAVBAR VERBESSERUNGEN */
+@media (max-width: 991.98px) {
+  /* Hamburger Menu deutlich sichtbarer machen */
+  .navbar-toggler {
+    border: 2px solid #ea580c !important;
+    border-radius: 8px !important;
+    padding: 0.5rem !important;
+    background-color: rgba(234, 88, 12, 0.1) !important;
+    position: relative !important;
+    width: 46px !important;
+    height: 46px !important;
+  }
+  
+  .navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.3) !important;
+    outline: none !important;
+  }
+  
+  /* Hamburger Icon als echte Striche darstellen */
+  .navbar-toggler-icon {
+    background-image: none !important;
+    width: 28px !important;
+    height: 20px !important;
+    position: relative !important;
+    display: block !important;
+  }
+  
+  .navbar-toggler-icon::before,
+  .navbar-toggler-icon::after,
+  .navbar-toggler-icon {
+    background-color: #ea580c !important;
+  }
+  
+  .navbar-toggler-icon::before,
+  .navbar-toggler-icon::after {
+    content: '';
+    position: absolute !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 3px !important;
+    background-color: #ea580c !important;
+    border-radius: 2px !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .navbar-toggler-icon::before {
+    top: -8px !important;
+  }
+  
+  .navbar-toggler-icon::after {
+    bottom: -8px !important;
+  }
+  
+  .navbar-toggler-icon {
+    height: 3px !important;
+    background-color: #ea580c !important;
+    border-radius: 2px !important;
+  }
+  
+  /* Animation für offenes Menü */
+  .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+    background-color: transparent !important;
+  }
+  
+  .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+    transform: rotate(45deg) !important;
+    top: 0 !important;
+  }
+  
+  .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+    transform: rotate(-45deg) !important;
+    bottom: 0 !important;
+  }
+  
+  /* Mobile Navigation verbessern */
+  .navbar-collapse {
+    background-color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+    margin-top: 1rem !important;
+    padding: 1.5rem !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+  
+  /* Mobile Navigation Links */
+  .navbar-nav .nav-link {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    color: #0f172a !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 8px !important;
+    margin-bottom: 0.5rem !important;
+    border: 1px solid transparent !important;
+  }
+  
+  .navbar-nav .nav-link:hover {
+    background-color: rgba(234, 88, 12, 0.1) !important;
+    border-color: rgba(234, 88, 12, 0.2) !important;
+    color: #ea580c !important;
+  }
+  
+  /* Mobile Buttons Stack besser */
+  .navbar .d-flex {
+    margin-top: 1rem !important;
+    padding-top: 1rem !important;
+    border-top: 1px solid #e2e8f0 !important;
+  }
+  
+  .navbar .d-flex .btn {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+    min-height: 48px !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* Zusätzliche Verbesserung: Navbar Brand auf Mobile */
+@media (max-width: 991.98px) {
+  .navbar-brand {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #ea580c !important;
+  }
 }
