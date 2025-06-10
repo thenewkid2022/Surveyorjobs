@@ -771,66 +771,66 @@ body {
   border-color: #fecaca !important;
 }
 
-/* MOBILE NAVBAR VERBESSERUNGEN */
+/* MOBILE NAVBAR VERBESSERUNGEN - ELEGANT & KOMPAKT */
 @media (max-width: 991.98px) {
-  /* Hamburger Menu deutlich sichtbarer machen */
+  /* Schönes, minimales Hamburger Menu */
   .navbar-toggler {
-    border: 2px solid #ea580c !important;
-    border-radius: 8px !important;
-    padding: 0.5rem !important;
-    background-color: rgba(234, 88, 12, 0.1) !important;
-    position: relative !important;
-    width: 46px !important;
-    height: 46px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    padding: 0.4rem 0.5rem !important;
+    background-color: transparent !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .navbar-toggler:hover {
+    background-color: rgba(0,0,0,0.05) !important;
+    border-color: #9ca3af !important;
   }
   
   .navbar-toggler:focus {
-    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.3) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
     outline: none !important;
   }
   
-  /* Hamburger Icon als echte Striche darstellen */
+  /* Saubere Hamburger Linien */
   .navbar-toggler-icon {
     background-image: none !important;
-    width: 28px !important;
-    height: 20px !important;
+    width: 22px !important;
+    height: 16px !important;
     position: relative !important;
     display: block !important;
   }
   
+  .navbar-toggler-icon,
   .navbar-toggler-icon::before,
-  .navbar-toggler-icon::after,
-  .navbar-toggler-icon {
-    background-color: #ea580c !important;
+  .navbar-toggler-icon::after {
+    background-color: #374151 !important;
+    height: 2px !important;
+    border-radius: 1px !important;
+    transition: all 0.25s ease !important;
   }
   
   .navbar-toggler-icon::before,
   .navbar-toggler-icon::after {
     content: '';
     position: absolute !important;
-    left: 0 !important;
     width: 100% !important;
-    height: 3px !important;
-    background-color: #ea580c !important;
-    border-radius: 2px !important;
-    transition: all 0.3s ease !important;
+    left: 0 !important;
   }
   
   .navbar-toggler-icon::before {
-    top: -8px !important;
+    top: -6px !important;
   }
   
   .navbar-toggler-icon::after {
-    bottom: -8px !important;
+    bottom: -6px !important;
   }
   
-  .navbar-toggler-icon {
-    height: 3px !important;
-    background-color: #ea580c !important;
-    border-radius: 2px !important;
-  }
-  
-  /* Animation für offenes Menü */
+  /* Smooth Animation für X */
   .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
     background-color: transparent !important;
   }
@@ -845,54 +845,53 @@ body {
     bottom: 0 !important;
   }
   
-  /* Mobile Navigation verbessern */
+  /* Kompaktes Mobile Menü */
   .navbar-collapse {
     background-color: white !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
-    margin-top: 1rem !important;
-    padding: 1.5rem !important;
-    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1) !important;
+    margin-top: 0.75rem !important;
+    padding: 1rem !important;
+    border: 1px solid #e5e7eb !important;
   }
   
-  /* Mobile Navigation Links */
+  /* Kompakte Navigation Links */
   .navbar-nav .nav-link {
-    font-size: 1.1rem !important;
-    font-weight: 600 !important;
-    color: #0f172a !important;
-    padding: 0.75rem 1rem !important;
-    border-radius: 8px !important;
-    margin-bottom: 0.5rem !important;
-    border: 1px solid transparent !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 6px !important;
+    margin-bottom: 0.25rem !important;
   }
   
   .navbar-nav .nav-link:hover {
-    background-color: rgba(234, 88, 12, 0.1) !important;
-    border-color: rgba(234, 88, 12, 0.2) !important;
+    background-color: #f3f4f6 !important;
     color: #ea580c !important;
   }
   
-  /* Mobile Buttons Stack besser */
+  /* Kompakte Mobile Buttons */
   .navbar .d-flex {
-    margin-top: 1rem !important;
-    padding-top: 1rem !important;
-    border-top: 1px solid #e2e8f0 !important;
+    margin-top: 0.75rem !important;
+    padding-top: 0.75rem !important;
+    border-top: 1px solid #e5e7eb !important;
+    gap: 0.5rem !important;
   }
   
   .navbar .d-flex .btn {
-    font-size: 1rem !important;
-    font-weight: 600 !important;
-    padding: 0.75rem 1.5rem !important;
-    margin-bottom: 0.75rem !important;
-    min-height: 48px !important;
-    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 1rem !important;
+    margin-bottom: 0.5rem !important;
+    min-height: 42px !important;
+    border-radius: 6px !important;
   }
 }
 
-/* Zusätzliche Verbesserung: Navbar Brand auf Mobile */
+/* Navbar Brand auf Mobile - kompakter */
 @media (max-width: 991.98px) {
   .navbar-brand {
-    font-size: 1.5rem !important;
+    font-size: 1.4rem !important;
     font-weight: 700 !important;
     color: #ea580c !important;
   }
